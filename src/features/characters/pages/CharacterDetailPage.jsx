@@ -107,10 +107,10 @@ const CharacterDetailPage = () => {
                 {/* Hero Banner */}
                 <div className="relative w-full rounded-xl overflow-hidden mb-12 group">
                     <div
-                        className="aspect-[21/9] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                        className="aspect-21/9 w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                         style={{ backgroundImage: `url('${HERO_BG}')` }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/40 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-background-dark via-background-dark/40 to-transparent" />
                     <div className="absolute bottom-0 left-0 p-8 flex flex-col md:flex-row items-end md:items-center gap-6 w-full">
                         {/* Portrait */}
                         <div className="relative">
@@ -118,7 +118,7 @@ const CharacterDetailPage = () => {
                                 className="size-32 md:size-48 rounded-xl border-4 border-primary bg-cover bg-center shadow-2xl"
                                 style={{ backgroundImage: `url('${CHARACTER.image}')` }}
                             />
-                            <div className="absolute -bottom-4 -right-4 bg-[#740001] text-[#e3a000] p-2 rounded-lg shadow-lg border border-[#e3a000]/30">
+                            <div className="absolute -bottom-4 -right-4 bg-secondary text-[#e3a000] p-2 rounded-lg shadow-lg border border-[#e3a000]/30">
                                 <span className="material-symbols-outlined text-3xl">shield</span>
                             </div>
                         </div>
@@ -180,7 +180,7 @@ const CharacterDetailPage = () => {
                                         className="p-4 rounded-lg bg-primary/5 border border-primary/20 hover:bg-primary/10 transition-colors group"
                                     >
                                         <div className="flex items-start gap-4">
-                                            <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/30 group-hover:bg-primary group-hover:text-background-dark transition-all flex-shrink-0">
+                                            <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/30 group-hover:bg-primary group-hover:text-background-dark transition-all shrink-0">
                                                 <span className="material-symbols-outlined">{icon}</span>
                                             </div>
                                             <div>
@@ -249,7 +249,7 @@ const CharacterDetailPage = () => {
                                         className="flex items-center gap-3 p-2 rounded-lg bg-primary/5 border border-primary/10"
                                     >
                                         <div
-                                            className="size-10 rounded-full bg-cover bg-center border border-primary/30 flex-shrink-0"
+                                            className="size-10 rounded-full bg-cover bg-center border border-primary/30 shrink-0"
                                             style={{ backgroundImage: `url('${image}')` }}
                                         />
                                         <div>

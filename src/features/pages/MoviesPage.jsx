@@ -9,7 +9,7 @@ const MoviesPage = () => {
 
     return (
         <>
-            <main className="flex-1 flex flex-col px-6 md:px-20 py-10 max-w-[1440px] mx-auto w-full">
+            <main className="flex-1 flex flex-col px-6 md:px-20 py-10 max-w-360 mx-auto w-full">
                 {/* Page Header */}
                 <section className="mb-12">
                     <div className="flex flex-col gap-2">

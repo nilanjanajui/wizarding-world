@@ -1,6 +1,43 @@
+@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-primary:          #d4af35;
+  --color-secondary:        #740001;
+  --color-background-dark:  #201d12;
+  --color-background-light: #f8f7f6;
+  --color-card-dark:        #2a271e;
+
+  --font-display: "Newsreader", serif;
+
+  --radius-DEFAULT: 0.25rem;
+  --radius-lg:      0.5rem;
+  --radius-xl:      0.75rem;
+  --radius-full:    9999px;
+}
+
+body {
+  font-family: "Newsreader", serif;
+  background-color: #201d12;
+  color: #f1f5f9;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Newsreader", serif;
+}
+
+.hero-gradient {
+  background:
+    linear-gradient(rgba(32, 29, 18, 0.7) 0%, rgba(32, 29, 18, 0.95) 100%),
+    url("https://lh3.googleusercontent.com/aida-public/AB6AXuAHnGretIinLlxxUyLkcN-wbd9dY7TgycNXWNvd9zd8QEnx_2BPhjT740yntYyuY_LY4pAM3ruIsLGE-4JUoMB4T87JpF1uBFV4xzzSmFaq9x1afBtwCccL59VDChBUsqIewq4qPQDufzJPkv7nx2FX3ut0ryibDlKTKwzRWMip49AT0Kj6MCKJHd81cBQptwE2WzkXXhz24I_bmvXKF510MMCz-rpFSQPj9ve-UUCPI9stTksXslI--oU0-1UN4Tl3MF3gfXyfWBP4");
+  background-size: cover;
+  background-position: center;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fadeInUp 0.8s ease-out forwards; }
