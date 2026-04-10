@@ -1,16 +1,13 @@
-// src/App.jsx
-import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./routes/AppRoutes";
-import "./styles/index.css";
+import Homepage from "./components/homepage/Homepage";
 
-const App = () => {
+function App() {
   return (
-    <BrowserRouter>
-      <div className="dark">
-        <AppRoutes />
-      </div>
-    </BrowserRouter>
+    <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-dark font-display text-slate-100 antialiased">
+      {/* your Header here */}
+      <Homepage />
+      {/* your Footer here */}
+    </div>
   );
-};
+}
 
 export default App;
