@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 import { MOVIE_SUPPLEMENT } from "../../data/movieData";
+import hermione from "../../assets/hermoine.jpg";
+import dumbledore from "../../assets/dumbledore.jpg";
+import sirius from "../../assets/sirius.jpeg";
 
 // Real character images from HP API ImageKit CDN
 const CHAR_AVATARS = [
@@ -11,7 +14,7 @@ const CHAR_AVATARS = [
   {
     name: "Hermione Granger",
     short: "Hermione G.",
-    img: "https://ik.imagekit.io/hpapi/hermione.jpg",
+    img: hermione,
   },
   {
     name: "Ron Weasley",
@@ -21,7 +24,7 @@ const CHAR_AVATARS = [
   {
     name: "Albus Dumbledore",
     short: "Dumbledore",
-    img: "https://ik.imagekit.io/hpapi/dumbledore.jpg",
+    img: dumbledore,
   },
   {
     name: "Severus Snape",
@@ -31,7 +34,7 @@ const CHAR_AVATARS = [
   {
     name: "Sirius Black",
     short: "Sirius B.",
-    img: "https://ik.imagekit.io/hpapi/sirius.jpg",
+    img: sirius,
   },
 ];
 

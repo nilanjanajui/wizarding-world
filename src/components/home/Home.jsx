@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import Navbar from "../Navbar";
 import { HERO_BG } from "../../data/movieData";
+import characterImages from "../../data/characterImages";
 
 const FEATURED_NAMES = [
   "Harry Potter",
@@ -52,9 +53,15 @@ export default function Home() {
     fetch("https://hp-api.onrender.com/api/characters")
       .then((r) => r.json())
       .then((data) => {
-        const picked = FEATURED_NAMES.map((name) =>
-          data.find((c) => c.name === name)
-        ).filter(Boolean);
+        const picked = FEATURED_NAMES.map((name) => {
+          const found = data.find((c) => c.name === name);
+          return {
+            ...found,
+            name,
+            image: characterImages[name] || found?.image || null,
+            house: found?.house || "",
+          };
+        }).filter(Boolean);
         setFeaturedChars(picked);
       })
       .catch(console.error);
@@ -140,9 +147,7 @@ export default function Home() {
               className="text-primary hover:underline text-sm font-semibold flex items-center gap-1"
             >
               View All
-              <span className="material-symbols-outlined text-sm">
-                arrow_forward
-              </span>
+              <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -165,9 +170,7 @@ export default function Home() {
                       <p className="text-primary text-xs font-bold uppercase tracking-widest mb-1">
                         Movie {num}
                       </p>
-                      <p className="text-white text-base font-bold leading-tight">
-                        {title}
-                      </p>
+                      <p className="text-white text-base font-bold leading-tight">{title}</p>
                     </div>
                   </Link>
                 ))
@@ -187,7 +190,6 @@ export default function Home() {
               <h2 className="text-slate-100 text-3xl font-bold tracking-tight">
                 Famous Witches &amp; Wizards
               </h2>
-              
             </div>
             <div className="flex gap-2">
               <button
@@ -220,7 +222,6 @@ export default function Home() {
                     className="flex flex-col items-center gap-4 group shrink-0"
                     style={{ width: "160px" }}
                   >
-                    {/* Circle Portrait */}
                     <div className="relative w-full aspect-square rounded-full border-2 border-primary/20 p-2 group-hover:border-primary transition-all overflow-hidden bg-background-dark shadow-lg group-hover:shadow-primary/20">
                       {char.image ? (
                         <img
@@ -238,13 +239,9 @@ export default function Home() {
                           char.image ? "hidden" : "flex"
                         }`}
                       >
-                        <span className="material-symbols-outlined text-4xl">
-                          person
-                        </span>
+                        <span className="material-symbols-outlined text-4xl">person</span>
                       </div>
                     </div>
-
-                    {/* Name & House */}
                     <div className="text-center">
                       <p className="text-slate-100 font-bold text-lg leading-tight group-hover:text-primary transition-colors">
                         {char.name}
@@ -255,8 +252,7 @@ export default function Home() {
                     </div>
                   </Link>
                 ))
-              : // Loading skeletons
-                [1, 2, 3, 4, 5].map((n) => (
+              : [1, 2, 3, 4, 5].map((n) => (
                   <div
                     key={n}
                     className="flex flex-col items-center gap-4 shrink-0"
@@ -278,31 +274,14 @@ export default function Home() {
           <p className="text-lg font-bold">Wizarding World Explorer</p>
         </div>
         <div className="flex gap-8">
-          <a
-            className="text-slate-500 hover:text-primary transition-colors text-sm"
-            href="#"
-          >
-            Privacy Policy
-          </a>
-          <a
-            className="text-slate-500 hover:text-primary transition-colors text-sm"
-            href="#"
-          >
-            Terms of Magic
-          </a>
-          <a
-            className="text-slate-500 hover:text-primary transition-colors text-sm"
-            href="#"
-          >
-            Owl Contact
-          </a>
+          <a className="text-slate-500 hover:text-primary transition-colors text-sm" href="#">Privacy Policy</a>
+          <a className="text-slate-500 hover:text-primary transition-colors text-sm" href="#">Terms of Magic</a>
+          <a className="text-slate-500 hover:text-primary transition-colors text-sm" href="#">Owl Contact</a>
         </div>
         <div className="flex flex-col items-center gap-2">
-          <p className="text-slate-500 text-xs">
-            Built with React | Powered by Magic &amp; Tailwind CSS
-          </p>
+          <p className="text-slate-500 text-xs">Built with React | Powered by Magic &amp; Tailwind CSS</p>
           <p className="text-slate-600 text-[10px] uppercase tracking-widest">
-            © 2024 Wizarding World Explorer. All Rights Reserved.
+            © 2026 Wizarding World Explorer. All Rights Reserved.
           </p>
         </div>
       </footer>

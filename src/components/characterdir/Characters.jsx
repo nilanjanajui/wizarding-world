@@ -26,10 +26,9 @@ export default function Characters() {
     fetch("https://hp-api.onrender.com/api/characters")
       .then((r) => r.json())
       .then((data) => {
-        // Merge API image with our local image map
         const enriched = data.map((c) => ({
           ...c,
-          image: c.image || characterImages[c.name] || null,
+          image: characterImages[c.name] || c.image || null, // ← local first
         }));
         setCharacters(enriched);
       })
@@ -96,11 +95,10 @@ export default function Characters() {
                     setActiveHouse(house);
                     setVisibleCount(16);
                   }}
-                  className={`px-6 py-2 rounded-full font-bold text-sm border transition-colors ${
-                    activeHouse === house
+                  className={`px-6 py-2 rounded-full font-bold text-sm border transition-colors ${activeHouse === house
                       ? "bg-primary text-background-dark border-primary"
                       : "bg-slate-100 dark:bg-card-dark hover:bg-primary/20 text-slate-900 dark:text-slate-100 border border-primary/10"
-                  }`}
+                    }`}
                 >
                   {house}
                 </button>
@@ -155,9 +153,8 @@ export default function Characters() {
                           ) : null}
                           {/* Fallback placeholder */}
                           <div
-                            className={`w-full h-full bg-primary/10 items-center justify-center text-primary flex-col gap-2 ${
-                              imgSrc ? "hidden" : "flex"
-                            }`}
+                            className={`w-full h-full bg-primary/10 items-center justify-center text-primary flex-col gap-2 ${imgSrc ? "hidden" : "flex"
+                              }`}
                           >
                             <span className="material-symbols-outlined text-6xl">person</span>
                             <span className="text-xs text-primary/60 font-medium">No image</span>
@@ -170,9 +167,8 @@ export default function Characters() {
                               className="bg-black/40 backdrop-blur-md p-2 rounded-full text-white hover:text-red-500 transition-colors"
                             >
                               <span
-                                className={`material-symbols-outlined text-xl ${
-                                  fav ? "filled-icon text-red-500" : ""
-                                }`}
+                                className={`material-symbols-outlined text-xl ${fav ? "filled-icon text-red-500" : ""
+                                  }`}
                               >
                                 favorite
                               </span>
@@ -203,9 +199,8 @@ export default function Characters() {
                             <div className="flex justify-between">
                               <span>Status</span>
                               <span
-                                className={`font-medium italic ${
-                                  char.alive ? "text-green-500" : "text-slate-400"
-                                }`}
+                                className={`font-medium italic ${char.alive ? "text-green-500" : "text-slate-400"
+                                  }`}
                               >
                                 {char.alive ? "Alive" : "Deceased"}
                               </span>
@@ -255,7 +250,7 @@ export default function Characters() {
               </p>
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-tighter">
-              © 2024 Potter Explorer Universe
+              © 2026 Potter Explorer Universe
             </p>
           </div>
         </footer>

@@ -1,3 +1,10 @@
+import hermione from "../assets/hermoine.jpg";
+import dumbledore from "../assets/dumbledore.jpg";
+import lily from "../assets/lily.jpg";
+import molly from "../assets/molly.jpeg";
+import narcissa from "../assets/narcissa.jpeg";
+import sirius from "../assets/sirius.jpeg";
+
 const HOGWARTS_HALL =
     "https://image.tmdb.org/t/p/original/hziiv14OpD73u9gAak4XDDfBKa2.jpg";
 
@@ -24,8 +31,8 @@ const charactersData = {
         artefacts: ["The Invisibility Cloak", "Marauder's Map", "Elder Wand (briefly)", "Resurrection Stone"],
         relationships: [
             { role: "Best Friend", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
-            { role: "Best Friend", name: "Hermione Granger", img: "https://ik.imagekit.io/hpapi/hermione.jpg" },
-            { role: "Mentor", name: "Albus Dumbledore", img: "https://ik.imagekit.io/hpapi/dumbledore.jpg" },
+            { role: "Best Friend", name: "Hermione Granger", img: hermione },
+            { role: "Mentor", name: "Albus Dumbledore", img: dumbledore },
             { role: "Wife", name: "Ginny Weasley", img: "https://ik.imagekit.io/hpapi/ginny.jpg" },
         ],
     },
@@ -76,9 +83,9 @@ const charactersData = {
         artefacts: ["Deluminator", "Wizard Chess Set", "Scabbers (rat)"],
         relationships: [
             { role: "Best Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Wife", name: "Hermione Granger", img: "https://ik.imagekit.io/hpapi/hermione.jpg" },
+            { role: "Wife", name: "Hermione Granger", img: hermione },
             { role: "Sister", name: "Ginny Weasley", img: "https://ik.imagekit.io/hpapi/ginny.jpg" },
-            { role: "Mother", name: "Molly Weasley", img: "https://ik.imagekit.io/hpapi/molly-weasley.jpg" },
+            { role: "Mother", name: "Molly Weasley", img: molly },
         ],
     },
 
@@ -127,8 +134,8 @@ const charactersData = {
         ],
         artefacts: ["Half-Blood Prince's Textbook", "Veritaserum", "Wolfsbane Potion"],
         relationships: [
-            { role: "Love of His Life", name: "Lily Potter", img: "https://ik.imagekit.io/hpapi/lily-potter.jpg" },
-            { role: "Mentor", name: "Albus Dumbledore", img: "https://ik.imagekit.io/hpapi/dumbledore.jpg" },
+            { role: "Love of His Life", name: "Lily Potter", img: lily },
+            { role: "Mentor", name: "Albus Dumbledore", img: dumbledore },
             { role: "Student", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
             { role: "Student", name: "Draco Malfoy", img: "https://ik.imagekit.io/hpapi/draco.jpg" },
         ],
@@ -154,7 +161,7 @@ const charactersData = {
         artefacts: ["Vanishing Cabinet", "Dark Mark (branded)", "Elder Wand (briefly)"],
         relationships: [
             { role: "Father", name: "Lucius Malfoy", img: "https://ik.imagekit.io/hpapi/lucius.jpg" },
-            { role: "Mother", name: "Narcissa Malfoy", img: "https://ik.imagekit.io/hpapi/narcissa.jpg" },
+            { role: "Mother", name: "Narcissa Malfoy", img: narcissa },
             { role: "Rival", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
             { role: "Head of House", name: "Severus Snape", img: "https://ik.imagekit.io/hpapi/snape.jpg" },
         ],
@@ -233,8 +240,8 @@ const charactersData = {
         relationships: [
             { role: "Husband", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
             { role: "Brother", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
-            { role: "Mother", name: "Molly Weasley", img: "https://ik.imagekit.io/hpapi/molly-weasley.jpg" },
-            { role: "Friend", name: "Hermione Granger", img: "https://ik.imagekit.io/hpapi/hermione.jpg" },
+            { role: "Mother", name: "Molly Weasley", img: molly },
+            { role: "Friend", name: "Hermione Granger", img: hermione },
         ],
     },
 
@@ -310,7 +317,7 @@ const charactersData = {
         artefacts: ["Tom Riddle's Diary", "Marvolo Gaunt's Ring", "Slytherin's Locket", "Hufflepuff's Cup", "Ravenclaw's Diadem", "Nagini", "Elder Wand"],
         relationships: [
             { role: "Nemesis", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Opponent", name: "Albus Dumbledore", img: "https://ik.imagekit.io/hpapi/dumbledore.jpg" },
+            { role: "Opponent", name: "Albus Dumbledore", img: dumbledore },
             { role: "Servant", name: "Bellatrix Lestrange", img: "https://ik.imagekit.io/hpapi/bellatrix.jpg" },
             { role: "Servant", name: "Severus Snape", img: "https://ik.imagekit.io/hpapi/snape.jpg" },
         ],
@@ -336,8 +343,8 @@ const charactersData = {
         artefacts: ["Hufflepuff's Cup (kept in her vault)", "Dark Mark"],
         relationships: [
             { role: "Master", name: "Lord Voldemort", img: "https://ik.imagekit.io/hpapi/voldemort.jpg" },
-            { role: "Cousin", name: "Sirius Black", img: "https://ik.imagekit.io/hpapi/sirius.jpg" },
-            { role: "Sister", name: "Narcissa Malfoy", img: "https://ik.imagekit.io/hpapi/narcissa.jpg" },
+            { role: "Cousin", name: "Sirius Black", img: sirius },
+            { role: "Sister", name: "Narcissa Malfoy", img: narcissa },
             { role: "Nemesis", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
         ],
     },
@@ -362,8 +369,8 @@ const charactersData = {
         artefacts: ["Pink umbrella (hidden wand)", "Flying motorcycle (borrowed from Sirius)", "Norbert the Dragon (egg)"],
         relationships: [
             { role: "Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Mentor", name: "Albus Dumbledore", img: "https://ik.imagekit.io/hpapi/dumbledore.jpg" },
-            { role: "Friend", name: "Hermione Granger", img: "https://ik.imagekit.io/hpapi/hermione.jpg" },
+            { role: "Mentor", name: "Albus Dumbledore", img: dumbledore },
+            { role: "Friend", name: "Hermione Granger", img: hermione },
             { role: "Friend", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
         ],
     },
@@ -388,9 +395,9 @@ const charactersData = {
         artefacts: ["Tabby cat form", "Hogwarts house points system"],
         relationships: [
             { role: "Student", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Headmaster", name: "Albus Dumbledore", img: "https://ik.imagekit.io/hpapi/dumbledore.jpg" },
+            { role: "Headmaster", name: "Albus Dumbledore", img: dumbledore },
             { role: "Colleague", name: "Severus Snape", img: "https://ik.imagekit.io/hpapi/snape.jpg" },
-            { role: "Student", name: "Hermione Granger", img: "https://ik.imagekit.io/hpapi/hermione.jpg" },
+            { role: "Student", name: "Hermione Granger", img: hermione },
         ],
     },
 
@@ -440,7 +447,7 @@ const charactersData = {
         relationships: [
             { role: "Twin", name: "George Weasley", img: "https://ik.imagekit.io/hpapi/george.jpg" },
             { role: "Brother", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
-            { role: "Mother", name: "Molly Weasley", img: "https://ik.imagekit.io/hpapi/molly-weasley.jpg" },
+            { role: "Mother", name: "Molly Weasley", img: molly },
             { role: "Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
         ],
     },
@@ -467,7 +474,7 @@ const charactersData = {
             { role: "Twin", name: "Fred Weasley", img: "https://ik.imagekit.io/hpapi/fred.jpg" },
             { role: "Brother", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
             { role: "Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Mother", name: "Molly Weasley", img: "https://ik.imagekit.io/hpapi/molly-weasley.jpg" },
+            { role: "Mother", name: "Molly Weasley", img: molly },
         ],
     },
 
@@ -492,7 +499,7 @@ const charactersData = {
         relationships: [
             { role: "Best Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
             { role: "Former Master", name: "Lucius Malfoy", img: "https://ik.imagekit.io/hpapi/lucius.jpg" },
-            { role: "Friend", name: "Hermione Granger", img: "https://ik.imagekit.io/hpapi/hermione.jpg" },
+            { role: "Friend", name: "Hermione Granger", img: hermione },
         ],
     },
 };

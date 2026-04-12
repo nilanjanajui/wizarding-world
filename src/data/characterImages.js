@@ -1,9 +1,15 @@
 // All images from HP API's ImageKit CDN - permanent and reliable
+
+import dumbledore from "../assets/dumbledore.jpg";
+import hermione from "../assets/hermoine.jpg";
+import sirius from "../assets/sirius.jpeg";
+import hagrid from "../assets/hagrid.jpeg";
+
 const characterImages = {
     "Harry Potter": "https://ik.imagekit.io/hpapi/harry.jpg",
-    "Hermione Granger": "https://ik.imagekit.io/hpapi/hermione.jpg",
+    "Hermione Granger": hermione,
     "Ron Weasley": "https://ik.imagekit.io/hpapi/ron.jpg",
-    "Albus Dumbledore": "https://ik.imagekit.io/hpapi/dumbledore.jpg",
+    "Albus Dumbledore": dumbledore,
     "Severus Snape": "https://ik.imagekit.io/hpapi/snape.jpg",
     "Draco Malfoy": "https://ik.imagekit.io/hpapi/draco.jpg",
     "Neville Longbottom": "https://ik.imagekit.io/hpapi/neville.jpg",
@@ -13,9 +19,9 @@ const characterImages = {
     "George Weasley": "https://ik.imagekit.io/hpapi/george.jpg",
     "Arthur Weasley": "https://ik.imagekit.io/hpapi/arthur-weasley.jpg",
     "Molly Weasley": "https://ik.imagekit.io/hpapi/molly-weasley.jpg",
-    "Rubeus Hagrid": "https://ik.imagekit.io/hpapi/hagrid.jpg",
+    "Rubeus Hagrid": hagrid,
     "Minerva McGonagall": "https://ik.imagekit.io/hpapi/mcgonagall.jpg",
-    "Sirius Black": "https://ik.imagekit.io/hpapi/sirius.jpg",
+    "Sirius Black": sirius,
     "Remus Lupin": "https://ik.imagekit.io/hpapi/lupin.jpg",
     "Peter Pettigrew": "https://ik.imagekit.io/hpapi/pettigrew.jpg",
     "Lord Voldemort": "https://ik.imagekit.io/hpapi/voldemort.jpg",
