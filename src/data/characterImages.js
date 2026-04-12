@@ -4,6 +4,8 @@ import dumbledore from "../assets/dumbledore.jpg";
 import hermione from "../assets/hermoine.jpg";
 import sirius from "../assets/sirius.jpeg";
 import hagrid from "../assets/hagrid.jpeg";
+import cedric from "../assets/cedric.jpeg";
+import molly from "../assets/molly.jpeg";
 
 const characterImages = {
     "Harry Potter": "https://ik.imagekit.io/hpapi/harry.jpg",
@@ -18,7 +20,7 @@ const characterImages = {
     "Fred Weasley": "https://ik.imagekit.io/hpapi/fred.jpg",
     "George Weasley": "https://ik.imagekit.io/hpapi/george.jpg",
     "Arthur Weasley": "https://ik.imagekit.io/hpapi/arthur-weasley.jpg",
-    "Molly Weasley": "https://ik.imagekit.io/hpapi/molly-weasley.jpg",
+    "Molly Weasley": molly,
     "Rubeus Hagrid": hagrid,
     "Minerva McGonagall": "https://ik.imagekit.io/hpapi/mcgonagall.jpg",
     "Sirius Black": sirius,
@@ -29,7 +31,7 @@ const characterImages = {
     "Narcissa Malfoy": "https://ik.imagekit.io/hpapi/narcissa.jpg",
     "Lucius Malfoy": "https://ik.imagekit.io/hpapi/lucius.jpg",
     "Nymphadora Tonks": "https://ik.imagekit.io/hpapi/tonks.jpg",
-    "Cedric Diggory": "https://ik.imagekit.io/hpapi/cedric.jpg",
+    "Cedric Diggory": cedric,
     "Cho Chang": "https://ik.imagekit.io/hpapi/cho.jpg",
     "Lavender Brown": "https://ik.imagekit.io/hpapi/lavender.jpg",
     "Parvati Patil": "https://ik.imagekit.io/hpapi/parvati.jpg",
