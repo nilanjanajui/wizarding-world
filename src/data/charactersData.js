@@ -5,10 +5,11 @@ import molly from "../assets/molly.jpeg";
 import narcissa from "../assets/narcissa.jpeg";
 import sirius from "../assets/sirius.jpeg";
 
-const HOGWARTS_HALL =
-    "https://image.tmdb.org/t/p/original/hziiv14OpD73u9gAak4XDDfBKa2.jpg";
+// HP API direct URLs - reliable
+const HP = (name) => `https://hp-api.onrender.com/images/characters/${name}.jpeg`;
 
-export { HOGWARTS_HALL };
+export const HOGWARTS_HALL =
+    "https://image.tmdb.org/t/p/original/hziiv14OpD73u9gAak4XDDfBKa2.jpg";
 
 const charactersData = {
     "Harry Potter": {
@@ -30,10 +31,10 @@ const charactersData = {
         ],
         artefacts: ["The Invisibility Cloak", "Marauder's Map", "Elder Wand (briefly)", "Resurrection Stone"],
         relationships: [
-            { role: "Best Friend", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
+            { role: "Best Friend", name: "Ron Weasley", img: HP("ron-weasley") },
             { role: "Best Friend", name: "Hermione Granger", img: hermione },
             { role: "Mentor", name: "Albus Dumbledore", img: dumbledore },
-            { role: "Wife", name: "Ginny Weasley", img: "https://ik.imagekit.io/hpapi/ginny.jpg" },
+            { role: "Wife", name: "Ginny Weasley", img: HP("ginny-weasley") },
         ],
     },
 
@@ -56,10 +57,10 @@ const charactersData = {
         ],
         artefacts: ["The Time-Turner", "Tales of Beedle the Bard", "Beaded Bag (Undetectable Extension Charm)"],
         relationships: [
-            { role: "Best Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Husband", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
-            { role: "Mentor", name: "Minerva McGonagall", img: "https://ik.imagekit.io/hpapi/mcgonagall.jpg" },
-            { role: "Friend", name: "Luna Lovegood", img: "https://ik.imagekit.io/hpapi/luna.jpg" },
+            { role: "Best Friend", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Husband", name: "Ron Weasley", img: HP("ron-weasley") },
+            { role: "Mentor", name: "Minerva McGonagall", img: HP("minerva-mcgonagall") },
+            { role: "Friend", name: "Luna Lovegood", img: HP("luna-lovegood") },
         ],
     },
 
@@ -82,9 +83,9 @@ const charactersData = {
         ],
         artefacts: ["Deluminator", "Wizard Chess Set", "Scabbers (rat)"],
         relationships: [
-            { role: "Best Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
+            { role: "Best Friend", name: "Harry Potter", img: HP("harry-potter") },
             { role: "Wife", name: "Hermione Granger", img: hermione },
-            { role: "Sister", name: "Ginny Weasley", img: "https://ik.imagekit.io/hpapi/ginny.jpg" },
+            { role: "Sister", name: "Ginny Weasley", img: HP("ginny-weasley") },
             { role: "Mother", name: "Molly Weasley", img: molly },
         ],
     },
@@ -108,10 +109,10 @@ const charactersData = {
         ],
         artefacts: ["Elder Wand", "Resurrection Stone Ring", "Pensieve"],
         relationships: [
-            { role: "Student", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Colleague", name: "Minerva McGonagall", img: "https://ik.imagekit.io/hpapi/mcgonagall.jpg" },
-            { role: "Spy", name: "Severus Snape", img: "https://ik.imagekit.io/hpapi/snape.jpg" },
-            { role: "Enemy", name: "Lord Voldemort", img: "https://ik.imagekit.io/hpapi/voldemort.jpg" },
+            { role: "Student", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Colleague", name: "Minerva McGonagall", img: HP("minerva-mcgonagall") },
+            { role: "Spy", name: "Severus Snape", img: HP("severus-snape") },
+            { role: "Enemy", name: "Lord Voldemort", img: HP("lord-voldemort") },
         ],
     },
 
@@ -136,14 +137,14 @@ const charactersData = {
         relationships: [
             { role: "Love of His Life", name: "Lily Potter", img: lily },
             { role: "Mentor", name: "Albus Dumbledore", img: dumbledore },
-            { role: "Student", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Student", name: "Draco Malfoy", img: "https://ik.imagekit.io/hpapi/draco.jpg" },
+            { role: "Student", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Student", name: "Draco Malfoy", img: HP("draco-malfoy") },
         ],
     },
 
     "Draco Malfoy": {
         quote: '"My father will hear about this."',
-        biography: `Draco Lucius Malfoy was born into one of the most prestigious pure-blood wizarding families. Raised with a sense of entitlement and blood supremacy, he became Harry Potter's chief rival at Hogwarts and was sorted into Slytherin.\n\nDespite his early arrogance and cruelty, Draco showed genuine reluctance when ordered by Voldemort to commit murder. His experience during the Second Wizarding War ultimately softened him, and he later raised his son Scorpius with different values.`,
+        biography: `Draco Lucius Malfoy was born into one of the most prestigious pure-blood wizarding families. Raised with a sense of entitlement and blood supremacy, he became Harry Potter's chief rival at Hogwarts.\n\nDespite his early arrogance and cruelty, Draco showed genuine reluctance when ordered by Voldemort to commit murder. His experience during the Second Wizarding War ultimately softened him, and he later raised his son Scorpius with different values.`,
         wand: "Hawthorn, Unicorn hair, 10 inches",
         patronus: "Unknown",
         boggart: "Lord Voldemort",
@@ -160,16 +161,16 @@ const charactersData = {
         ],
         artefacts: ["Vanishing Cabinet", "Dark Mark (branded)", "Elder Wand (briefly)"],
         relationships: [
-            { role: "Father", name: "Lucius Malfoy", img: "https://ik.imagekit.io/hpapi/lucius.jpg" },
+            { role: "Father", name: "Lucius Malfoy", img: HP("lucius-malfoy") },
             { role: "Mother", name: "Narcissa Malfoy", img: narcissa },
-            { role: "Rival", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Head of House", name: "Severus Snape", img: "https://ik.imagekit.io/hpapi/snape.jpg" },
+            { role: "Rival", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Head of House", name: "Severus Snape", img: HP("severus-snape") },
         ],
     },
 
     "Luna Lovegood": {
         quote: '"Things we lose have a way of coming back to us in the end."',
-        biography: `Luna Scamander (née Lovegood) was a Ravenclaw student known for her dreamy, eccentric nature and unwavering belief in magical creatures others dismissed. Daughter of Xenophilius Lovegood, she grew up believing in Nargles and Wrackspurts.\n\nDespite being considered odd by many peers, Luna's fierce loyalty and courage made her an invaluable member of Dumbledore's Army. Her ability to see Thestrals reflected her early experience of witnessing her mother's death.`,
+        biography: `Luna Scamander (née Lovegood) was a Ravenclaw student known for her dreamy, eccentric nature and unwavering belief in magical creatures others dismissed.\n\nDespite being considered odd by many peers, Luna's fierce loyalty and courage made her an invaluable member of Dumbledore's Army. Her ability to see Thestrals reflected her early experience of witnessing her mother's death.`,
         wand: "Unknown wood and core",
         patronus: "Hare",
         boggart: "Unknown",
@@ -186,10 +187,10 @@ const charactersData = {
         ],
         artefacts: ["Spectrespecs", "The Quibbler magazine", "Dirigible Plum earrings"],
         relationships: [
-            { role: "Father", name: "Xenophilius Lovegood", img: "https://ik.imagekit.io/hpapi/xenophilius.jpg" },
-            { role: "Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Friend", name: "Hermione Granger", img: "https://ik.imagekit.io/hpapi/hermione.jpg" },
-            { role: "Friend", name: "Ginny Weasley", img: "https://ik.imagekit.io/hpapi/ginny.jpg" },
+            { role: "Father", name: "Xenophilius Lovegood", img: HP("xenophilius-lovegood") },
+            { role: "Friend", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Friend", name: "Hermione Granger", img: hermione },
+            { role: "Friend", name: "Ginny Weasley", img: HP("ginny-weasley") },
         ],
     },
 
@@ -212,16 +213,16 @@ const charactersData = {
         ],
         artefacts: ["Sword of Gryffindor", "Mimbulus Mimbletonia plant", "Remembrall"],
         relationships: [
-            { role: "Grandmother", name: "Augusta Longbottom", img: "https://ik.imagekit.io/hpapi/neville.jpg" },
-            { role: "Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Friend", name: "Hermione Granger", img: "https://ik.imagekit.io/hpapi/hermione.jpg" },
-            { role: "Friend", name: "Luna Lovegood", img: "https://ik.imagekit.io/hpapi/luna.jpg" },
+            { role: "Friend", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Friend", name: "Hermione Granger", img: hermione },
+            { role: "Friend", name: "Luna Lovegood", img: HP("luna-lovegood") },
+            { role: "Friend", name: "Ginny Weasley", img: HP("ginny-weasley") },
         ],
     },
 
     "Ginny Weasley": {
         quote: '"The thing about growing up with Fred and George is that you sort of start thinking anything is possible."',
-        biography: `Ginevra Molly Weasley is the youngest child and only daughter of Arthur and Molly Weasley. In her first year at Hogwarts she was possessed by Tom Riddle's diary Horcrux, an experience that gave her unique insight into Voldemort's mind.\n\nGinny grew into one of the most talented witches of her generation, an excellent Quidditch player and a fierce warrior. She married Harry Potter after the war and became a celebrated Quidditch player for the Holyhead Harpies.`,
+        biography: `Ginevra Molly Weasley is the youngest child and only daughter of Arthur and Molly Weasley. In her first year at Hogwarts she was possessed by Tom Riddle's diary Horcrux.\n\nGinny grew into one of the most talented witches of her generation, an excellent Quidditch player and a fierce warrior. She married Harry Potter after the war and became a celebrated Quidditch player for the Holyhead Harpies.`,
         wand: "Yew, Unknown core",
         patronus: "Horse",
         boggart: "Unknown",
@@ -238,8 +239,8 @@ const charactersData = {
         ],
         artefacts: ["Tom Riddle's Diary (destroyed)", "Quidditch broomstick"],
         relationships: [
-            { role: "Husband", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Brother", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
+            { role: "Husband", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Brother", name: "Ron Weasley", img: HP("ron-weasley") },
             { role: "Mother", name: "Molly Weasley", img: molly },
             { role: "Friend", name: "Hermione Granger", img: hermione },
         ],
@@ -247,7 +248,7 @@ const charactersData = {
 
     "Sirius Black": {
         quote: '"We\'ve all got both light and dark inside us."',
-        biography: `Sirius Black was the last heir of the House of Black, a pure-blood wizarding family. Despite his family's dark leanings, he was sorted into Gryffindor and became best friends with James Potter, Remus Lupin, and Peter Pettigrew — the Marauders.\n\nFalsely imprisoned in Azkaban for twelve years for the betrayal of James and Lily Potter (a crime committed by Pettigrew), Sirius escaped and worked to protect his godson Harry Potter until his tragic death at the Department of Mysteries.`,
+        biography: `Sirius Black was the last heir of the House of Black, a pure-blood wizarding family. Despite his family's dark leanings, he was sorted into Gryffindor and became best friends with James Potter, Remus Lupin, and Peter Pettigrew.\n\nFalsely imprisoned in Azkaban for twelve years, Sirius escaped and worked to protect his godson Harry Potter until his tragic death at the Department of Mysteries.`,
         wand: "Unknown wood and core",
         patronus: "Large dog (Grim)",
         boggart: "Lord Voldemort",
@@ -264,24 +265,24 @@ const charactersData = {
         ],
         artefacts: ["Motorcycle (enchanted)", "Two-way mirror", "12 Grimmauld Place"],
         relationships: [
-            { role: "Godson", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Best Friend", name: "James Potter", img: "https://ik.imagekit.io/hpapi/james-potter.jpg" },
-            { role: "Friend", name: "Remus Lupin", img: "https://ik.imagekit.io/hpapi/lupin.jpg" },
-            { role: "Enemy", name: "Bellatrix Lestrange", img: "https://ik.imagekit.io/hpapi/bellatrix.jpg" },
+            { role: "Godson", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Best Friend", name: "James Potter", img: HP("james-potter") },
+            { role: "Friend", name: "Remus Lupin", img: HP("remus-lupin") },
+            { role: "Enemy", name: "Bellatrix Lestrange", img: HP("bellatrix-lestrange") },
         ],
     },
 
     "Remus Lupin": {
         quote: '"It is the quality of one\'s convictions that determines success, not the number of followers."',
-        biography: `Remus John Lupin was one of the Marauders and a Defence Against the Dark Arts professor at Hogwarts. Bitten by werewolf Fenrir Greyback as a child, he struggled with his lycanthropy throughout his life, often feeling like an outcast.\n\nDespite the hardships his condition imposed, Lupin became one of the most beloved and skilled Defence professors Hogwarts ever had. He fought bravely in both Wizarding Wars and died alongside his wife Tonks in the Battle of Hogwarts.`,
-        wand: "Cypress, Unicorn hair, 10 ¼ inches",
+        biography: `Remus John Lupin was one of the Marauders and a Defence Against the Dark Arts professor at Hogwarts. Bitten by werewolf Fenrir Greyback as a child, he struggled with his lycanthropy throughout his life.\n\nDespite the hardships his condition imposed, Lupin became one of the most beloved and skilled Defence professors Hogwarts ever had. He died alongside his wife Tonks in the Battle of Hogwarts.`,
+        wand: "Cypress, Unicorn hair, 10¼ inches",
         patronus: "Wolf",
         boggart: "Full Moon / Voldemort",
         spells: [
             { name: "Riddikulus", icon: "sentiment_very_satisfied", desc: "Used against Boggarts; first spell taught to Harry's class." },
             { name: "Expecto Patronum", icon: "auto_awesome", desc: "Teaches Harry to conjure a Patronus against Dementors." },
             { name: "Stupefy", icon: "flash_on", desc: "Stunning Spell used in Order of the Phoenix missions." },
-            { name: "Wolfsbane Potion", icon: "science", desc: "Not a spell but a potion that controls his werewolf transformations." },
+            { name: "Wolfsbane Potion", icon: "science", desc: "A potion that controls his werewolf transformations." },
         ],
         timeline: [
             { event: "The Marauders Era (1971-1978)", desc: "Forms lifelong bonds with James, Sirius, and Pettigrew." },
@@ -290,16 +291,16 @@ const charactersData = {
         ],
         artefacts: ["Marauder's Map (co-creator)", "Wolfsbane Potion supply"],
         relationships: [
-            { role: "Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Best Friend", name: "Sirius Black", img: "https://ik.imagekit.io/hpapi/sirius.jpg" },
-            { role: "Wife", name: "Nymphadora Tonks", img: "https://ik.imagekit.io/hpapi/tonks.jpg" },
-            { role: "Enemy", name: "Fenrir Greyback", img: "https://ik.imagekit.io/hpapi/greyback.jpg" },
+            { role: "Friend", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Best Friend", name: "Sirius Black", img: sirius },
+            { role: "Wife", name: "Nymphadora Tonks", img: HP("nymphadora-tonks") },
+            { role: "Enemy", name: "Fenrir Greyback", img: HP("fenrir-greyback") },
         ],
     },
 
     "Lord Voldemort": {
         quote: '"There is no good and evil. There is only power, and those too weak to seek it."',
-        biography: `Tom Marvolo Riddle, known as Lord Voldemort, was the most powerful dark wizard of all time. Born of a Muggle father and a witch mother who died in childbirth, he grew up in a Muggle orphanage before discovering his magical heritage at Hogwarts.\n\nObsessed with immortality and pure-blood supremacy, he split his soul into seven Horcruxes. After being vanquished by the infant Harry Potter in 1981, he spent years as a wraith before regaining his body. His final defeat came at the Battle of Hogwarts in 1998.`,
+        biography: `Tom Marvolo Riddle, known as Lord Voldemort, was the most powerful dark wizard of all time. Born of a Muggle father and a witch mother who died in childbirth, he grew up in a Muggle orphanage.\n\nObsessed with immortality and pure-blood supremacy, he split his soul into seven Horcruxes. His final defeat came at the Battle of Hogwarts in 1998.`,
         wand: "Yew, Phoenix feather, 13.5 inches",
         patronus: "None (incapable of love)",
         boggart: "His own death",
@@ -314,19 +315,19 @@ const charactersData = {
             { event: "First Defeat (1981)", desc: "Killing curse rebounds off baby Harry; reduced to a wraith." },
             { event: "Final Defeat (1998)", desc: "Destroyed by his own rebounding curse in the Battle of Hogwarts." },
         ],
-        artefacts: ["Tom Riddle's Diary", "Marvolo Gaunt's Ring", "Slytherin's Locket", "Hufflepuff's Cup", "Ravenclaw's Diadem", "Nagini", "Elder Wand"],
+        artefacts: ["Tom Riddle's Diary", "Marvolo Gaunt's Ring", "Slytherin's Locket", "Hufflepuff's Cup", "Nagini", "Elder Wand"],
         relationships: [
-            { role: "Nemesis", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
+            { role: "Nemesis", name: "Harry Potter", img: HP("harry-potter") },
             { role: "Opponent", name: "Albus Dumbledore", img: dumbledore },
-            { role: "Servant", name: "Bellatrix Lestrange", img: "https://ik.imagekit.io/hpapi/bellatrix.jpg" },
-            { role: "Servant", name: "Severus Snape", img: "https://ik.imagekit.io/hpapi/snape.jpg" },
+            { role: "Servant", name: "Bellatrix Lestrange", img: HP("bellatrix-lestrange") },
+            { role: "Servant", name: "Severus Snape", img: HP("severus-snape") },
         ],
     },
 
     "Bellatrix Lestrange": {
-        quote: '"I killed Sirius Black! I killed Sirius Black!"',
-        biography: `Bellatrix Lestrange (née Black) was one of Voldemort's most devoted and dangerous Death Eaters. A pure-blood witch from the Noble House of Black, she enthusiastically tortured Frank and Alice Longbottom to insanity using the Cruciatus Curse.\n\nFanatically loyal to Voldemort, Bellatrix was imprisoned in Azkaban for fourteen years before escaping. She killed Sirius Black and many others before finally being defeated by Molly Weasley in the Battle of Hogwarts.`,
-        wand: "Walnut, Dragon heartstring, 12¾ inches (unyielding)",
+        quote: '"I killed Sirius Black!"',
+        biography: `Bellatrix Lestrange (née Black) was one of Voldemort's most devoted and dangerous Death Eaters. A pure-blood witch from the Noble House of Black, she enthusiastically tortured Frank and Alice Longbottom to insanity.\n\nFanatically loyal to Voldemort, Bellatrix was imprisoned in Azkaban for fourteen years before escaping. She killed Sirius Black and many others before finally being defeated by Molly Weasley in the Battle of Hogwarts.`,
+        wand: "Walnut, Dragon heartstring, 12¾ inches",
         patronus: "Unknown",
         boggart: "Unknown",
         spells: [
@@ -342,16 +343,16 @@ const charactersData = {
         ],
         artefacts: ["Hufflepuff's Cup (kept in her vault)", "Dark Mark"],
         relationships: [
-            { role: "Master", name: "Lord Voldemort", img: "https://ik.imagekit.io/hpapi/voldemort.jpg" },
+            { role: "Master", name: "Lord Voldemort", img: HP("lord-voldemort") },
             { role: "Cousin", name: "Sirius Black", img: sirius },
             { role: "Sister", name: "Narcissa Malfoy", img: narcissa },
-            { role: "Nemesis", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
+            { role: "Nemesis", name: "Harry Potter", img: HP("harry-potter") },
         ],
     },
 
     "Rubeus Hagrid": {
         quote: '"Yer a wizard, Harry."',
-        biography: `Rubeus Hagrid is the half-giant Keeper of Keys and Grounds at Hogwarts. Expelled in his third year after being falsely blamed for opening the Chamber of Secrets, he was allowed to remain at Hogwarts by Dumbledore and raised magical creatures.\n\nHagrid was Harry's first connection to the wizarding world, delivering his Hogwarts letter and introducing him to the magical world. His fierce loyalty to Dumbledore and love for dangerous creatures defined his character throughout the saga.`,
+        biography: `Rubeus Hagrid is the half-giant Keeper of Keys and Grounds at Hogwarts. Expelled in his third year after being falsely blamed for opening the Chamber of Secrets, he was allowed to remain at Hogwarts by Dumbledore.\n\nHagrid was Harry's first connection to the wizarding world, delivering his Hogwarts letter. His fierce loyalty to Dumbledore and love for dangerous creatures defined his character throughout the saga.`,
         wand: "Oak, 16 inches (broken; kept in pink umbrella)",
         patronus: "Unknown",
         boggart: "Voldemort",
@@ -359,7 +360,7 @@ const charactersData = {
             { name: "Wingardium Leviosa", icon: "air", desc: "Basic levitation charm performed with his broken wand." },
             { name: "Blast-Ended Skrewt Care", icon: "pets", desc: "Raises dangerous magical creatures with extraordinary affection." },
             { name: "Expelliarmus", icon: "auto_fix_high", desc: "Basic defensive charm retained from his brief time at Hogwarts." },
-            { name: "Duckin' spells", icon: "shield", desc: "Natural resistance to many spells due to his giant heritage." },
+            { name: "Giant Resistance", icon: "shield", desc: "Natural resistance to many spells due to his giant heritage." },
         ],
         timeline: [
             { event: "Expelled (1943)", desc: "Wrongly blamed for opening the Chamber; wand destroyed." },
@@ -368,16 +369,16 @@ const charactersData = {
         ],
         artefacts: ["Pink umbrella (hidden wand)", "Flying motorcycle (borrowed from Sirius)", "Norbert the Dragon (egg)"],
         relationships: [
-            { role: "Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
+            { role: "Friend", name: "Harry Potter", img: HP("harry-potter") },
             { role: "Mentor", name: "Albus Dumbledore", img: dumbledore },
             { role: "Friend", name: "Hermione Granger", img: hermione },
-            { role: "Friend", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
+            { role: "Friend", name: "Ron Weasley", img: HP("ron-weasley") },
         ],
     },
 
     "Minerva McGonagall": {
         quote: '"Why is it that whenever something happens, it is always you three?"',
-        biography: `Minerva McGonagall was Deputy Headmistress and Transfiguration professor at Hogwarts, as well as Head of Gryffindor House. A registered Animagus, she could transform into a tabby cat at will.\n\nKnown for her stern demeanor hiding a deep compassion for her students, McGonagall fought in both Wizarding Wars. She became Headmistress after Snape's death and was known as one of the most formidable witches of her era.`,
+        biography: `Minerva McGonagall was Deputy Headmistress and Transfiguration professor at Hogwarts, as well as Head of Gryffindor House. A registered Animagus, she could transform into a tabby cat at will.\n\nKnown for her stern demeanor hiding a deep compassion for her students, McGonagall fought in both Wizarding Wars and became Headmistress after Snape's death.`,
         wand: "Fir, Dragon heartstring, 9½ inches",
         patronus: "Tabby cat",
         boggart: "Unknown",
@@ -394,16 +395,16 @@ const charactersData = {
         ],
         artefacts: ["Tabby cat form", "Hogwarts house points system"],
         relationships: [
-            { role: "Student", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
+            { role: "Student", name: "Harry Potter", img: HP("harry-potter") },
             { role: "Headmaster", name: "Albus Dumbledore", img: dumbledore },
-            { role: "Colleague", name: "Severus Snape", img: "https://ik.imagekit.io/hpapi/snape.jpg" },
+            { role: "Colleague", name: "Severus Snape", img: HP("severus-snape") },
             { role: "Student", name: "Hermione Granger", img: hermione },
         ],
     },
 
     "Cedric Diggory": {
         quote: '"For a Hufflepuff, you sure are brave."',
-        biography: `Cedric Diggory was a Hufflepuff student celebrated for his exceptional talent, integrity, and handsome appearance. As the Hogwarts Champion in the Triwizard Tournament, he competed with fairness and honor — refusing advantages that might be considered cheating.\n\nHis untimely death at the hands of Peter Pettigrew on Voldemort's orders marked one of the darkest moments in the saga, serving as the catalyst for the Second Wizarding War. His bravery and fairness made him universally admired.`,
+        biography: `Cedric Diggory was a Hufflepuff student celebrated for his exceptional talent, integrity, and handsome appearance. As the Hogwarts Champion in the Triwizard Tournament, he competed with fairness and honor.\n\nHis untimely death at the hands of Peter Pettigrew on Voldemort's orders marked one of the darkest moments in the saga, serving as the catalyst for the Second Wizarding War.`,
         wand: "Ash, Unicorn hair, 12¼ inches",
         patronus: "Unknown",
         boggart: "Unknown",
@@ -414,23 +415,24 @@ const charactersData = {
             { name: "Impervius", icon: "water_drop", desc: "A charm that repels water; useful in the lake task." },
         ],
         timeline: [
-            { event: "Quidditch Match (1993)", desc: "Defeats Gryffindor in Quidditch but offers a rematch after Harry faints." },
+            { event: "Quidditch Match (1993)", desc: "Defeats Gryffindor but offers a rematch after Harry faints." },
             { event: "Triwizard Champion (1994)", desc: "Selected as Hogwarts Champion and competes with fairness." },
             { event: "Death in the Graveyard (1995)", desc: "Murdered by Pettigrew on Voldemort's orders: 'Kill the spare.'" },
         ],
         artefacts: ["Triwizard Cup (portkey)", "Hufflepuff champion badge"],
         relationships: [
-            { role: "Co-Champion", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Father", name: "Amos Diggory", img: "https://ik.imagekit.io/hpapi/cedric.jpg" },
-            { role: "Girlfriend", name: "Cho Chang", img: "https://ik.imagekit.io/hpapi/cho.jpg" },
+            { role: "Co-Champion", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Girlfriend", name: "Cho Chang", img: HP("cho-chang") },
+            { role: "Mentor", name: "Albus Dumbledore", img: dumbledore },
+            { role: "Teacher", name: "Pomona Sprout", img: HP("pomona-sprout") },
         ],
     },
 
     "Fred Weasley": {
         quote: '"Honestly woman, you call yourself our mother?"',
-        biography: `Frederick Weasley was one half of the legendary Weasley twins, inseparable from his brother George. Together they were Hogwarts' most celebrated pranksters, responsible for countless magical jokes and legendary chaos.\n\nFred and George founded Weasleys' Wizard Wheezes, a wildly successful joke shop in Diagon Alley. Fred's death in the Battle of Hogwarts during an explosion caused one of the saga's most devastating emotional moments.`,
+        biography: `Frederick Weasley was one half of the legendary Weasley twins, inseparable from his brother George. Together they were Hogwarts' most celebrated pranksters and co-founders of Weasleys' Wizard Wheezes.\n\nFred's death in the Battle of Hogwarts during an explosion caused one of the saga's most devastating emotional moments. His legacy lives on through George and the joke shop they built together.`,
         wand: "Unknown wood and core",
-        patronus: "Unknown (presumed magpie)",
+        patronus: "Unknown",
         boggart: "Unknown",
         spells: [
             { name: "Extendable Ears", icon: "hearing", desc: "Invented magical listening devices to eavesdrop on conversations." },
@@ -445,24 +447,24 @@ const charactersData = {
         ],
         artefacts: ["Weasleys' Wizard Wheezes products", "Extendable Ears", "Portable Swamp"],
         relationships: [
-            { role: "Twin", name: "George Weasley", img: "https://ik.imagekit.io/hpapi/george.jpg" },
-            { role: "Brother", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
+            { role: "Twin", name: "George Weasley", img: HP("george-weasley") },
+            { role: "Brother", name: "Ron Weasley", img: HP("ron-weasley") },
             { role: "Mother", name: "Molly Weasley", img: molly },
-            { role: "Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
+            { role: "Friend", name: "Harry Potter", img: HP("harry-potter") },
         ],
     },
 
     "George Weasley": {
         quote: '"You are the better-looking one."',
-        biography: `George Weasley was one half of the iconic Weasley twins. Inseparable from his twin Fred, George was known for his humor, inventiveness, and entrepreneurial spirit. Together they co-founded Weasleys' Wizard Wheezes.\n\nAfter Fred's death in the Battle of Hogwarts, George struggled deeply but ultimately continued their joke shop legacy, naming his first son Fred in his brother's honor. His ability to find laughter even in darkness was his greatest magic.`,
+        biography: `George Weasley was one half of the iconic Weasley twins. Inseparable from his twin Fred, George was known for his humor, inventiveness, and entrepreneurial spirit. Together they co-founded Weasleys' Wizard Wheezes.\n\nAfter Fred's death in the Battle of Hogwarts, George struggled deeply but ultimately continued their joke shop legacy, naming his first son Fred in his brother's honor.`,
         wand: "Unknown wood and core",
-        patronus: "Unknown (presumed magpie)",
+        patronus: "Unknown",
         boggart: "Unknown",
         spells: [
             { name: "Extendable Ears", icon: "hearing", desc: "Co-invented magical listening devices with Fred." },
             { name: "Portable Swamp", icon: "water", desc: "Co-created a swamp in Hogwarts to defy Umbridge." },
             { name: "Decoy Detonators", icon: "device_unknown", desc: "Invented small devices that create diversions." },
-            { name: "Peruvian Instant Darkness Powder", icon: "dark_mode", desc: "Creates impenetrable darkness for quick escapes." },
+            { name: "Peruvian Darkness Powder", icon: "dark_mode", desc: "Creates impenetrable darkness for quick escapes." },
         ],
         timeline: [
             { event: "Hogwarts Pranksters", desc: "Becomes legendary alongside Fred for magical mischief." },
@@ -471,16 +473,16 @@ const charactersData = {
         ],
         artefacts: ["Weasleys' Wizard Wheezes products", "Extendable Ears"],
         relationships: [
-            { role: "Twin", name: "Fred Weasley", img: "https://ik.imagekit.io/hpapi/fred.jpg" },
-            { role: "Brother", name: "Ron Weasley", img: "https://ik.imagekit.io/hpapi/ron.jpg" },
-            { role: "Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
+            { role: "Twin", name: "Fred Weasley", img: HP("fred-weasley") },
+            { role: "Brother", name: "Ron Weasley", img: HP("ron-weasley") },
+            { role: "Friend", name: "Harry Potter", img: HP("harry-potter") },
             { role: "Mother", name: "Molly Weasley", img: molly },
         ],
     },
 
     "Dobby": {
         quote: '"Dobby has no master. Dobby is a free elf!"',
-        biography: `Dobby was a house-elf who served the Malfoy family until Harry Potter tricked Lucius Malfoy into freeing him by presenting him with a sock. Despite a rocky first meeting where Dobby tried to prevent Harry from returning to Hogwarts, he became one of Harry's most devoted friends.\n\nHis fierce loyalty, bravery, and love of freedom made him extraordinary among house-elves. He died heroically saving Harry and his friends from Malfoy Manor, and was buried by Harry with full honors.`,
+        biography: `Dobby was a house-elf who served the Malfoy family until Harry Potter tricked Lucius Malfoy into freeing him. Despite a rocky first meeting, he became one of Harry's most devoted friends.\n\nHis fierce loyalty, bravery, and love of freedom made him extraordinary among house-elves. He died heroically saving Harry and his friends from Malfoy Manor, and was buried by Harry with full honors.`,
         wand: "None",
         patronus: "None",
         boggart: "Unknown",
@@ -497,9 +499,372 @@ const charactersData = {
         ],
         artefacts: ["Mismatched socks (symbol of freedom)", "Harry's old socks"],
         relationships: [
-            { role: "Best Friend", name: "Harry Potter", img: "https://ik.imagekit.io/hpapi/harry.jpg" },
-            { role: "Former Master", name: "Lucius Malfoy", img: "https://ik.imagekit.io/hpapi/lucius.jpg" },
+            { role: "Best Friend", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Former Master", name: "Lucius Malfoy", img: HP("lucius-malfoy") },
             { role: "Friend", name: "Hermione Granger", img: hermione },
+            { role: "Friend", name: "Ron Weasley", img: HP("ron-weasley") },
+        ],
+    },
+
+    "Nymphadora Tonks": {
+        quote: '"I\'m a Metamorphmagus. I can change my appearance at will."',
+        biography: `Nymphadora Tonks, who preferred to be called simply "Tonks", was a Metamorphmagus Auror and member of the Order of the Phoenix. Daughter of Ted and Andromeda Tonks, she was trained by Mad-Eye Moody.\n\nTonks fell in love with Remus Lupin despite his reservations about their age gap and his lycanthropy. She died alongside him in the Battle of Hogwarts, leaving behind their infant son Teddy.`,
+        wand: "Unknown wood and core",
+        patronus: "Wolf (changed from rabbit after falling in love with Lupin)",
+        boggart: "Voldemort's masked face",
+        spells: [
+            { name: "Metamorphmagus", icon: "face", desc: "Can change her appearance at will without a wand." },
+            { name: "Stupefy", icon: "flash_on", desc: "Stunning spell used as an Auror in the field." },
+            { name: "Expelliarmus", icon: "auto_fix_high", desc: "Disarming Charm used in Order of the Phoenix missions." },
+            { name: "Protego", icon: "shield", desc: "Shield Charm used defensively in battles." },
+        ],
+        timeline: [
+            { event: "Joins the Order (1995)", desc: "Becomes an active member of the Order of the Phoenix." },
+            { event: "Marries Lupin (1997)", desc: "Marries Remus Lupin and gives birth to son Teddy." },
+            { event: "Battle of Hogwarts (1998)", desc: "Dies fighting alongside Remus Lupin." },
+        ],
+        artefacts: ["Auror badge", "Order of the Phoenix membership"],
+        relationships: [
+            { role: "Husband", name: "Remus Lupin", img: HP("remus-lupin") },
+            { role: "Friend", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Mentor", name: "Mad-Eye Moody", img: HP("mad-eye-moody") },
+            { role: "Mother", name: "Andromeda Tonks", img: HP("nymphadora-tonks") },
+        ],
+    },
+
+    "Arthur Weasley": {
+        quote: '"Never trust anything that can think for itself if you can\'t see where it keeps its brain."',
+        biography: `Arthur Weasley was the patriarch of the Weasley family and a Ministry of Magic employee in the Misuse of Muggle Artefacts Office. His boundless enthusiasm for all things Muggle, despite being a wizard, was a defining characteristic.\n\nArthur was a gentle but brave man who fought in both Wizarding Wars as a member of the Order of the Phoenix. His love for his family and his irrepressible good nature made him one of the most beloved characters in the saga.`,
+        wand: "Unknown wood and core",
+        patronus: "Weasel",
+        boggart: "Unknown",
+        spells: [
+            { name: "Reparo", icon: "build", desc: "The Mending Charm, used to fix broken objects." },
+            { name: "Stupefy", icon: "flash_on", desc: "Stunning spell used as a member of the Order of the Phoenix." },
+            { name: "Muggle Enchantments", icon: "auto_fix_high", desc: "Skilled at enchanting Muggle objects, though often illegally." },
+            { name: "Expelliarmus", icon: "auto_fix_high", desc: "Disarming Charm used in Order missions." },
+        ],
+        timeline: [
+            { event: "Marries Molly (1970s)", desc: "Marries Molly Prewett and raises seven children." },
+            { event: "Attacked by Nagini (1995)", desc: "Nearly killed by Voldemort's snake while guarding the Prophecy." },
+            { event: "Battle of Hogwarts (1998)", desc: "Fights alongside his family in the final battle." },
+        ],
+        artefacts: ["Flying Ford Anglia (enchanted)", "Collection of Muggle items"],
+        relationships: [
+            { role: "Wife", name: "Molly Weasley", img: molly },
+            { role: "Son", name: "Ron Weasley", img: HP("ron-weasley") },
+            { role: "Friend", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Daughter", name: "Ginny Weasley", img: HP("ginny-weasley") },
+        ],
+    },
+
+    "Molly Weasley": {
+        quote: '"Not my daughter, you bitch!"',
+        biography: `Molly Weasley (née Prewett) was the matriarch of the Weasley family and one of the most formidable witches in the Order of the Phoenix. She raised seven children with warmth, fierce love, and an iron will.\n\nDespite appearing to be simply a housewife, Molly proved herself an extraordinarily powerful duelist when she defeated Bellatrix Lestrange in the Battle of Hogwarts to protect her daughter Ginny.`,
+        wand: "Unknown wood and core",
+        patronus: "Unknown",
+        boggart: "The dead bodies of her family members",
+        spells: [
+            { name: "Bat-Bogey Hex", icon: "pest_control", desc: "A powerful hex that passed down to daughter Ginny." },
+            { name: "Avada Kedavra (defence)", icon: "shield", desc: "Defeated Bellatrix Lestrange in single combat." },
+            { name: "Healing Spells", icon: "medical_services", desc: "Expert at healing magic for her large family." },
+            { name: "Household Charms", icon: "home", desc: "Masterful at domestic magic — dishes wash themselves." },
+        ],
+        timeline: [
+            { event: "Marries Arthur (1970s)", desc: "Marries Arthur Weasley and raises seven children." },
+            { event: "Loses Fred (1998)", desc: "Suffers the devastating loss of her son Fred in the Battle of Hogwarts." },
+            { event: "Defeats Bellatrix (1998)", desc: "Kills Bellatrix Lestrange to protect her daughter Ginny." },
+        ],
+        artefacts: ["Weasley family clock (shows family members' whereabouts)"],
+        relationships: [
+            { role: "Husband", name: "Arthur Weasley", img: HP("arthur-weasley") },
+            { role: "Son", name: "Ron Weasley", img: HP("ron-weasley") },
+            { role: "Daughter", name: "Ginny Weasley", img: HP("ginny-weasley") },
+            { role: "Like a Son", name: "Harry Potter", img: HP("harry-potter") },
+        ],
+    },
+
+    "Lucius Malfoy": {
+        quote: '"The Dark Lord will rise again, Crabbe. Wormtail has made his intentions clear."',
+        biography: `Lucius Malfoy was one of Voldemort's most prominent Death Eaters and patriarch of the Malfoy family. A pure-blood supremacist and governor of Hogwarts Board of Directors, he wielded enormous influence in the Ministry of Magic through bribery and connections.\n\nAfter Voldemort's return, Lucius served as a Death Eater until his imprisonment following the Battle of the Department of Mysteries. His growing disillusionment with Voldemort was driven by concern for his son Draco.`,
+        wand: "Elm, Dragon heartstring, 18 inches",
+        patronus: "Unknown",
+        boggart: "Lord Voldemort (disappointed in him)",
+        spells: [
+            { name: "Crucio", icon: "crisis_alert", desc: "Unforgivable Curse used as a Death Eater." },
+            { name: "Imperius", icon: "psychology", desc: "Claimed to be under the Imperius Curse after Voldemort's first fall." },
+            { name: "Expelliarmus", icon: "auto_fix_high", desc: "Skilled duelist and practitioner of dark magic." },
+            { name: "Dark Arts", icon: "warning", desc: "Deeply knowledgeable in the Dark Arts from years as a Death Eater." },
+        ],
+        timeline: [
+            { event: "Joins Death Eaters (1970s)", desc: "Becomes one of Voldemort's most loyal followers." },
+            { event: "Planted Diary (1992)", desc: "Gives Tom Riddle's diary to Ginny Weasley at Flourish and Blotts." },
+            { event: "Imprisoned (1996)", desc: "Sent to Azkaban after the Battle of the Department of Mysteries." },
+        ],
+        artefacts: ["Snake-headed walking stick (conceals wand)", "Tom Riddle's Diary (planted on Ginny)"],
+        relationships: [
+            { role: "Son", name: "Draco Malfoy", img: HP("draco-malfoy") },
+            { role: "Wife", name: "Narcissa Malfoy", img: narcissa },
+            { role: "Master", name: "Lord Voldemort", img: HP("lord-voldemort") },
+            { role: "Rival", name: "Arthur Weasley", img: HP("arthur-weasley") },
+        ],
+    },
+
+    "Narcissa Malfoy": {
+        quote: '"Is Draco alive? Is he in the castle?"',
+        biography: `Narcissa Malfoy (née Black) was the wife of Lucius Malfoy and mother of Draco. Though a pure-blood supremacist by upbringing, her primary motivation was always the safety of her son.\n\nIn her most pivotal moment, Narcissa lied to Voldemort about Harry Potter being dead in the Forbidden Forest — an act of maternal love that proved decisive in Voldemort's ultimate defeat.`,
+        wand: "Unknown wood and core",
+        patronus: "Unknown",
+        boggart: "Unknown",
+        spells: [
+            { name: "Occlumency", icon: "lock", desc: "Skilled at concealing her thoughts — lied to Voldemort successfully." },
+            { name: "Dark Arts", icon: "warning", desc: "Knowledgeable in dark magic from her Black family upbringing." },
+            { name: "Protego", icon: "shield", desc: "Defensive magic used to protect her family." },
+            { name: "Healing Magic", icon: "medical_services", desc: "Used healing magic to tend to Draco's injuries." },
+        ],
+        timeline: [
+            { event: "Marries Lucius (1970s)", desc: "Marries into the Malfoy family and becomes a pure-blood socialite." },
+            { event: "Unbreakable Vow (1996)", desc: "Forces Snape to make an Unbreakable Vow to protect Draco." },
+            { event: "Saves Harry (1998)", desc: "Lies to Voldemort that Harry is dead, saving his life." },
+        ],
+        artefacts: ["Black family heirlooms", "Unbreakable Vow (with Snape)"],
+        relationships: [
+            { role: "Son", name: "Draco Malfoy", img: HP("draco-malfoy") },
+            { role: "Husband", name: "Lucius Malfoy", img: HP("lucius-malfoy") },
+            { role: "Sister", name: "Bellatrix Lestrange", img: HP("bellatrix-lestrange") },
+            { role: "Ally", name: "Severus Snape", img: HP("severus-snape") },
+        ],
+    },
+
+    "Peter Pettigrew": {
+        quote: '"He\'s back, Harry! He\'s back! Voldemort!"',
+        biography: `Peter Pettigrew, known as Wormtail, was one of the Marauders and a secret Death Eater. He betrayed James and Lily Potter to Voldemort, framed Sirius Black for the crime, faked his own death, and lived as Ron Weasley's rat Scabbers for twelve years.\n\nPettigrew played a crucial role in Voldemort's return, cutting off his own hand to restore his master's body. His silver hand, given by Voldemort, ultimately strangled him when he hesitated to kill Harry Potter.`,
+        wand: "Chestnut, Dragon heartstring, 9¼ inches",
+        patronus: "Unknown",
+        boggart: "Voldemort",
+        spells: [
+            { name: "Animagus Transformation", icon: "pets", desc: "Can transform into a rat — lived as Scabbers for 12 years." },
+            { name: "Fidelius Charm", icon: "lock", desc: "Was Secret-Keeper for the Potters — and betrayed them." },
+            { name: "Avada Kedavra", icon: "warning", desc: "Murdered twelve Muggles with a single curse." },
+            { name: "Dark Arts", icon: "warning", desc: "Served Voldemort loyally with dark magic." },
+        ],
+        timeline: [
+            { event: "Betrays the Potters (1981)", desc: "Reveals the Potters' location to Voldemort, causing their deaths." },
+            { event: "Lives as Scabbers (1981-1994)", desc: "Hides as Ron Weasley's rat for twelve years." },
+            { event: "Death (1998)", desc: "Strangled by his own silver hand when he hesitates to kill Harry." },
+        ],
+        artefacts: ["Silver hand (given by Voldemort)", "Scabbers disguise"],
+        relationships: [
+            { role: "Former Friend", name: "Sirius Black", img: sirius },
+            { role: "Former Friend", name: "Remus Lupin", img: HP("remus-lupin") },
+            { role: "Master", name: "Lord Voldemort", img: HP("lord-voldemort") },
+            { role: "Victim", name: "Harry Potter", img: HP("harry-potter") },
+        ],
+    },
+
+    "James Potter": {
+        quote: '"Take Harry and run. I\'ll hold him off."',
+        biography: `James Potter was a pure-blood wizard and one of the most talented students in his Hogwarts generation. He was a natural leader, Quidditch star, and co-creator of the Marauder's Map. His early arrogance mellowed considerably through his relationship with Lily Evans.\n\nJames sacrificed himself without a wand when Voldemort came for his family, buying precious seconds for Lily to protect baby Harry with her love.`,
+        wand: "Mahogany, 11 inches (pliable)",
+        patronus: "Stag",
+        boggart: "Unknown",
+        spells: [
+            { name: "Animagus Transformation", icon: "pets", desc: "Could transform into a stag — known as Prongs." },
+            { name: "Expelliarmus", icon: "auto_fix_high", desc: "Skilled duellist and Defence Against the Dark Arts practitioner." },
+            { name: "Marauder's Map", icon: "map", desc: "Co-creator of the magical map of Hogwarts." },
+            { name: "Quidditch", icon: "sports", desc: "Exceptional Quidditch player — Gryffindor Chaser and Seeker." },
+        ],
+        timeline: [
+            { event: "Hogwarts Years (1971-1978)", desc: "Becomes Head Boy, falls in love with Lily Evans." },
+            { event: "Joins the Order (1978)", desc: "Fights Voldemort as a member of the Order of the Phoenix." },
+            { event: "Death (1981)", desc: "Sacrifices himself to protect Lily and Harry from Voldemort." },
+        ],
+        artefacts: ["Invisibility Cloak (passed to Harry)", "Marauder's Map (co-creator)"],
+        relationships: [
+            { role: "Wife", name: "Lily Potter", img: lily },
+            { role: "Son", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Best Friend", name: "Sirius Black", img: sirius },
+            { role: "Friend", name: "Remus Lupin", img: HP("remus-lupin") },
+        ],
+    },
+
+    "Lily Potter": {
+        quote: '"Not Harry, please no, take me, kill me instead!"',
+        biography: `Lily Potter (née Evans) was a Muggle-born witch and one of the most gifted students of her generation at Hogwarts. Her friendship with Severus Snape began in childhood but was destroyed by his association with Dark Magic.\n\nLily's sacrifice when she chose to die rather than step aside from her infant son Harry created a powerful protective magic. Her love proved the ultimate counter to Voldemort's killing curse.`,
+        wand: "Willow, 10¼ inches (swishy)",
+        patronus: "Doe",
+        boggart: "Unknown",
+        spells: [
+            { name: "Ancient Magic", icon: "auto_awesome", desc: "Her sacrificial death created ancient protective magic for Harry." },
+            { name: "Charms", icon: "star", desc: "Exceptionally talented at Charms — praised by Professor Slughorn." },
+            { name: "Potions", icon: "science", desc: "A natural at Potions — befriended by Slughorn for her talent." },
+            { name: "Love Magic", icon: "favorite", desc: "Her love for Harry became the most powerful magic of all." },
+        ],
+        timeline: [
+            { event: "Hogwarts Years (1971-1978)", desc: "Becomes Head Girl, breaks friendship with Snape, falls for James." },
+            { event: "Joins the Order (1978)", desc: "Fights Voldemort three times as a member of the Order." },
+            { event: "Death (1981)", desc: "Sacrifices herself for Harry, creating powerful protective magic." },
+        ],
+        artefacts: ["Letter to Sirius (found by Harry)", "Old photographs"],
+        relationships: [
+            { role: "Husband", name: "James Potter", img: HP("james-potter") },
+            { role: "Son", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Childhood Friend", name: "Severus Snape", img: HP("severus-snape") },
+            { role: "Best Friend", name: "Sirius Black", img: sirius },
+        ],
+    },
+
+    "Dolores Umbridge": {
+        quote: '"I must not tell lies."',
+        biography: `Dolores Jane Umbridge was Senior Undersecretary to the Minister for Magic and later High Inquisitor and Headmistress of Hogwarts. She represented everything corrupt about bureaucratic power — a smiling sadist who used authority to torture and control.\n\nUmbridge used a blood quill to force students to write lines that cut into their skin. She was ultimately dragged away by centaurs in the Forbidden Forest and left traumatised.`,
+        wand: "Birch, Dragon heartstring, 8 inches (inflexible)",
+        patronus: "Persian cat",
+        boggart: "Unknown",
+        spells: [
+            { name: "Cruciatus", icon: "crisis_alert", desc: "Used the Cruciatus Curse illegally on students during interrogation." },
+            { name: "Incarcerous", icon: "link", desc: "Binds targets with ropes — used against students and centaurs." },
+            { name: "Blood Quill", icon: "edit", desc: "A dark instrument that carves words into flesh." },
+            { name: "Protego", icon: "shield", desc: "Skilled defensive magic — cast a Patronus against Dementors." },
+        ],
+        timeline: [
+            { event: "Defence Teacher (1995)", desc: "Appointed by the Ministry to control Hogwarts curriculum." },
+            { event: "High Inquisitor", desc: "Takes over Hogwarts and terrorises students and staff." },
+            { event: "Centaur Attack (1996)", desc: "Dragged into the Forbidden Forest by centaurs after Harry tricks her." },
+        ],
+        artefacts: ["Blood Quill", "Ministry of Magic decrees", "Pink cardigan collection"],
+        relationships: [
+            { role: "Enemy", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Enemy", name: "Albus Dumbledore", img: dumbledore },
+            { role: "Enemy", name: "Hermione Granger", img: hermione },
+            { role: "Superior", name: "Cornelius Fudge", img: HP("cornelius-fudge") },
+        ],
+    },
+
+    "Cho Chang": {
+        quote: '"Cedric talked about you all the time. He said you were a really good Quidditch player."',
+        biography: `Cho Chang was a Ravenclaw student and talented Quidditch Seeker, one year above Harry Potter. She was Cedric Diggory's girlfriend and was deeply traumatised by his death.\n\nCho briefly dated Harry in their fifth year, but their relationship was strained by grief, jealousy, and the pressures of Dolores Umbridge's reign. She later joined Dumbledore's Army and fought in the Battle of Hogwarts.`,
+        wand: "Unknown wood and core",
+        patronus: "Swan",
+        boggart: "Unknown",
+        spells: [
+            { name: "Expelliarmus", icon: "auto_fix_high", desc: "Disarming Charm practiced in Dumbledore's Army sessions." },
+            { name: "Stupefy", icon: "flash_on", desc: "Stunning Spell learned through DA training." },
+            { name: "Quidditch", icon: "sports", desc: "Exceptional Seeker — caught the Snitch against Harry multiple times." },
+            { name: "Protego", icon: "shield", desc: "Shield Charm mastered through DA training under Harry." },
+        ],
+        timeline: [
+            { event: "Triwizard Tournament (1994)", desc: "Dates Cedric Diggory during his time as Hogwarts Champion." },
+            { event: "Cedric's Death (1995)", desc: "Devastated by Cedric's death; briefly dates Harry Potter." },
+            { event: "Battle of Hogwarts (1998)", desc: "Returns to fight alongside Dumbledore's Army." },
+        ],
+        artefacts: ["Quidditch broomstick", "Dumbledore's Army coin"],
+        relationships: [
+            { role: "Boyfriend (deceased)", name: "Cedric Diggory", img: HP("cedric-diggory") },
+            { role: "Brief Romance", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Friend", name: "Luna Lovegood", img: HP("luna-lovegood") },
+        ],
+    },
+
+    "Viktor Krum": {
+        quote: '"Herm-own-ninny."',
+        biography: `Viktor Krum was a famous Bulgarian Seeker who played for the Bulgarian National Quidditch team at age eighteen. He attended Durmstrang Institute and participated in the Triwizard Tournament at Hogwarts.\n\nKrum developed feelings for Hermione Granger during the tournament and invited her to the Yule Ball. Despite his intimidating appearance and international fame, he proved to be thoughtful and kind.`,
+        wand: "Unknown wood and core",
+        patronus: "Unknown",
+        boggart: "Unknown",
+        spells: [
+            { name: "Conjunctivitis Curse", icon: "visibility_off", desc: "Used against the dragon in the Triwizard first task." },
+            { name: "Cruciatus (Imperius)", icon: "crisis_alert", desc: "Placed under the Imperius Curse in the maze task." },
+            { name: "Quidditch Mastery", icon: "sports", desc: "One of the greatest Seekers of his generation." },
+            { name: "Dark Arts", icon: "warning", desc: "Trained at Durmstrang, which openly teaches Dark Arts." },
+        ],
+        timeline: [
+            { event: "Quidditch World Cup (1994)", desc: "Plays for Bulgaria in the Quidditch World Cup final." },
+            { event: "Triwizard Tournament (1994)", desc: "Competes as Durmstrang's Champion in the tournament." },
+            { event: "Bill's Wedding (1997)", desc: "Attends Bill and Fleur's wedding and warns about Xenophilius." },
+        ],
+        artefacts: ["Durmstrang ship", "Triwizard Cup"],
+        relationships: [
+            { role: "Admiration", name: "Hermione Granger", img: hermione },
+            { role: "Rival", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Headmaster", name: "Igor Karkaroff", img: HP("igor-karkaroff") },
+        ],
+    },
+
+    "Fleur Delacour": {
+        quote: '"Bill is not perfectlee \'andsome anymore, but I do not care."',
+        biography: `Fleur Isabelle Delacour was a part-Veela witch from France who attended Beauxbatons Academy of Magic. She represented her school in the Triwizard Tournament and later worked at Gringotts where she met Bill Weasley.\n\nFleur's devotion to Bill, even after he was attacked by Fenrir Greyback, demonstrated a depth of character beyond her beautiful exterior. She and Bill provided shelter to Harry and his friends at Shell Cottage.`,
+        wand: "Rosewood, Veela hair, 9½ inches (inflexible)",
+        patronus: "Unknown",
+        boggart: "Unknown",
+        spells: [
+            { name: "Partial Firebreath", icon: "local_fire_department", desc: "Used fire in the Triwizard lake task." },
+            { name: "Glacius", icon: "ac_unit", desc: "Freezing charm used in the Triwizard Tournament tasks." },
+            { name: "Veela Charm", icon: "star", desc: "Natural magical allure from her Veela heritage." },
+            { name: "Healing Magic", icon: "medical_services", desc: "Cared for Bill after his werewolf attack." },
+        ],
+        timeline: [
+            { event: "Triwizard Tournament (1994)", desc: "Competes as Beauxbatons Champion, befriends the Weasleys." },
+            { event: "Marries Bill (1997)", desc: "Marries Bill Weasley at the Burrow before Voldemort's takeover." },
+            { event: "Shell Cottage (1998)", desc: "Shelters Harry, Ron, Hermione, and others at her home." },
+        ],
+        artefacts: ["Shell Cottage", "Triwizard Tournament memorabilia"],
+        relationships: [
+            { role: "Husband", name: "Bill Weasley", img: HP("bill-weasley") },
+            { role: "Friend", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Sister-in-law", name: "Ginny Weasley", img: HP("ginny-weasley") },
+            { role: "Mother-in-law", name: "Molly Weasley", img: molly },
+        ],
+    },
+
+    "Horace Slughorn": {
+        quote: '"I am not proud of it. I am not proud of it."',
+        biography: `Horace Slughorn was the long-serving Potions master at Hogwarts and Head of Slytherin House. He ran an exclusive group called the "Slug Club" composed of students he believed would achieve great things.\n\nSlughorn's pivotal moment came when Dumbledore persuaded him to return to teaching so he could retrieve the memory of his conversation with Tom Riddle about Horcruxes — a memory he had hidden out of shame.`,
+        wand: "Cedar, Dragon heartstring, 10 inches",
+        patronus: "Unknown",
+        boggart: "Voldemort",
+        spells: [
+            { name: "Potion Mastery", icon: "science", desc: "Considered one of the finest Potions masters of his age." },
+            { name: "Memory Modification", icon: "psychology", desc: "Modified his own memory to hide the Horcrux conversation." },
+            { name: "Stupefy", icon: "flash_on", desc: "Capable duelist who fought in the Battle of Hogwarts." },
+            { name: "Protego", icon: "shield", desc: "Defensive magic used in the final battle." },
+        ],
+        timeline: [
+            { event: "First tenure (pre-1981)", desc: "Teaches Potions for many years, mentors Tom Riddle." },
+            { event: "Returns to Hogwarts (1996)", desc: "Persuaded by Dumbledore to come out of retirement." },
+            { event: "Battle of Hogwarts (1998)", desc: "Fights against Death Eaters in the final battle." },
+        ],
+        artefacts: ["Liquid Luck (Felix Felicis)", "Slug Club records", "Memory of Horcrux conversation"],
+        relationships: [
+            { role: "Mentor", name: "Albus Dumbledore", img: dumbledore },
+            { role: "Student", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Student", name: "Hermione Granger", img: hermione },
+            { role: "Former Student", name: "Lord Voldemort", img: HP("lord-voldemort") },
+        ],
+    },
+
+    "Mad-Eye Moody": {
+        quote: '"Constant vigilance!"',
+        biography: `Alastor "Mad-Eye" Moody was the most famous Auror of his generation, responsible for capturing or killing more Dark Wizards than any other in history. His magical eye could see through objects and in all directions.\n\nMoody was captured and imprisoned by Bartemius Crouch Jr. in his own trunk during the Triwizard Tournament. He died in the Battle of the Seven Potters when Lord Voldemort himself intervened.`,
+        wand: "Unknown wood and core",
+        patronus: "Unknown",
+        boggart: "A crystal ball showing him being killed",
+        spells: [
+            { name: "Auror Magic", icon: "shield", desc: "Mastery of both offensive and defensive magic from years as an Auror." },
+            { name: "Magical Eye", icon: "visibility", desc: "His magical eye can see through walls, cloaks, and in all directions." },
+            { name: "Stupefy", icon: "flash_on", desc: "Expert stunning spell caster from decades of Auror work." },
+            { name: "Dark Arts Detection", icon: "warning", desc: "Can detect Dark Magic and concealed threats." },
+        ],
+        timeline: [
+            { event: "Auror Career (pre-1994)", desc: "Decades of capturing Dark Wizards — fills half of Azkaban." },
+            { event: "Triwizard Tournament (1994)", desc: "Impersonated by Barty Crouch Jr. while imprisoned in his own trunk." },
+            { event: "Death (1997)", desc: "Killed by Voldemort during the Battle of the Seven Potters." },
+        ],
+        artefacts: ["Magical eye (enchanted glass eye)", "Magical leg (wooden)", "Hip flask (constant vigilance against poisoning)"],
+        relationships: [
+            { role: "Friend", name: "Albus Dumbledore", img: dumbledore },
+            { role: "Student", name: "Nymphadora Tonks", img: HP("nymphadora-tonks") },
+            { role: "Ally", name: "Harry Potter", img: HP("harry-potter") },
+            { role: "Enemy", name: "Lord Voldemort", img: HP("lord-voldemort") },
         ],
     },
 };
