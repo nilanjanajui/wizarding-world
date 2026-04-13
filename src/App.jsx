@@ -6,6 +6,7 @@ import Characters from "./components/characterdir/Characters";
 import FavCharacters from "./components/characterdir/favcharacters/FavCharacters";
 import CharacterProfile from "./components/characterdir/characterprofile/CharacterProfile";
 import WizardStats from "./components/wizardstas/WizardStats";
+import NotFound from "./components/NotFound";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/characters/:name" element={<CharacterProfile />} />
           <Route path="/favorites" element={<FavCharacters />} />
           <Route path="/stats" element={<WizardStats />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </FavoritesProvider>

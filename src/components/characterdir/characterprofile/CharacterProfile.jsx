@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useFavorites } from "../../../context/FavoritesContext";
 import charactersData, { HOGWARTS_HALL } from "../../../data/charactersData";
 
@@ -11,15 +11,118 @@ export default function CharacterProfile() {
 
   if (!char) {
     return (
-      <div className="min-h-screen bg-background-dark flex items-center justify-center flex-col gap-6">
-        <span className="material-symbols-outlined text-6xl text-primary">error</span>
-        <p className="text-slate-300 text-xl">No character data found.</p>
-        <button
-          onClick={() => navigate("/characters")}
-          className="px-6 py-3 bg-primary text-background-dark rounded-lg font-bold"
-        >
-          Back to Characters
-        </button>
+      <div className="min-h-screen bg-background-dark font-display flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-150 h-150 rounded-full bg-primary/5 blur-3xl" />
+        </div>
+
+        <h1 className="text-[140px] md:text-[200px] font-black text-primary/10 leading-none select-none tracking-tighter">
+          404
+        </h1>
+
+        <div className="relative -mt-14 mb-6 w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center">
+          <span className="material-symbols-outlined text-primary text-5xl">
+            person_off
+          </span>
+        </div>
+
+        <h2 className="text-3xl md:text-5xl font-bold text-primary italic mb-4">
+          Wizard Not Found
+        </h2>
+        <p className="text-slate-400 text-lg max-w-md mb-2">
+          This character seems to have vanished — perhaps they used a Disillusionment Charm.
+        </p>
+        <p className="text-slate-600 text-sm italic mb-10">
+          "It does not do to dwell on dreams and forget to live." — Albus Dumbledore
+        </p>
+
+        <div className="flex flex-wrap gap-4 justify-center">
+          <Link
+            to="/"
+            className="flex items-center gap-2 px-8 py-3 bg-primary text-background-dark rounded-full font-bold text-sm uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-primary/20"
+          >
+            <span className="material-symbols-outlined text-sm">home</span>
+            Back to Home
+          </Link>
+          <Link
+            to="/characters"
+            className="flex items-center gap-2 px-8 py-3 border-2 border-primary text-primary rounded-full font-bold text-sm uppercase tracking-widest hover:bg-primary/10 transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">groups</span>
+            All Characters
+          </Link>
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 px-8 py-3 border border-primary/30 text-slate-400 rounded-full font-bold text-sm uppercase tracking-widest hover:text-primary hover:border-primary transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">arrow_back</span>
+            Go Back
+          </button>
+        </div>
+
+        <p className="mt-16 text-slate-700 text-xs uppercase tracking-widest">
+          Wizarding World Explorer • Mischief Managed
+        </p>
+      </div>
+    );
+  }
+
+  // Show 404 if character has no useful data at all
+  const hasUsefulData = char.name && (char.image || char.house || char.actor || char.alive !== undefined);
+  if (!hasUsefulData) {
+    return (
+      <div className="min-h-screen bg-background-dark font-display flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-150 h-150 rounded-full bg-primary/5 blur-3xl" />
+        </div>
+
+        <h1 className="text-[140px] md:text-[200px] font-black text-primary/10 leading-none select-none tracking-tighter">
+          404
+        </h1>
+
+        <div className="relative -mt-14 mb-6 w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center">
+          <span className="material-symbols-outlined text-primary text-5xl">
+            person_off
+          </span>
+        </div>
+
+        <h2 className="text-3xl md:text-5xl font-bold text-primary italic mb-4">
+          No Profile Available
+        </h2>
+        <p className="text-slate-400 text-lg max-w-md mb-2">
+          This character's records are sealed in the Restricted Section. No profile data is available.
+        </p>
+        <p className="text-slate-600 text-sm italic mb-10">
+          "Curiosity is not a sin, but you should exercise caution." — Albus Dumbledore
+        </p>
+
+        <div className="flex flex-wrap gap-4 justify-center">
+          <Link
+            to="/"
+            className="flex items-center gap-2 px-8 py-3 bg-primary text-background-dark rounded-full font-bold text-sm uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-primary/20"
+          >
+            <span className="material-symbols-outlined text-sm">home</span>
+            Back to Home
+          </Link>
+          <Link
+            to="/characters"
+            className="flex items-center gap-2 px-8 py-3 border-2 border-primary text-primary rounded-full font-bold text-sm uppercase tracking-widest hover:bg-primary/10 transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">groups</span>
+            All Characters
+          </Link>
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 px-8 py-3 border border-primary/30 text-slate-400 rounded-full font-bold text-sm uppercase tracking-widest hover:text-primary hover:border-primary transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">arrow_back</span>
+            Go Back
+          </button>
+        </div>
+
+        <p className="mt-16 text-slate-700 text-xs uppercase tracking-widest">
+          Wizarding World Explorer • Mischief Managed
+        </p>
       </div>
     );
   }
@@ -29,12 +132,10 @@ export default function CharacterProfile() {
 
   const biography =
     data.biography ||
-    `${char.name} is a notable figure in the Wizarding World.${
-      char.house ? ` A proud member of ${char.house}.` : ""
-    }${
-      char.actor && char.actor !== "Unknown"
-        ? ` Portrayed by ${char.actor}.`
-        : ""
+    `${char.name} is a notable figure in the Wizarding World.${char.house ? ` A proud member of ${char.house}.` : ""
+    }${char.actor && char.actor !== "Unknown"
+      ? ` Portrayed by ${char.actor}.`
+      : ""
     }`;
 
   const spells = data.spells || [];
@@ -71,11 +172,10 @@ export default function CharacterProfile() {
           </h2>
           <button
             onClick={() => toggleFavorite(char)}
-            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all ${
-              fav
+            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all ${fav
                 ? "bg-primary text-background-dark border-primary"
                 : "bg-primary/10 border-primary/30 text-primary hover:bg-primary hover:text-background-dark"
-            }`}
+              }`}
           >
             <span
               className={`material-symbols-outlined ${fav ? "filled-icon" : ""}`}
@@ -111,9 +211,8 @@ export default function CharacterProfile() {
                   />
                 ) : null}
                 <div
-                  className={`w-full h-full items-center justify-center text-primary ${
-                    char.image ? "hidden" : "flex"
-                  }`}
+                  className={`w-full h-full items-center justify-center text-primary ${char.image ? "hidden" : "flex"
+                    }`}
                 >
                   <span className="material-symbols-outlined text-6xl opacity-30">
                     person
@@ -279,13 +378,12 @@ export default function CharacterProfile() {
                         {label}
                       </span>
                       <span
-                        className={`font-medium text-sm text-right ${
-                          gold
+                        className={`font-medium text-sm text-right ${gold
                             ? "text-[#e3a000] font-bold"
                             : italic
-                            ? "text-slate-100 italic"
-                            : "text-slate-100"
-                        }`}
+                              ? "text-slate-100 italic"
+                              : "text-slate-100"
+                          }`}
                       >
                         {value}
                       </span>
@@ -360,16 +458,14 @@ export default function CharacterProfile() {
                   Status
                 </h3>
                 <div
-                  className={`flex items-center gap-3 px-4 py-3 rounded-full ${
-                    char.alive
+                  className={`flex items-center gap-3 px-4 py-3 rounded-full ${char.alive
                       ? "bg-green-500/10 text-green-400 border border-green-500/20"
                       : "bg-slate-700/40 text-slate-400 border border-slate-600/20"
-                  }`}
+                    }`}
                 >
                   <span
-                    className={`w-3 h-3 rounded-full shrink-0 ${
-                      char.alive ? "bg-green-400" : "bg-slate-400"
-                    }`}
+                    className={`w-3 h-3 rounded-full shrink-0 ${char.alive ? "bg-green-400" : "bg-slate-400"
+                      }`}
                   />
                   <span className="font-bold">
                     {char.alive ? "Alive" : "Deceased"}
