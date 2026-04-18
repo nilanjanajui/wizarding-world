@@ -138,7 +138,7 @@ export default function Home() {
 
         {/* Featured Movies */}
         <section className="px-6 md:px-20 py-12">
-          <div className="flex items-center justify-between mb-8 border-l-4 border-secondary pl-4">
+          <div className="flex items-center justify-between mb-12 border-l-4 border-secondary pl-4">
             <h2 className="text-slate-100 text-3xl font-bold tracking-tight">
               Featured Movies
             </h2>
@@ -150,36 +150,93 @@ export default function Home() {
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+
+          {/* Fan Card Layout */}
+          <div className="flex items-end justify-center relative h-96 mb-8">
             {featuredMovies.length > 0
-              ? featuredMovies.map(({ num, title, img }) => (
+              ? featuredMovies.map(({ num, title, img }, idx) => {
+                // Fan rotation angles: -30, -10, 10, 30
+                const rotations = [-30, -10, 10, 30];
+                const translateY = [30, 10, 10, 30];
+                const rotation = rotations[idx] ?? 0;
+                const ty = translateY[idx] ?? 0;
+
+                return (
                   <Link
                     to="/movies"
                     key={num}
-                    className="group relative overflow-hidden rounded-xl aspect-2/3 border border-primary/10"
+                    className="group absolute"
+                    style={{
+                      transform: `rotate(${rotation}deg) translateY(${ty}px)`,
+                      transformOrigin: "bottom center",
+                      zIndex: idx === 1 || idx === 2 ? 10 : 5,
+                      left: `calc(50% - 280px + ${idx * 140}px)`,
+                      transition: "transform 0.3s ease, z-index 0.3s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = `rotate(${rotation}deg) translateY(-20px) scale(1.05)`;
+                      e.currentTarget.style.zIndex = "20";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = `rotate(${rotation}deg) translateY(${ty}px)`;
+                      e.currentTarget.style.zIndex = idx === 1 || idx === 2 ? "10" : "5";
+                    }}
                   >
-                    {img ? (
-                      <img
-                        src={img}
-                        alt={title}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                    ) : null}
-                    <div className="absolute inset-0 bg-linear-to-t from-background-dark/90 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 p-4 w-full">
-                      <p className="text-primary text-xs font-bold uppercase tracking-widest mb-1">
-                        Movie {num}
-                      </p>
-                      <p className="text-white text-base font-bold leading-tight">{title}</p>
+                    <div className="relative w-40 h-60 md:w-48 md:h-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/10">
+                      {img ? (
+                        <img
+                          src={img}
+                          alt={title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary">
+                          <span className="material-symbols-outlined text-5xl opacity-30">movie</span>
+                        </div>
+                      )}
+                      {/* Overlay */}
+                      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
+                      <div className="absolute bottom-0 left-0 p-3 w-full">
+                        <p className="text-primary text-[10px] font-bold uppercase tracking-widest mb-0.5">
+                          Movie {num}
+                        </p>
+                        <p className="text-white text-sm font-bold leading-tight">{title}</p>
+                      </div>
                     </div>
                   </Link>
-                ))
-              : [1, 2, 3, 4].map((n) => (
+                );
+              })
+              : // Loading skeletons in fan shape
+              [0, 1, 2, 3].map((idx) => {
+                const rotations = [-30, -10, 10, 30];
+                const translateY = [30, 10, 10, 30];
+                return (
                   <div
-                    key={n}
-                    className="rounded-xl aspect-2/3 border border-primary/10 bg-primary/5 animate-pulse"
+                    key={idx}
+                    className="absolute rounded-2xl bg-primary/5 border border-primary/10 animate-pulse"
+                    style={{
+                      width: "160px",
+                      height: "240px",
+                      transform: `rotate(${rotations[idx]}deg) translateY(${translateY[idx]}px)`,
+                      transformOrigin: "bottom center",
+                      left: `calc(50% - 280px + ${idx * 140}px)`,
+                    }}
                   />
-                ))}
+                );
+              })}
+          </div>
+
+          {/* Movie titles below fan */}
+          <div className="flex justify-center gap-4 flex-wrap mt-4">
+            {featuredMovies.map(({ num, title }) => (
+              <Link
+                key={num}
+                to="/movies"
+                className="text-slate-400 hover:text-primary text-xs font-medium transition-colors uppercase tracking-wider"
+              >
+                {num}. {title}
+              </Link>
+            ))}
           </div>
         </section>
 
@@ -215,54 +272,53 @@ export default function Home() {
           >
             {featuredChars.length > 0
               ? featuredChars.map((char) => (
-                  <Link
-                    to={`/characters/${encodeURIComponent(char.name)}`}
-                    state={{ character: char }}
-                    key={char.name}
-                    className="flex flex-col items-center gap-4 group shrink-0"
-                    style={{ width: "160px" }}
-                  >
-                    <div className="relative w-full aspect-square rounded-full border-2 border-primary/20 p-2 group-hover:border-primary transition-all overflow-hidden bg-background-dark shadow-lg group-hover:shadow-primary/20">
-                      {char.image ? (
-                        <img
-                          src={char.image}
-                          alt={char.name}
-                          className="w-full h-full rounded-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "flex";
-                          }}
-                        />
-                      ) : null}
-                      <div
-                        className={`w-full h-full rounded-full bg-primary/10 items-center justify-center text-primary ${
-                          char.image ? "hidden" : "flex"
+                <Link
+                  to={`/characters/${encodeURIComponent(char.name)}`}
+                  state={{ character: char }}
+                  key={char.name}
+                  className="flex flex-col items-center gap-4 group shrink-0"
+                  style={{ width: "160px" }}
+                >
+                  <div className="relative w-full aspect-square rounded-full border-2 border-primary/20 p-2 group-hover:border-primary transition-all overflow-hidden bg-background-dark shadow-lg group-hover:shadow-primary/20">
+                    {char.image ? (
+                      <img
+                        src={char.image}
+                        alt={char.name}
+                        className="w-full h-full rounded-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          e.target.nextSibling.style.display = "flex";
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      className={`w-full h-full rounded-full bg-primary/10 items-center justify-center text-primary ${char.image ? "hidden" : "flex"
                         }`}
-                      >
-                        <span className="material-symbols-outlined text-4xl">person</span>
-                      </div>
+                    >
+                      <span className="material-symbols-outlined text-4xl">person</span>
                     </div>
-                    <div className="text-center">
-                      <p className="text-slate-100 font-bold text-lg leading-tight group-hover:text-primary transition-colors">
-                        {char.name}
-                      </p>
-                      <p className="text-primary/70 text-sm mt-0.5">
-                        {char.house || "Hogwarts"}
-                      </p>
-                    </div>
-                  </Link>
-                ))
-              : [1, 2, 3, 4, 5].map((n) => (
-                  <div
-                    key={n}
-                    className="flex flex-col items-center gap-4 shrink-0"
-                    style={{ width: "160px" }}
-                  >
-                    <div className="w-full aspect-square rounded-full bg-primary/10 animate-pulse" />
-                    <div className="h-4 w-24 bg-primary/10 rounded animate-pulse" />
-                    <div className="h-3 w-16 bg-primary/5 rounded animate-pulse" />
                   </div>
-                ))}
+                  <div className="text-center">
+                    <p className="text-slate-100 font-bold text-lg leading-tight group-hover:text-primary transition-colors">
+                      {char.name}
+                    </p>
+                    <p className="text-primary/70 text-sm mt-0.5">
+                      {char.house || "Hogwarts"}
+                    </p>
+                  </div>
+                </Link>
+              ))
+              : [1, 2, 3, 4, 5].map((n) => (
+                <div
+                  key={n}
+                  className="flex flex-col items-center gap-4 shrink-0"
+                  style={{ width: "160px" }}
+                >
+                  <div className="w-full aspect-square rounded-full bg-primary/10 animate-pulse" />
+                  <div className="h-4 w-24 bg-primary/10 rounded animate-pulse" />
+                  <div className="h-3 w-16 bg-primary/5 rounded animate-pulse" />
+                </div>
+              ))}
           </div>
         </section>
       </main>
