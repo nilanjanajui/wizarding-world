@@ -2,6 +2,85 @@ import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useFavorites } from "../../../context/FavoritesContext";
 import charactersData, { HOGWARTS_HALL } from "../../../data/charactersData";
 
+// Safely converts any value to a displayable string
+const safeStr = (val) => {
+  if (!val) return null;
+  if (typeof val === "string") return val;
+  if (typeof val === "object") {
+    // PotterDB returns wand as {wood, core, length}
+    if (val.wood || val.core || val.length) {
+      return [val.wood, val.core, val.length && `${val.length} inches`]
+        .filter(Boolean)
+        .join(", ");
+    }
+    return JSON.stringify(val);
+  }
+  return String(val);
+};
+
+// No data page component
+function NoDataPage({ charName, navigate }) {
+  return (
+    <div className="min-h-screen bg-background-dark font-display flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-150 h-150 rounded-full bg-primary/5 blur-3xl" />
+      </div>
+
+      <div className="relative mb-6 w-28 h-28 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center">
+        <span className="material-symbols-outlined text-primary text-6xl">
+          person_off
+        </span>
+      </div>
+
+      <h2 className="text-3xl md:text-5xl font-bold text-primary italic mb-4">
+        No Profile Available
+      </h2>
+
+      {charName && (
+        <p className="text-slate-300 text-xl font-medium mb-3">
+          {charName}
+        </p>
+      )}
+
+      <p className="text-slate-400 text-lg max-w-md mb-2">
+        This character's records are sealed in the Restricted Section.
+        No profile data is currently available.
+      </p>
+      <p className="text-slate-600 text-sm italic mb-10">
+        "Curiosity is not a sin, but you should exercise caution." — Albus Dumbledore
+      </p>
+
+      <div className="flex flex-wrap gap-4 justify-center">
+        <Link
+          to="/characters"
+          className="flex items-center gap-2 px-8 py-3 bg-primary text-background-dark rounded-full font-bold text-sm uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-primary/20"
+        >
+          <span className="material-symbols-outlined text-sm">groups</span>
+          Back to Characters
+        </Link>
+        <Link
+          to="/"
+          className="flex items-center gap-2 px-8 py-3 border-2 border-primary text-primary rounded-full font-bold text-sm uppercase tracking-widest hover:bg-primary/10 transition-colors"
+        >
+          <span className="material-symbols-outlined text-sm">home</span>
+          Home
+        </Link>
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 px-8 py-3 border border-primary/30 text-slate-400 rounded-full font-bold text-sm uppercase tracking-widest hover:text-primary hover:border-primary transition-colors"
+        >
+          <span className="material-symbols-outlined text-sm">arrow_back</span>
+          Go Back
+        </button>
+      </div>
+
+      <p className="mt-16 text-slate-700 text-xs uppercase tracking-widest">
+        Wizarding World Explorer • Mischief Managed
+      </p>
+    </div>
+  );
+}
+
 export default function CharacterProfile() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -9,133 +88,39 @@ export default function CharacterProfile() {
 
   const char = location.state?.character;
 
+  // No character passed at all
   if (!char) {
-    return (
-      <div className="min-h-screen bg-background-dark font-display flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-150 h-150 rounded-full bg-primary/5 blur-3xl" />
-        </div>
-
-        <h1 className="text-[140px] md:text-[200px] font-black text-primary/10 leading-none select-none tracking-tighter">
-          404
-        </h1>
-
-        <div className="relative -mt-14 mb-6 w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center">
-          <span className="material-symbols-outlined text-primary text-5xl">
-            person_off
-          </span>
-        </div>
-
-        <h2 className="text-3xl md:text-5xl font-bold text-primary italic mb-4">
-          Wizard Not Found
-        </h2>
-        <p className="text-slate-400 text-lg max-w-md mb-2">
-          This character seems to have vanished — perhaps they used a Disillusionment Charm.
-        </p>
-        <p className="text-slate-600 text-sm italic mb-10">
-          "It does not do to dwell on dreams and forget to live." — Albus Dumbledore
-        </p>
-
-        <div className="flex flex-wrap gap-4 justify-center">
-          <Link
-            to="/"
-            className="flex items-center gap-2 px-8 py-3 bg-primary text-background-dark rounded-full font-bold text-sm uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-primary/20"
-          >
-            <span className="material-symbols-outlined text-sm">home</span>
-            Back to Home
-          </Link>
-          <Link
-            to="/characters"
-            className="flex items-center gap-2 px-8 py-3 border-2 border-primary text-primary rounded-full font-bold text-sm uppercase tracking-widest hover:bg-primary/10 transition-colors"
-          >
-            <span className="material-symbols-outlined text-sm">groups</span>
-            All Characters
-          </Link>
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 px-8 py-3 border border-primary/30 text-slate-400 rounded-full font-bold text-sm uppercase tracking-widest hover:text-primary hover:border-primary transition-colors"
-          >
-            <span className="material-symbols-outlined text-sm">arrow_back</span>
-            Go Back
-          </button>
-        </div>
-
-        <p className="mt-16 text-slate-700 text-xs uppercase tracking-widest">
-          Wizarding World Explorer • Mischief Managed
-        </p>
-      </div>
-    );
+    return <NoDataPage navigate={navigate} />;
   }
 
-  // Show 404 if character has no useful data at all
-  const hasUsefulData = char.name && (char.image || char.house || char.actor || char.alive !== undefined);
-  if (!hasUsefulData) {
-    return (
-      <div className="min-h-screen bg-background-dark font-display flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-150 h-150 rounded-full bg-primary/5 blur-3xl" />
-        </div>
+  // Character exists but has no meaningful data
+  const hasData = char.name && (
+    char.image ||
+    char.house ||
+    char.actor ||
+    char.alive !== undefined ||
+    char.patronus ||
+    char.ancestry
+  );
 
-        <h1 className="text-[140px] md:text-[200px] font-black text-primary/10 leading-none select-none tracking-tighter">
-          404
-        </h1>
-
-        <div className="relative -mt-14 mb-6 w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center">
-          <span className="material-symbols-outlined text-primary text-5xl">
-            person_off
-          </span>
-        </div>
-
-        <h2 className="text-3xl md:text-5xl font-bold text-primary italic mb-4">
-          No Profile Available
-        </h2>
-        <p className="text-slate-400 text-lg max-w-md mb-2">
-          This character's records are sealed in the Restricted Section. No profile data is available.
-        </p>
-        <p className="text-slate-600 text-sm italic mb-10">
-          "Curiosity is not a sin, but you should exercise caution." — Albus Dumbledore
-        </p>
-
-        <div className="flex flex-wrap gap-4 justify-center">
-          <Link
-            to="/"
-            className="flex items-center gap-2 px-8 py-3 bg-primary text-background-dark rounded-full font-bold text-sm uppercase tracking-widest hover:scale-105 transition-transform shadow-lg shadow-primary/20"
-          >
-            <span className="material-symbols-outlined text-sm">home</span>
-            Back to Home
-          </Link>
-          <Link
-            to="/characters"
-            className="flex items-center gap-2 px-8 py-3 border-2 border-primary text-primary rounded-full font-bold text-sm uppercase tracking-widest hover:bg-primary/10 transition-colors"
-          >
-            <span className="material-symbols-outlined text-sm">groups</span>
-            All Characters
-          </Link>
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 px-8 py-3 border border-primary/30 text-slate-400 rounded-full font-bold text-sm uppercase tracking-widest hover:text-primary hover:border-primary transition-colors"
-          >
-            <span className="material-symbols-outlined text-sm">arrow_back</span>
-            Go Back
-          </button>
-        </div>
-
-        <p className="mt-16 text-slate-700 text-xs uppercase tracking-widest">
-          Wizarding World Explorer • Mischief Managed
-        </p>
-      </div>
-    );
+  if (!hasData) {
+    return <NoDataPage charName={char.name} navigate={navigate} />;
   }
 
   const fav = isFavorite(char.name);
   const data = charactersData[char.name] || {};
 
+  // Safely build wand string handling both string and object formats
+  const wandStr = safeStr(data.wand) || safeStr(char.wand);
+
   const biography =
     data.biography ||
-    `${char.name} is a notable figure in the Wizarding World.${char.house ? ` A proud member of ${char.house}.` : ""
-    }${char.actor && char.actor !== "Unknown"
-      ? ` Portrayed by ${char.actor}.`
-      : ""
+    `${char.name} is a notable figure in the Wizarding World.${
+      char.house ? ` A proud member of ${char.house}.` : ""
+    }${
+      char.actor && char.actor !== "Unknown"
+        ? ` Portrayed by ${char.actor}.`
+        : ""
     }`;
 
   const spells = data.spells || [];
@@ -144,13 +129,13 @@ export default function CharacterProfile() {
   const relationships = data.relationships || [];
 
   const attributes = [
-    { label: "Wand", value: data.wand || char.wand },
-    { label: "Patronus", value: data.patronus || char.patronus, italic: true },
-    { label: "Boggart", value: data.boggart },
-    { label: "Ancestry", value: char.ancestry },
-    { label: "Species", value: char.species },
-    { label: "Gender", value: char.gender },
-    { label: "House", value: char.house, gold: true },
+    { label: "Wand", value: wandStr },
+    { label: "Patronus", value: safeStr(data.patronus) || safeStr(char.patronus), italic: true },
+    { label: "Boggart", value: safeStr(data.boggart) },
+    { label: "Ancestry", value: safeStr(char.ancestry) },
+    { label: "Species", value: safeStr(char.species) },
+    { label: "Gender", value: safeStr(char.gender) },
+    { label: "House", value: safeStr(char.house), gold: true },
   ].filter((a) => a.value && a.value !== "" && a.value !== "Unknown");
 
   return (
@@ -172,14 +157,13 @@ export default function CharacterProfile() {
           </h2>
           <button
             onClick={() => toggleFavorite(char)}
-            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all ${fav
+            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all ${
+              fav
                 ? "bg-primary text-background-dark border-primary"
                 : "bg-primary/10 border-primary/30 text-primary hover:bg-primary hover:text-background-dark"
-              }`}
+            }`}
           >
-            <span
-              className={`material-symbols-outlined ${fav ? "filled-icon" : ""}`}
-            >
+            <span className={`material-symbols-outlined ${fav ? "filled-icon" : ""}`}>
               favorite
             </span>
           </button>
@@ -187,7 +171,7 @@ export default function CharacterProfile() {
       </header>
 
       <main className="flex-1 px-4 md:px-20 lg:px-40 py-8 max-w-7xl mx-auto w-full">
-        {/* Hero Banner - Always Hogwarts Hall */}
+        {/* Hero Banner */}
         <div className="relative w-full rounded-xl overflow-hidden mb-12 group">
           <div
             className="aspect-21/9 w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
@@ -211,8 +195,9 @@ export default function CharacterProfile() {
                   />
                 ) : null}
                 <div
-                  className={`w-full h-full items-center justify-center text-primary ${char.image ? "hidden" : "flex"
-                    }`}
+                  className={`w-full h-full items-center justify-center text-primary ${
+                    char.image ? "hidden" : "flex"
+                  }`}
                 >
                   <span className="material-symbols-outlined text-6xl opacity-30">
                     person
@@ -221,14 +206,12 @@ export default function CharacterProfile() {
               </div>
               {char.house === "Gryffindor" && (
                 <div className="absolute -bottom-4 -right-4 bg-[#740001] text-[#e3a000] p-2 rounded-lg shadow-lg border border-[#e3a000]/30">
-                  <span className="material-symbols-outlined text-3xl">
-                    shield
-                  </span>
+                  <span className="material-symbols-outlined text-3xl">shield</span>
                 </div>
               )}
             </div>
 
-            {/* Name */}
+            {/* Name & Quote */}
             <div className="flex-1">
               <h1 className="text-4xl md:text-6xl font-display font-bold text-primary mb-1 leading-tight">
                 {char.name}
@@ -256,18 +239,14 @@ export default function CharacterProfile() {
             {/* Biography */}
             <section>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-primary">
-                  auto_stories
-                </span>
+                <span className="material-symbols-outlined text-primary">auto_stories</span>
                 <h2 className="text-3xl font-display font-bold text-primary italic">
                   Magical Biography
                 </h2>
               </div>
               <div className="parchment-gradient p-6 border-l-2 border-primary/30 text-slate-300 leading-relaxed text-lg">
                 {biography.split("\n\n").map((para, i) => (
-                  <p key={i} className="mb-4 last:mb-0">
-                    {para}
-                  </p>
+                  <p key={i} className="mb-4 last:mb-0">{para}</p>
                 ))}
               </div>
             </section>
@@ -276,9 +255,7 @@ export default function CharacterProfile() {
             {spells.length > 0 && (
               <section>
                 <div className="flex items-center gap-3 mb-8">
-                  <span className="material-symbols-outlined text-primary">
-                    auto_fix_high
-                  </span>
+                  <span className="material-symbols-outlined text-primary">auto_fix_high</span>
                   <h2 className="text-3xl font-display font-bold text-primary italic">
                     Known Spells &amp; Charms
                   </h2>
@@ -294,12 +271,8 @@ export default function CharacterProfile() {
                           <span className="material-symbols-outlined">{icon}</span>
                         </div>
                         <div>
-                          <h4 className="text-primary font-bold font-display text-lg italic">
-                            {name}
-                          </h4>
-                          <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                            {desc}
-                          </p>
+                          <h4 className="text-primary font-bold font-display text-lg italic">{name}</h4>
+                          <p className="text-slate-400 text-sm mt-1 leading-relaxed">{desc}</p>
                         </div>
                       </div>
                     </div>
@@ -312,9 +285,7 @@ export default function CharacterProfile() {
             {timeline.length > 0 && (
               <section>
                 <div className="flex items-center gap-3 mb-8">
-                  <span className="material-symbols-outlined text-primary">
-                    history_edu
-                  </span>
+                  <span className="material-symbols-outlined text-primary">history_edu</span>
                   <h2 className="text-3xl font-display font-bold text-primary italic">
                     Cinematic Appearances
                   </h2>
@@ -331,28 +302,22 @@ export default function CharacterProfile() {
               </section>
             )}
 
-            {/* For minor characters without enriched data */}
+            {/* Quick Stats for minor characters */}
             {spells.length === 0 && timeline.length === 0 && (
               <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { icon: "home", label: "House", value: char.house || "Unknown" },
-                  { icon: "person", label: "Species", value: char.species || "Human" },
-                  { icon: "pets", label: "Patronus", value: char.patronus || "Unknown" },
-                  { icon: "family_restroom", label: "Ancestry", value: char.ancestry || "Unknown" },
+                  { icon: "home", label: "House", value: safeStr(char.house) || "Unknown" },
+                  { icon: "person", label: "Species", value: safeStr(char.species) || "Human" },
+                  { icon: "pets", label: "Patronus", value: safeStr(char.patronus) || "Unknown" },
+                  { icon: "family_restroom", label: "Ancestry", value: safeStr(char.ancestry) || "Unknown" },
                 ].map(({ icon, label, value }) => (
                   <div
                     key={label}
                     className="bg-primary/5 border border-primary/10 rounded-xl p-4 text-center hover:border-primary/30 transition-all"
                   >
-                    <span className="material-symbols-outlined text-primary text-2xl">
-                      {icon}
-                    </span>
-                    <p className="text-slate-500 text-xs uppercase tracking-widest mt-1">
-                      {label}
-                    </p>
-                    <p className="text-slate-100 font-bold text-sm mt-1 capitalize">
-                      {value}
-                    </p>
+                    <span className="material-symbols-outlined text-primary text-2xl">{icon}</span>
+                    <p className="text-slate-500 text-xs uppercase tracking-widest mt-1">{label}</p>
+                    <p className="text-slate-100 font-bold text-sm mt-1 capitalize">{value}</p>
                   </div>
                 ))}
               </section>
@@ -374,16 +339,15 @@ export default function CharacterProfile() {
                       key={label}
                       className="flex justify-between items-start border-b border-primary/10 pb-2 last:border-none gap-4"
                     >
-                      <span className="text-slate-400 text-sm shrink-0">
-                        {label}
-                      </span>
+                      <span className="text-slate-400 text-sm shrink-0">{label}</span>
                       <span
-                        className={`font-medium text-sm text-right ${gold
+                        className={`font-medium text-sm text-right ${
+                          gold
                             ? "text-[#e3a000] font-bold"
                             : italic
-                              ? "text-slate-100 italic"
-                              : "text-slate-100"
-                          }`}
+                            ? "text-slate-100 italic"
+                            : "text-slate-100"
+                        }`}
                       >
                         {value}
                       </span>
@@ -391,9 +355,7 @@ export default function CharacterProfile() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-slate-500 text-sm italic">
-                  No attributes available.
-                </p>
+                <p className="text-slate-500 text-sm italic">No attributes available.</p>
               )}
             </section>
 
@@ -416,9 +378,7 @@ export default function CharacterProfile() {
                       />
                       <div>
                         <p className="text-xs text-slate-400">{role}</p>
-                        <p className="text-sm font-bold text-slate-100 leading-tight">
-                          {name}
-                        </p>
+                        <p className="text-sm font-bold text-slate-100 leading-tight">{name}</p>
                       </div>
                     </div>
                   ))}
@@ -430,9 +390,7 @@ export default function CharacterProfile() {
             {artefacts.length > 0 && (
               <section className="bg-background-dark border-2 border-primary/10 rounded-xl p-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-2 opacity-10">
-                  <span className="material-symbols-outlined text-6xl text-primary">
-                    hourglass_empty
-                  </span>
+                  <span className="material-symbols-outlined text-6xl text-primary">hourglass_empty</span>
                 </div>
                 <h3 className="text-xl font-display font-bold text-primary mb-4">
                   Notable Artefacts
@@ -440,9 +398,7 @@ export default function CharacterProfile() {
                 <div className="space-y-3">
                   {artefacts.map((item) => (
                     <div key={item} className="flex items-start gap-3">
-                      <span className="material-symbols-outlined text-primary text-sm mt-1">
-                        star
-                      </span>
+                      <span className="material-symbols-outlined text-primary text-sm mt-1">star</span>
                       <p className="text-sm text-slate-300">{item}</p>
                     </div>
                   ))}
@@ -450,7 +406,7 @@ export default function CharacterProfile() {
               </section>
             )}
 
-            {/* Status badge for minor characters */}
+            {/* Status for minor characters */}
             {relationships.length === 0 && (
               <section className="bg-primary/5 border border-primary/20 rounded-xl p-6">
                 <h3 className="text-xl font-display font-bold text-primary mb-4 flex items-center gap-2">
@@ -458,23 +414,22 @@ export default function CharacterProfile() {
                   Status
                 </h3>
                 <div
-                  className={`flex items-center gap-3 px-4 py-3 rounded-full ${char.alive
+                  className={`flex items-center gap-3 px-4 py-3 rounded-full ${
+                    char.alive
                       ? "bg-green-500/10 text-green-400 border border-green-500/20"
                       : "bg-slate-700/40 text-slate-400 border border-slate-600/20"
-                    }`}
+                  }`}
                 >
                   <span
-                    className={`w-3 h-3 rounded-full shrink-0 ${char.alive ? "bg-green-400" : "bg-slate-400"
-                      }`}
+                    className={`w-3 h-3 rounded-full shrink-0 ${
+                      char.alive ? "bg-green-400" : "bg-slate-400"
+                    }`}
                   />
-                  <span className="font-bold">
-                    {char.alive ? "Alive" : "Deceased"}
-                  </span>
+                  <span className="font-bold">{char.alive ? "Alive" : "Deceased"}</span>
                 </div>
                 {char.actor && char.actor !== "Unknown" && (
                   <p className="mt-4 text-sm text-slate-400">
-                    Portrayed by{" "}
-                    <span className="text-slate-200">{char.actor}</span>
+                    Portrayed by <span className="text-slate-200">{char.actor}</span>
                   </p>
                 )}
               </section>
@@ -489,26 +444,14 @@ export default function CharacterProfile() {
           <div className="flex items-center gap-4 text-primary">
             <span className="material-symbols-outlined text-4xl">castle</span>
             <div>
-              <p className="font-display font-bold text-lg">
-                Hogwarts Digital Archives
-              </p>
-              <p className="text-xs text-slate-500 italic">
-                "Draco Dormiens Nunquam Titillandus"
-              </p>
+              <p className="font-display font-bold text-lg">Hogwarts Digital Archives</p>
+              <p className="text-xs text-slate-500 italic">"Draco Dormiens Nunquam Titillandus"</p>
             </div>
           </div>
           <div className="flex gap-8 text-slate-400 text-sm">
-            {["Library", "Great Hall", "Common Rooms", "Owl Post"].map(
-              (link) => (
-                <a
-                  key={link}
-                  href="#"
-                  className="hover:text-primary transition-colors"
-                >
-                  {link}
-                </a>
-              )
-            )}
+            {["Library", "Great Hall", "Common Rooms", "Owl Post"].map((link) => (
+              <a key={link} href="#" className="hover:text-primary transition-colors">{link}</a>
+            ))}
           </div>
         </div>
       </footer>
