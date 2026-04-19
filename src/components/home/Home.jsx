@@ -137,8 +137,8 @@ export default function Home() {
         </section>
 
         {/* Featured Movies */}
-        <section className="px-6 md:px-20 py-12">
-          <div className="flex items-center justify-between mb-12 border-l-4 border-secondary pl-4">
+        <section className="px-6 md:px-20 py-12 overflow-hidden">
+          <div className="flex items-center justify-between mb-16 border-l-4 border-secondary pl-4">
             <h2 className="text-slate-100 text-3xl font-bold tracking-tight">
               Featured Movies
             </h2>
@@ -152,91 +152,99 @@ export default function Home() {
           </div>
 
           {/* Fan Card Layout */}
-          <div className="flex items-end justify-center relative h-96 mb-8">
-            {featuredMovies.length > 0
-              ? featuredMovies.map(({ num, title, img }, idx) => {
-                // Fan rotation angles: -30, -10, 10, 30
-                const rotations = [-30, -10, 10, 30];
-                const translateY = [30, 10, 10, 30];
-                const rotation = rotations[idx] ?? 0;
-                const ty = translateY[idx] ?? 0;
+          <div className="relative flex items-end justify-center h-125">
+            <style>{`
+      @keyframes fanIn {
+        from { opacity: 0; transform: rotate(var(--rot)) translateY(120px) scale(0.7); }
+        to   { opacity: 1; transform: rotate(var(--rot)) translateY(var(--ty)); }
+      }
+      .fan-card {
+        animation: fanIn 0.7s cubic-bezier(.22,1,.36,1) both;
+      }
+      .fan-card:nth-child(1) { animation-delay: 0.05s; }
+      .fan-card:nth-child(2) { animation-delay: 0.15s; }
+      .fan-card:nth-child(3) { animation-delay: 0.25s; }
+      .fan-card:nth-child(4) { animation-delay: 0.35s; }
+      .fan-card:hover {
+        transform: rotate(var(--rot)) translateY(-30px) scale(1.06) !important;
+        z-index: 30 !important;
+      }
+    `}</style>
 
-                return (
-                  <Link
-                    to="/movies"
-                    key={num}
-                    className="group absolute"
-                    style={{
-                      transform: `rotate(${rotation}deg) translateY(${ty}px)`,
-                      transformOrigin: "bottom center",
-                      zIndex: idx === 1 || idx === 2 ? 10 : 5,
-                      left: `calc(50% - 280px + ${idx * 140}px)`,
-                      transition: "transform 0.3s ease, z-index 0.3s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = `rotate(${rotation}deg) translateY(-20px) scale(1.05)`;
-                      e.currentTarget.style.zIndex = "20";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = `rotate(${rotation}deg) translateY(${ty}px)`;
-                      e.currentTarget.style.zIndex = idx === 1 || idx === 2 ? "10" : "5";
-                    }}
-                  >
-                    <div className="relative w-40 h-60 md:w-48 md:h-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/10">
-                      {img ? (
-                        <img
-                          src={img}
-                          alt={title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary">
-                          <span className="material-symbols-outlined text-5xl opacity-30">movie</span>
+            {featuredMovies.length > 0
+              ? (() => {
+                const configs = [
+                  { rot: -32, ty: "60px", left: "calc(50% - 390px)", z: 5 },
+                  { rot: -11, ty: "15px", left: "calc(50% - 175px)", z: 10 },
+                  { rot: 11, ty: "15px", left: "calc(50% + 5px)", z: 10 },
+                  { rot: 32, ty: "60px", left: "calc(50% + 220px)", z: 5 },
+                ];
+                return featuredMovies.map(({ num, title, img }, idx) => {
+                  const { rot, ty, left, z } = configs[idx] ?? configs[0];
+                  return (
+                    <Link
+                      to="/movies"
+                      key={num}
+                      className="fan-card absolute group"
+                      style={{
+                        "--rot": `${rot}deg`,
+                        "--ty": ty,
+                        transform: `rotate(${rot}deg) translateY(${ty})`,
+                        transformOrigin: "bottom center",
+                        left,
+                        zIndex: z,
+                        transition: "transform 0.35s cubic-bezier(.22,1,.36,1)",
+                        bottom: 0,
+                      }}
+                    >
+                      <div className="relative w-52 h-80 md:w-60 md:h-96 rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)] border-2 border-white/10">
+                        {img ? (
+                          <img
+                            src={img}
+                            alt={title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary">
+                            <span className="material-symbols-outlined text-6xl opacity-30">movie</span>
+                          </div>
+                        )}
+                        {/* Bottom gradient + label */}
+                        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/10 to-transparent" />
+                        <div className="absolute bottom-0 left-0 p-4 w-full">
+                          <p className="text-primary text-[10px] font-black uppercase tracking-widest mb-1">
+                            Movie {num}
+                          </p>
+                          <p className="text-white text-sm font-bold leading-tight line-clamp-2">
+                            {title}
+                          </p>
                         </div>
-                      )}
-                      {/* Overlay */}
-                      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
-                      <div className="absolute bottom-0 left-0 p-3 w-full">
-                        <p className="text-primary text-[10px] font-bold uppercase tracking-widest mb-0.5">
-                          Movie {num}
-                        </p>
-                        <p className="text-white text-sm font-bold leading-tight">{title}</p>
+                        {/* Shine effect */}
+                        <div className="absolute inset-0 bg-linear-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                       </div>
-                    </div>
-                  </Link>
-                );
-              })
-              : // Loading skeletons in fan shape
-              [0, 1, 2, 3].map((idx) => {
-                const rotations = [-30, -10, 10, 30];
-                const translateY = [30, 10, 10, 30];
+                    </Link>
+                  );
+                });
+              })()
+              : [0, 1, 2, 3].map((idx) => {
+                const rots = [-32, -11, 11, 32];
+                const tys = ["60px", "15px", "15px", "60px"];
+                const lefts = ["calc(50% - 390px)", "calc(50% - 175px)", "calc(50% + 5px)", "calc(50% + 220px)"];
                 return (
                   <div
                     key={idx}
                     className="absolute rounded-2xl bg-primary/5 border border-primary/10 animate-pulse"
                     style={{
-                      width: "160px",
-                      height: "240px",
-                      transform: `rotate(${rotations[idx]}deg) translateY(${translateY[idx]}px)`,
+                      width: "200px",
+                      height: "310px",
+                      transform: `rotate(${rots[idx]}deg) translateY(${tys[idx]})`,
                       transformOrigin: "bottom center",
-                      left: `calc(50% - 280px + ${idx * 140}px)`,
+                      left: lefts[idx],
+                      bottom: 0,
                     }}
                   />
                 );
               })}
-          </div>
-
-          {/* Movie titles below fan */}
-          <div className="flex justify-center gap-4 flex-wrap mt-4">
-            {featuredMovies.map(({ num, title }) => (
-              <Link
-                key={num}
-                to="/movies"
-                className="text-slate-400 hover:text-primary text-xs font-medium transition-colors uppercase tracking-wider"
-              >
-                {num}. {title}
-              </Link>
-            ))}
           </div>
         </section>
 
