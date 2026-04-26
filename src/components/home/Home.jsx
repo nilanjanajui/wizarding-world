@@ -233,6 +233,9 @@ function FanCards({ movies }) {
   );
 }
 
+
+
+
 export default function Home() {
   const [featuredChars, setFeaturedChars] = useState([]);
   const [featuredMovies, setFeaturedMovies] = useState([]);
@@ -351,9 +354,8 @@ export default function Home() {
             ))}
           </div>
         </section>
-
-        {/* <section className="px-6 md:px-20 py-12">
-          <div className="flex items-center justify-between mb-12 border-l-4 border-secondary pl-4">
+        <section className="px-6 md:px-20 py-16 overflow-hidden">
+          <div className="flex items-center justify-between mb-10 border-l-4 border-secondary pl-4">
             <h2 className="text-slate-100 text-3xl font-bold tracking-tight">
               Featured Movies
             </h2>
@@ -366,114 +368,8 @@ export default function Home() {
             </Link>
           </div>
 
-          
-          <div className="flex items-end justify-center relative h-96 mb-8">
-            {featuredMovies.length > 0
-              ? featuredMovies.map(({ num, title, img }, idx) => {
-                // Fan rotation angles: -30, -10, 10, 30
-                const rotations = [-30, -10, 10, 30];
-                const translateY = [30, 10, 10, 30];
-                const rotation = rotations[idx] ?? 0;
-                const ty = translateY[idx] ?? 0;
-
-                return (
-                  <Link
-                    to="/movies"
-                    key={num}
-                    className="group absolute"
-                    style={{
-                      transform: `rotate(${rotation}deg) translateY(${ty}px)`,
-                      transformOrigin: "bottom center",
-                      zIndex: idx === 1 || idx === 2 ? 10 : 5,
-                      left: `calc(50% - 280px + ${idx * 140}px)`,
-                      transition: "transform 0.3s ease, z-index 0.3s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = `rotate(${rotation}deg) translateY(-20px) scale(1.05)`;
-                      e.currentTarget.style.zIndex = "20";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = `rotate(${rotation}deg) translateY(${ty}px)`;
-                      e.currentTarget.style.zIndex = idx === 1 || idx === 2 ? "10" : "5";
-                    }}
-                  >
-                    <div className="relative w-40 h-60 md:w-48 md:h-72 rounded-2xl overflow-hidden shadow-2xl border-2 border-white/10">
-                      {img ? (
-                        <img
-                          src={img}
-                          alt={title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-primary/10 flex items-center justify-center text-primary">
-                          <span className="material-symbols-outlined text-5xl opacity-30">movie</span>
-                        </div>
-                      )}
-
-                      <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
-                      <div className="absolute bottom-0 left-0 p-3 w-full">
-                        <p className="text-primary text-[10px] font-bold uppercase tracking-widest mb-0.5">
-                          Movie {num}
-                        </p>
-                        <p className="text-white text-sm font-bold leading-tight">{title}</p>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })
-              : // Loading skeletons in fan shape
-              [0, 1, 2, 3].map((idx) => {
-                const rotations = [-30, -10, 10, 30];
-                const translateY = [30, 10, 10, 30];
-                return (
-                  <div
-                    key={idx}
-                    className="absolute rounded-2xl bg-primary/5 border border-primary/10 animate-pulse"
-                    style={{
-                      width: "160px",
-                      height: "240px",
-                      transform: `rotate(${rotations[idx]}deg) translateY(${translateY[idx]}px)`,
-                      transformOrigin: "bottom center",
-                      left: `calc(50% - 280px + ${idx * 140}px)`,
-                    }}
-                  />
-                );
-              })}
-          </div>
-
-
-          <div className="flex justify-center gap-4 flex-wrap mt-4">
-            {featuredMovies.map(({ num, title }) => (
-              <Link
-                key={num}
-                to="/movies"
-                className="text-slate-400 hover:text-primary text-xs font-medium transition-colors uppercase tracking-wider"
-              >
-                {num}. {title}
-              </Link>
-            ))}
-          </div>
-        </section> */}
-
-
-
-        {/* Featured Movies — Fan Spread */}
-<section className="px-6 md:px-20 py-16 overflow-hidden">
-  <div className="flex items-center justify-between mb-10 border-l-4 border-secondary pl-4">
-    <h2 className="text-slate-100 text-3xl font-bold tracking-tight">
-      Featured Movies
-    </h2>
-    <Link
-      to="/movies"
-      className="text-primary hover:underline text-sm font-semibold flex items-center gap-1"
-    >
-      View All
-      <span className="material-symbols-outlined text-sm">arrow_forward</span>
-    </Link>
-  </div>
-
-  <FanCards movies={featuredMovies} />
-</section>
+          <FanCards movies={featuredMovies} />
+        </section>
 
         {/* Famous Witches & Wizards */}
         <section className="px-6 md:px-20 py-12 bg-background-dark/20">
