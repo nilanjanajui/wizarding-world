@@ -17,225 +17,6 @@ const FEATURED_NAMES = [
   "Ginny Weasley",
 ];
 
-function FanCards({ movies }) {
-  const [active, setActive] = useState(1);
-
-  const total = movies.length || 4;
-  const SPREAD = 60;
-  const step = total > 1 ? SPREAD / (total - 1) : 0;
-  const baseRots = Array.from({ length: total }, (_, i) => -SPREAD / 2 + i * step);
-  const fanOffset = -(baseRots[active] ?? 0);
-
-  const cur = movies[active];
-
-  return (
-    <div className="flex flex-col items-center gap-8">
-      <style>{`
-        .fan-card-inner {
-          transition: transform 0.5s cubic-bezier(.22,1,.36,1),
-                      border-color 0.3s ease,
-                      box-shadow 0.3s ease;
-        }
-        .fan-card-inner:hover {
-          filter: brightness(1.08);
-        }
-        @keyframes fanReveal {
-          from { opacity: 0; transform: translateX(-50%) rotate(var(--r)) translateY(60px) scale(0.85); }
-          to   { opacity: 1; transform: translateX(-50%) rotate(var(--r)) translateY(0); }
-        }
-        .fan-card-wrap {
-          animation: fanReveal 0.6s cubic-bezier(.22,1,.36,1) both;
-        }
-        .fan-card-wrap:nth-child(1) { animation-delay: 0.0s; }
-        .fan-card-wrap:nth-child(2) { animation-delay: 0.1s; }
-        .fan-card-wrap:nth-child(3) { animation-delay: 0.2s; }
-        .fan-card-wrap:nth-child(4) { animation-delay: 0.3s; }
-        @keyframes shimmerPass {
-          0%   { transform: translateX(-130%) skewX(-18deg); }
-          100% { transform: translateX(280%) skewX(-18deg); }
-        }
-        .active-shimmer {
-          animation: shimmerPass 2.8s ease-in-out 0.8s infinite;
-        }
-      `}</style>
-
-      {/* Fan Container */}
-      <div className="relative w-full flex justify-center" style={{ height: "420px" }}>
-        {/* Radial glow beneath fan */}
-        <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
-          style={{
-            width: "520px",
-            height: "120px",
-            background: "radial-gradient(ellipse at center, rgba(212,175,55,0.12) 0%, transparent 70%)",
-            filter: "blur(20px)",
-          }}
-        />
-
-        {/* Floor shadow line */}
-        <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
-          style={{
-            width: "320px",
-            height: "2px",
-            background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.2), transparent)",
-          }}
-        />
-
-        {(movies.length > 0 ? movies : Array.from({ length: 4 })).map((movie, i) => {
-          const finalRot = (baseRots[i] ?? 0) + fanOffset;
-          const isActive = i === active;
-          const dist = Math.abs(i - active);
-          const zIndex = 20 - dist * 4;
-
-          return (
-            <div
-              key={i}
-              className="fan-card-wrap absolute"
-              style={{
-                bottom: 0,
-                left: "50%",
-                width: "170px",
-                height: "255px",
-                transformOrigin: "50% 100%",
-                transform: `translateX(-50%) rotate(${finalRot}deg)`,
-                "--r": `${(baseRots[i] ?? 0)}deg`,
-                zIndex,
-                cursor: isActive ? "default" : "pointer",
-              }}
-              onClick={() => !isActive && setActive(i)}
-            >
-              <div
-                className="fan-card-inner relative w-full h-full rounded-[20px] overflow-hidden"
-                style={{
-                  border: isActive
-                    ? "2px solid rgba(212,175,55,0.75)"
-                    : "1.5px solid rgba(255,255,255,0.09)",
-                  boxShadow: isActive
-                    ? "0 24px 70px rgba(0,0,0,0.85), 0 0 28px rgba(212,175,55,0.12)"
-                    : "0 12px 40px rgba(0,0,0,0.65)",
-                  transform: isActive ? "translateY(-16px) scale(1.04)" : "none",
-                  transition: "transform 0.4s cubic-bezier(.22,1,.36,1), box-shadow 0.4s, border-color 0.4s",
-                }}
-              >
-                {/* Poster or skeleton */}
-                {movie ? (
-                  movie.img ? (
-                    <img
-                      src={movie.img}
-                      alt={movie.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-slate-900 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-5xl text-primary/20">movie</span>
-                    </div>
-                  )
-                ) : (
-                  <div className="w-full h-full bg-primary/5 animate-pulse" />
-                )}
-
-                {/* Gradient bottom overlay */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{ background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.3) 40%, transparent 70%)" }}
-                />
-
-                {/* Label on active card */}
-                {isActive && movie && (
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <p
-                      className="text-[9px] font-black uppercase tracking-[0.22em] mb-1"
-                      style={{ color: "#d4af37" }}
-                    >
-                      Film {movie.num}
-                    </p>
-                    <p className="text-white text-[13px] font-bold leading-snug line-clamp-2">
-                      {movie.title}
-                    </p>
-                  </div>
-                )}
-
-                {/* Shimmer on active */}
-                {isActive && (
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div
-                      className="active-shimmer absolute inset-y-0"
-                      style={{
-                        width: "40px",
-                        background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent)",
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Info + Controls */}
-      {cur && (
-        <div className="flex flex-col items-center gap-5 text-center max-w-xs">
-          <div>
-            <p className="text-primary/60 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
-              Harry Potter · Film {cur.num} of 8
-            </p>
-            <p className="text-slate-100 text-2xl font-black leading-tight">
-              {cur.title}
-            </p>
-          </div>
-
-          {/* Dot indicators */}
-          <div className="flex gap-2 items-center">
-            {movies.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActive(i)}
-                className="rounded-full transition-all duration-300"
-                style={{
-                  width: i === active ? "24px" : "7px",
-                  height: "7px",
-                  background: i === active ? "#d4af37" : "rgba(255,255,255,0.18)",
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Prev / Next / CTA */}
-          <div className="flex gap-2 items-center">
-            <button
-              onClick={() => setActive((p) => Math.max(0, p - 1))}
-              disabled={active === 0}
-              className="w-10 h-10 rounded-full border border-primary/25 text-primary/70 flex items-center justify-center hover:border-primary hover:text-primary transition-all disabled:opacity-25"
-            >
-              <span className="material-symbols-outlined text-base">chevron_left</span>
-            </button>
-            <button
-              onClick={() => setActive((p) => Math.min(movies.length - 1, p + 1))}
-              disabled={active === movies.length - 1}
-              className="w-10 h-10 rounded-full border border-primary/25 text-primary/70 flex items-center justify-center hover:border-primary hover:text-primary transition-all disabled:opacity-25"
-            >
-              <span className="material-symbols-outlined text-base">chevron_right</span>
-            </button>
-            <Link
-              to="/movies"
-              className="flex items-center gap-2 px-5 h-10 rounded-full text-sm font-bold transition-all hover:opacity-80"
-              style={{ background: "#d4af37", color: "#1a1209" }}
-            >
-              Explore All
-              <span className="material-symbols-outlined text-sm">arrow_forward</span>
-            </Link>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-
-
 export default function Home() {
   const [featuredChars, setFeaturedChars] = useState([]);
   const [featuredMovies, setFeaturedMovies] = useState([]);
@@ -354,8 +135,10 @@ export default function Home() {
             ))}
           </div>
         </section>
-        <section className="px-6 md:px-20 py-16 overflow-hidden">
-          <div className="flex items-center justify-between mb-10 border-l-4 border-secondary pl-4">
+
+        {/* Featured Movies */}
+        <section className="px-6 md:px-20 py-12">
+          <div className="flex items-center justify-between mb-8 border-l-4 border-secondary pl-4">
             <h2 className="text-slate-100 text-3xl font-bold tracking-tight">
               Featured Movies
             </h2>
@@ -367,8 +150,37 @@ export default function Home() {
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
           </div>
-
-          <FanCards movies={featuredMovies} />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {featuredMovies.length > 0
+              ? featuredMovies.map(({ num, title, img }) => (
+                  <Link
+                    to="/movies"
+                    key={num}
+                    className="group relative overflow-hidden rounded-xl aspect-2/3 border border-primary/10"
+                  >
+                    {img ? (
+                      <img
+                        src={img}
+                        alt={title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : null}
+                    <div className="absolute inset-0 bg-linear-to-t from-background-dark/90 via-transparent to-transparent" />
+                    <div className="absolute bottom-0 left-0 p-4 w-full">
+                      <p className="text-primary text-xs font-bold uppercase tracking-widest mb-1">
+                        Movie {num}
+                      </p>
+                      <p className="text-white text-base font-bold leading-tight">{title}</p>
+                    </div>
+                  </Link>
+                ))
+              : [1, 2, 3, 4].map((n) => (
+                  <div
+                    key={n}
+                    className="rounded-xl aspect-2/3 border border-primary/10 bg-primary/5 animate-pulse"
+                  />
+                ))}
+          </div>
         </section>
 
         {/* Famous Witches & Wizards */}
@@ -403,53 +215,54 @@ export default function Home() {
           >
             {featuredChars.length > 0
               ? featuredChars.map((char) => (
-                <Link
-                  to={`/characters/${encodeURIComponent(char.name)}`}
-                  state={{ character: char }}
-                  key={char.name}
-                  className="flex flex-col items-center gap-4 group shrink-0"
-                  style={{ width: "160px" }}
-                >
-                  <div className="relative w-full aspect-square rounded-full border-2 border-primary/20 p-2 group-hover:border-primary transition-all overflow-hidden bg-background-dark shadow-lg group-hover:shadow-primary/20">
-                    {char.image ? (
-                      <img
-                        src={char.image}
-                        alt={char.name}
-                        className="w-full h-full rounded-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
-                        onError={(e) => {
-                          e.target.style.display = "none";
-                          e.target.nextSibling.style.display = "flex";
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      className={`w-full h-full rounded-full bg-primary/10 items-center justify-center text-primary ${char.image ? "hidden" : "flex"
+                  <Link
+                    to={`/characters/${encodeURIComponent(char.name)}`}
+                    state={{ character: char }}
+                    key={char.name}
+                    className="flex flex-col items-center gap-4 group shrink-0"
+                    style={{ width: "160px" }}
+                  >
+                    <div className="relative w-full aspect-square rounded-full border-2 border-primary/20 p-2 group-hover:border-primary transition-all overflow-hidden bg-background-dark shadow-lg group-hover:shadow-primary/20">
+                      {char.image ? (
+                        <img
+                          src={char.image}
+                          alt={char.name}
+                          className="w-full h-full rounded-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "flex";
+                          }}
+                        />
+                      ) : null}
+                      <div
+                        className={`w-full h-full rounded-full bg-primary/10 items-center justify-center text-primary ${
+                          char.image ? "hidden" : "flex"
                         }`}
-                    >
-                      <span className="material-symbols-outlined text-4xl">person</span>
+                      >
+                        <span className="material-symbols-outlined text-4xl">person</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-slate-100 font-bold text-lg leading-tight group-hover:text-primary transition-colors">
-                      {char.name}
-                    </p>
-                    <p className="text-primary/70 text-sm mt-0.5">
-                      {char.house || "Hogwarts"}
-                    </p>
-                  </div>
-                </Link>
-              ))
+                    <div className="text-center">
+                      <p className="text-slate-100 font-bold text-lg leading-tight group-hover:text-primary transition-colors">
+                        {char.name}
+                      </p>
+                      <p className="text-primary/70 text-sm mt-0.5">
+                        {char.house || "Hogwarts"}
+                      </p>
+                    </div>
+                  </Link>
+                ))
               : [1, 2, 3, 4, 5].map((n) => (
-                <div
-                  key={n}
-                  className="flex flex-col items-center gap-4 shrink-0"
-                  style={{ width: "160px" }}
-                >
-                  <div className="w-full aspect-square rounded-full bg-primary/10 animate-pulse" />
-                  <div className="h-4 w-24 bg-primary/10 rounded animate-pulse" />
-                  <div className="h-3 w-16 bg-primary/5 rounded animate-pulse" />
-                </div>
-              ))}
+                  <div
+                    key={n}
+                    className="flex flex-col items-center gap-4 shrink-0"
+                    style={{ width: "160px" }}
+                  >
+                    <div className="w-full aspect-square rounded-full bg-primary/10 animate-pulse" />
+                    <div className="h-4 w-24 bg-primary/10 rounded animate-pulse" />
+                    <div className="h-3 w-16 bg-primary/5 rounded animate-pulse" />
+                  </div>
+                ))}
           </div>
         </section>
       </main>
