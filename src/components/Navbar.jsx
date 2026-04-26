@@ -1,97 +1,193 @@
-import { NavLink, Link } from "react-router-dom";
-import { useState } from "react";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+
+const navLinks = [
+  { to: "/", label: "Home", icon: "home", end: true },
+  { to: "/movies", label: "Movies", icon: "movie" },
+  { to: "/characters", label: "Characters", icon: "groups" },
+  { to: "/favorites", label: "Favorites", icon: "favorite" },
+  { to: "/stats", label: "Stats", icon: "analytics" },
+  { to: "/sorting-hat", label: "Sorting Hat", icon: "wizard_hat" },
+];
+
+const SPELLS = [
+  "✨ Lumos!",
+  "⚡ Expelliarmus!",
+  "🔮 Accio Knowledge!",
+  "🌙 Nox!",
+  "💫 Wingardium Leviosa!",
+];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [spellMsg, setSpellMsg] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+  const spellTimer = useRef(null);
 
-  const navLinks = [
-    { to: "/", label: "Home", end: true },
-    { to: "/movies", label: "Movies" },
-    { to: "/characters", label: "Characters" },
-    { to: "/favorites", label: "Favorites" },
-    { to: "/stats", label: "Stats" },
-  ];
+  // Shrink navbar on scroll
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth >= 1024) setMenuOpen(false); };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) return;
+    navigate(`/characters?search=${encodeURIComponent(q)}`);
+    setSearchQuery("");
+    setMenuOpen(false);
+  };
+
+  const handleSpell = () => {
+    const spell = SPELLS[Math.floor(Math.random() * SPELLS.length)];
+    setSpellMsg(spell);
+    clearTimeout(spellTimer.current);
+    spellTimer.current = setTimeout(() => setSpellMsg(""), 2000);
+  };
 
   return (
-    <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/20 px-6 md:px-20 py-4 bg-background-dark/90 backdrop-blur-md sticky top-0 z-50">
-      <div className="flex items-center gap-8">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-3 text-primary">
-          <span className="material-symbols-outlined text-3xl">bolt</span>
-          <h2 className="text-xl font-bold leading-tight tracking-tight font-display">
-            Wizarding World
-          </h2>
-        </Link>
+    <>
+      <header
+        className={`sticky top-0 z-50 w-full border-b border-primary/20 bg-background-dark/90 backdrop-blur-md transition-all duration-300 ${
+          scrolled ? "py-2 shadow-lg shadow-black/30" : "py-4"
+        }`}
+      >
+        <div className="flex items-center justify-between px-6 md:px-20">
 
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-8">
-          {navLinks.map(({ to, label, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) =>
-                isActive
-                  ? "text-primary text-sm font-medium border-b-2 border-primary pb-0.5"
-                  : "text-slate-300 hover:text-primary text-sm font-medium transition-colors"
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
-        </nav>
-      </div>
+          {/* Logo */}
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-primary hover:opacity-80 transition-opacity shrink-0"
+          >
+            <span className="material-symbols-outlined text-3xl">bolt</span>
+            <h2 className="text-xl font-bold leading-tight tracking-tight font-display hidden sm:block">
+              Wizarding World
+            </h2>
+          </Link>
 
-      <div className="flex flex-1 justify-end gap-4 items-center">
-        {/* Search */}
-        <label className="hidden md:flex flex-col min-w-40 h-10 max-w-64">
-          <div className="flex w-full flex-1 items-stretch rounded-lg h-full">
-            <div className="text-primary/60 flex bg-primary/10 items-center justify-center pl-4 rounded-l-lg">
-              <span className="material-symbols-outlined text-xl">search</span>
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-6">
+            {navLinks.map(({ to, label, end }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={end}
+                className={({ isActive }) =>
+                  `text-sm font-medium transition-colors pb-0.5 ${
+                    isActive
+                      ? "text-primary border-b-2 border-primary"
+                      : "text-slate-300 hover:text-primary"
+                  }`
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Right Side */}
+          <div className="flex items-center gap-3">
+
+            {/* Search — Desktop */}
+            <form onSubmit={handleSearch} className="hidden md:flex items-center">
+              <div className="flex h-10 rounded-lg overflow-hidden border border-primary/20 focus-within:border-primary transition-colors">
+                <div className="flex items-center justify-center bg-primary/10 px-3 text-primary/60">
+                  <span className="material-symbols-outlined text-xl">search</span>
+                </div>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search characters..."
+                  className="w-44 bg-primary/10 text-slate-100 placeholder:text-primary/40 px-3 text-sm focus:outline-none focus:w-56 transition-all duration-300"
+                />
+              </div>
+            </form>
+
+            {/* Spell Button + Toast */}
+            <div className="relative">
+              <button
+                onClick={handleSpell}
+                title="Cast a spell!"
+                className="flex items-center justify-center h-10 w-10 rounded-lg bg-secondary border border-primary/20 text-primary hover:bg-primary hover:text-background-dark transition-all"
+              >
+                <span className="material-symbols-outlined">auto_fix_high</span>
+              </button>
+              {spellMsg && (
+                <div className="absolute right-0 top-12 bg-background-dark border border-primary/40 text-primary text-xs font-bold px-3 py-2 rounded-lg whitespace-nowrap shadow-lg shadow-primary/10 animate-bounce">
+                  {spellMsg}
+                </div>
+              )}
             </div>
-            <input
-              className="flex w-full min-w-0 flex-1 rounded-r-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-primary border-none bg-primary/10 h-full placeholder:text-primary/40 px-4 text-base font-normal"
-              placeholder="Search spells, names..."
-            />
-          </div>
-        </label>
 
-        {/* Spell button */}
-        <button className="flex items-center justify-center rounded-lg h-10 w-10 bg-secondary text-primary hover:bg-secondary/80 transition-all border border-primary/20">
-          <span className="material-symbols-outlined">auto_fix_high</span>
-        </button>
-
-        {/* Mobile hamburger */}
-        <button
-          className="lg:hidden flex items-center justify-center h-10 w-10 text-primary"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <span className="material-symbols-outlined">
-            {menuOpen ? "close" : "menu"}
-          </span>
-        </button>
-      </div>
-
-      {/* Mobile dropdown */}
-      {menuOpen && (
-        <div className="absolute top-full left-0 w-full bg-background-dark border-b border-primary/20 py-4 flex flex-col gap-1 px-6 lg:hidden">
-          {navLinks.map(({ to, label, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                isActive
-                  ? "text-primary text-sm font-medium py-2"
-                  : "text-slate-300 text-sm font-medium py-2 hover:text-primary transition-colors"
-              }
+            {/* Mobile Hamburger */}
+            <button
+              onClick={() => setMenuOpen((o) => !o)}
+              className="lg:hidden flex items-center justify-center h-10 w-10 text-primary hover:bg-primary/10 rounded-lg transition-colors"
+              aria-label="Toggle menu"
             >
-              {label}
-            </NavLink>
-          ))}
+              <span className="material-symbols-outlined">
+                {menuOpen ? "close" : "menu"}
+              </span>
+            </button>
+          </div>
         </div>
-      )}
-    </header>
+
+        {/* Mobile Dropdown */}
+        <div
+          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            menuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="flex flex-col gap-1 px-6 py-4 border-t border-primary/10 bg-background-dark">
+
+            {/* Mobile Search */}
+            <form onSubmit={handleSearch} className="flex items-center h-11 rounded-lg overflow-hidden border border-primary/20 mb-3 focus-within:border-primary transition-colors">
+              <div className="flex items-center justify-center bg-primary/10 px-3 h-full text-primary/60">
+                <span className="material-symbols-outlined text-xl">search</span>
+              </div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search characters..."
+                className="flex-1 bg-primary/10 text-slate-100 placeholder:text-primary/40 px-3 text-sm focus:outline-none h-full"
+              />
+            </form>
+
+            {/* Mobile Nav Links */}
+            {navLinks.map(({ to, label, icon, end }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={end}
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-primary text-background-dark"
+                      : "text-slate-300 hover:bg-primary/10 hover:text-primary"
+                  }`
+                }
+              >
+                <span className="material-symbols-outlined text-lg">{icon}</span>
+                {label}
+              </NavLink>
+            ))}
+          </div>
+        </div>
+      </header>
+    </>
   );
 }

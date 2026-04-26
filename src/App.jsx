@@ -7,6 +7,7 @@ import FavCharacters from "./components/characterdir/favcharacters/FavCharacters
 import CharacterProfile from "./components/characterdir/characterprofile/CharacterProfile";
 import WizardStats from "./components/wizardstas/WizardStats";
 import NotFound from "./components/NotFound";
+import SortingHat from "./components/SortingHat"; // adjust path
 
 export default function App() {
   return (
@@ -16,6 +17,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/movies" element={<Movies />} />
           <Route path="/characters" element={<Characters />} />
+
+          <Route path="/sorting-hat" element={<SortingHat />} />
           <Route path="/characters/:name" element={<CharacterProfile />} />
           <Route path="/favorites" element={<FavCharacters />} />
           <Route path="/stats" element={<WizardStats />} />
