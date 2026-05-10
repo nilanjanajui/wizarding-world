@@ -1,13 +1,12 @@
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import { useFavorites } from "../../../context/FavoritesContext";
 import charactersData, { HOGWARTS_HALL } from "../../../data/charactersData";
 
-// Safely converts any value to a displayable string
 const safeStr = (val) => {
   if (!val) return null;
   if (typeof val === "string") return val;
   if (typeof val === "object") {
-    // PotterDB returns wand as {wood, core, length}
     if (val.wood || val.core || val.length) {
       return [val.wood, val.core, val.length && `${val.length} inches`]
         .filter(Boolean)
@@ -18,7 +17,6 @@ const safeStr = (val) => {
   return String(val);
 };
 
-// No data page component
 function NoDataPage({ charName, navigate }) {
   return (
     <div className="min-h-screen bg-background-dark font-display flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
@@ -37,17 +35,16 @@ function NoDataPage({ charName, navigate }) {
       </h2>
 
       {charName && (
-        <p className="text-slate-300 text-xl font-medium mb-3">
-          {charName}
-        </p>
+        <p className="text-slate-300 text-xl font-medium mb-3">{charName}</p>
       )}
 
       <p className="text-slate-400 text-lg max-w-md mb-2">
-        This character's records are sealed in the Restricted Section.
-        No profile data is currently available.
+        This character's records are sealed in the Restricted Section. No
+        profile data is currently available.
       </p>
       <p className="text-slate-600 text-sm italic mb-10">
-        "Curiosity is not a sin, but you should exercise caution." — Albus Dumbledore
+        "Curiosity is not a sin, but you should exercise caution." — Albus
+        Dumbledore
       </p>
 
       <div className="flex flex-wrap gap-4 justify-center">
@@ -84,42 +81,68 @@ function NoDataPage({ charName, navigate }) {
 export default function CharacterProfile() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { name } = useParams();
   const { toggleFavorite, isFavorite } = useFavorites();
 
   const char = location.state?.character;
+  const [fetchedChar, setFetchedChar] = useState(null);
+  const [fetchLoading, setFetchLoading] = useState(!char);
 
-  // No character passed at all
-  if (!char) {
+  useEffect(() => {
+    if (char) return;
+    fetch("https://hp-api.onrender.com/api/characters")
+      .then((r) => r.json())
+      .then((data) => {
+        const found = data.find(
+          (c) => c.name === decodeURIComponent(name)
+        );
+        if (found) setFetchedChar(found);
+      })
+      .catch(console.error)
+      .finally(() => setFetchLoading(false));
+  }, [char, name]);
+
+  if (fetchLoading) {
+    return (
+      <div className="min-h-screen bg-background-dark flex items-center justify-center">
+        <span className="material-symbols-outlined text-primary text-5xl animate-spin">
+          autorenew
+        </span>
+      </div>
+    );
+  }
+
+  const resolvedChar = char || fetchedChar;
+
+  if (!resolvedChar) {
     return <NoDataPage navigate={navigate} />;
   }
 
-  // Character exists but has no meaningful data
-  const hasData = char.name && (
-    char.image ||
-    char.house ||
-    char.actor ||
-    char.alive !== undefined ||
-    char.patronus ||
-    char.ancestry
-  );
+  const hasData =
+    resolvedChar.name &&
+    (resolvedChar.image ||
+      resolvedChar.house ||
+      resolvedChar.actor ||
+      resolvedChar.alive !== undefined ||
+      resolvedChar.patronus ||
+      resolvedChar.ancestry);
 
   if (!hasData) {
-    return <NoDataPage charName={char.name} navigate={navigate} />;
+    return <NoDataPage charName={resolvedChar.name} navigate={navigate} />;
   }
 
-  const fav = isFavorite(char.name);
-  const data = charactersData[char.name] || {};
+  const fav = isFavorite(resolvedChar.name);
+  const data = charactersData[resolvedChar.name] || {};
 
-  // Safely build wand string handling both string and object formats
-  const wandStr = safeStr(data.wand) || safeStr(char.wand);
+  const wandStr = safeStr(data.wand) || safeStr(resolvedChar.wand);
 
   const biography =
     data.biography ||
-    `${char.name} is a notable figure in the Wizarding World.${
-      char.house ? ` A proud member of ${char.house}.` : ""
+    `${resolvedChar.name} is a notable figure in the Wizarding World.${
+      resolvedChar.house ? ` A proud member of ${resolvedChar.house}.` : ""
     }${
-      char.actor && char.actor !== "Unknown"
-        ? ` Portrayed by ${char.actor}.`
+      resolvedChar.actor && resolvedChar.actor !== "Unknown"
+        ? ` Portrayed by ${resolvedChar.actor}.`
         : ""
     }`;
 
@@ -130,12 +153,16 @@ export default function CharacterProfile() {
 
   const attributes = [
     { label: "Wand", value: wandStr },
-    { label: "Patronus", value: safeStr(data.patronus) || safeStr(char.patronus), italic: true },
+    {
+      label: "Patronus",
+      value: safeStr(data.patronus) || safeStr(resolvedChar.patronus),
+      italic: true,
+    },
     { label: "Boggart", value: safeStr(data.boggart) },
-    { label: "Ancestry", value: safeStr(char.ancestry) },
-    { label: "Species", value: safeStr(char.species) },
-    { label: "Gender", value: safeStr(char.gender) },
-    { label: "House", value: safeStr(char.house), gold: true },
+    { label: "Ancestry", value: safeStr(resolvedChar.ancestry) },
+    { label: "Species", value: safeStr(resolvedChar.species) },
+    { label: "Gender", value: safeStr(resolvedChar.gender) },
+    { label: "House", value: safeStr(resolvedChar.house), gold: true },
   ].filter((a) => a.value && a.value !== "" && a.value !== "Unknown");
 
   return (
@@ -156,14 +183,16 @@ export default function CharacterProfile() {
             Wizarding World Explorer
           </h2>
           <button
-            onClick={() => toggleFavorite(char)}
+            onClick={() => toggleFavorite(resolvedChar)}
             className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all ${
               fav
                 ? "bg-primary text-background-dark border-primary"
                 : "bg-primary/10 border-primary/30 text-primary hover:bg-primary hover:text-background-dark"
             }`}
           >
-            <span className={`material-symbols-outlined ${fav ? "filled-icon" : ""}`}>
+            <span
+              className={`material-symbols-outlined ${fav ? "filled-icon" : ""}`}
+            >
               favorite
             </span>
           </button>
@@ -183,10 +212,10 @@ export default function CharacterProfile() {
             {/* Portrait */}
             <div className="relative shrink-0">
               <div className="size-32 md:size-48 rounded-xl border-4 border-primary shadow-2xl overflow-hidden bg-primary/10">
-                {char.image ? (
+                {resolvedChar.image ? (
                   <img
-                    src={char.image}
-                    alt={char.name}
+                    src={resolvedChar.image}
+                    alt={resolvedChar.name}
                     className="w-full h-full object-cover object-top"
                     onError={(e) => {
                       e.target.style.display = "none";
@@ -196,7 +225,7 @@ export default function CharacterProfile() {
                 ) : null}
                 <div
                   className={`w-full h-full items-center justify-center text-primary ${
-                    char.image ? "hidden" : "flex"
+                    resolvedChar.image ? "hidden" : "flex"
                   }`}
                 >
                   <span className="material-symbols-outlined text-6xl opacity-30">
@@ -204,9 +233,11 @@ export default function CharacterProfile() {
                   </span>
                 </div>
               </div>
-              {char.house === "Gryffindor" && (
+              {resolvedChar.house === "Gryffindor" && (
                 <div className="absolute -bottom-4 -right-4 bg-[#740001] text-[#e3a000] p-2 rounded-lg shadow-lg border border-[#e3a000]/30">
-                  <span className="material-symbols-outlined text-3xl">shield</span>
+                  <span className="material-symbols-outlined text-3xl">
+                    shield
+                  </span>
                 </div>
               )}
             </div>
@@ -214,7 +245,7 @@ export default function CharacterProfile() {
             {/* Name & Quote */}
             <div className="flex-1">
               <h1 className="text-4xl md:text-6xl font-display font-bold text-primary mb-1 leading-tight">
-                {char.name}
+                {resolvedChar.name}
               </h1>
               {data.quote && (
                 <p className="text-lg md:text-xl text-slate-300 italic">
@@ -224,7 +255,7 @@ export default function CharacterProfile() {
             </div>
 
             <button
-              onClick={() => toggleFavorite(char)}
+              onClick={() => toggleFavorite(resolvedChar)}
               className="bg-primary hover:bg-primary/90 text-background-dark px-8 py-3 rounded-lg font-bold tracking-wider uppercase text-sm transition-all shadow-lg shrink-0"
             >
               {fav ? "★ Saved" : "Add to Favorites"}
@@ -239,14 +270,18 @@ export default function CharacterProfile() {
             {/* Biography */}
             <section>
               <div className="flex items-center gap-3 mb-6">
-                <span className="material-symbols-outlined text-primary">auto_stories</span>
+                <span className="material-symbols-outlined text-primary">
+                  auto_stories
+                </span>
                 <h2 className="text-3xl font-display font-bold text-primary italic">
                   Magical Biography
                 </h2>
               </div>
               <div className="parchment-gradient p-6 border-l-2 border-primary/30 text-slate-300 leading-relaxed text-lg">
                 {biography.split("\n\n").map((para, i) => (
-                  <p key={i} className="mb-4 last:mb-0">{para}</p>
+                  <p key={i} className="mb-4 last:mb-0">
+                    {para}
+                  </p>
                 ))}
               </div>
             </section>
@@ -255,7 +290,9 @@ export default function CharacterProfile() {
             {spells.length > 0 && (
               <section>
                 <div className="flex items-center gap-3 mb-8">
-                  <span className="material-symbols-outlined text-primary">auto_fix_high</span>
+                  <span className="material-symbols-outlined text-primary">
+                    auto_fix_high
+                  </span>
                   <h2 className="text-3xl font-display font-bold text-primary italic">
                     Known Spells &amp; Charms
                   </h2>
@@ -271,8 +308,12 @@ export default function CharacterProfile() {
                           <span className="material-symbols-outlined">{icon}</span>
                         </div>
                         <div>
-                          <h4 className="text-primary font-bold font-display text-lg italic">{name}</h4>
-                          <p className="text-slate-400 text-sm mt-1 leading-relaxed">{desc}</p>
+                          <h4 className="text-primary font-bold font-display text-lg italic">
+                            {name}
+                          </h4>
+                          <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                            {desc}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -285,7 +326,9 @@ export default function CharacterProfile() {
             {timeline.length > 0 && (
               <section>
                 <div className="flex items-center gap-3 mb-8">
-                  <span className="material-symbols-outlined text-primary">history_edu</span>
+                  <span className="material-symbols-outlined text-primary">
+                    history_edu
+                  </span>
                   <h2 className="text-3xl font-display font-bold text-primary italic">
                     Cinematic Appearances
                   </h2>
@@ -306,18 +349,40 @@ export default function CharacterProfile() {
             {spells.length === 0 && timeline.length === 0 && (
               <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { icon: "home", label: "House", value: safeStr(char.house) || "Unknown" },
-                  { icon: "person", label: "Species", value: safeStr(char.species) || "Human" },
-                  { icon: "pets", label: "Patronus", value: safeStr(char.patronus) || "Unknown" },
-                  { icon: "family_restroom", label: "Ancestry", value: safeStr(char.ancestry) || "Unknown" },
+                  {
+                    icon: "home",
+                    label: "House",
+                    value: safeStr(resolvedChar.house) || "Unknown",
+                  },
+                  {
+                    icon: "person",
+                    label: "Species",
+                    value: safeStr(resolvedChar.species) || "Human",
+                  },
+                  {
+                    icon: "pets",
+                    label: "Patronus",
+                    value: safeStr(resolvedChar.patronus) || "Unknown",
+                  },
+                  {
+                    icon: "family_restroom",
+                    label: "Ancestry",
+                    value: safeStr(resolvedChar.ancestry) || "Unknown",
+                  },
                 ].map(({ icon, label, value }) => (
                   <div
                     key={label}
                     className="bg-primary/5 border border-primary/10 rounded-xl p-4 text-center hover:border-primary/30 transition-all"
                   >
-                    <span className="material-symbols-outlined text-primary text-2xl">{icon}</span>
-                    <p className="text-slate-500 text-xs uppercase tracking-widest mt-1">{label}</p>
-                    <p className="text-slate-100 font-bold text-sm mt-1 capitalize">{value}</p>
+                    <span className="material-symbols-outlined text-primary text-2xl">
+                      {icon}
+                    </span>
+                    <p className="text-slate-500 text-xs uppercase tracking-widest mt-1">
+                      {label}
+                    </p>
+                    <p className="text-slate-100 font-bold text-sm mt-1 capitalize">
+                      {value}
+                    </p>
                   </div>
                 ))}
               </section>
@@ -339,7 +404,9 @@ export default function CharacterProfile() {
                       key={label}
                       className="flex justify-between items-start border-b border-primary/10 pb-2 last:border-none gap-4"
                     >
-                      <span className="text-slate-400 text-sm shrink-0">{label}</span>
+                      <span className="text-slate-400 text-sm shrink-0">
+                        {label}
+                      </span>
                       <span
                         className={`font-medium text-sm text-right ${
                           gold
@@ -355,7 +422,9 @@ export default function CharacterProfile() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-slate-500 text-sm italic">No attributes available.</p>
+                <p className="text-slate-500 text-sm italic">
+                  No attributes available.
+                </p>
               )}
             </section>
 
@@ -378,7 +447,9 @@ export default function CharacterProfile() {
                       />
                       <div>
                         <p className="text-xs text-slate-400">{role}</p>
-                        <p className="text-sm font-bold text-slate-100 leading-tight">{name}</p>
+                        <p className="text-sm font-bold text-slate-100 leading-tight">
+                          {name}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -390,7 +461,9 @@ export default function CharacterProfile() {
             {artefacts.length > 0 && (
               <section className="bg-background-dark border-2 border-primary/10 rounded-xl p-6 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-2 opacity-10">
-                  <span className="material-symbols-outlined text-6xl text-primary">hourglass_empty</span>
+                  <span className="material-symbols-outlined text-6xl text-primary">
+                    hourglass_empty
+                  </span>
                 </div>
                 <h3 className="text-xl font-display font-bold text-primary mb-4">
                   Notable Artefacts
@@ -398,7 +471,9 @@ export default function CharacterProfile() {
                 <div className="space-y-3">
                   {artefacts.map((item) => (
                     <div key={item} className="flex items-start gap-3">
-                      <span className="material-symbols-outlined text-primary text-sm mt-1">star</span>
+                      <span className="material-symbols-outlined text-primary text-sm mt-1">
+                        star
+                      </span>
                       <p className="text-sm text-slate-300">{item}</p>
                     </div>
                   ))}
@@ -415,21 +490,24 @@ export default function CharacterProfile() {
                 </h3>
                 <div
                   className={`flex items-center gap-3 px-4 py-3 rounded-full ${
-                    char.alive
+                    resolvedChar.alive
                       ? "bg-green-500/10 text-green-400 border border-green-500/20"
                       : "bg-slate-700/40 text-slate-400 border border-slate-600/20"
                   }`}
                 >
                   <span
                     className={`w-3 h-3 rounded-full shrink-0 ${
-                      char.alive ? "bg-green-400" : "bg-slate-400"
+                      resolvedChar.alive ? "bg-green-400" : "bg-slate-400"
                     }`}
                   />
-                  <span className="font-bold">{char.alive ? "Alive" : "Deceased"}</span>
+                  <span className="font-bold">
+                    {resolvedChar.alive ? "Alive" : "Deceased"}
+                  </span>
                 </div>
-                {char.actor && char.actor !== "Unknown" && (
+                {resolvedChar.actor && resolvedChar.actor !== "Unknown" && (
                   <p className="mt-4 text-sm text-slate-400">
-                    Portrayed by <span className="text-slate-200">{char.actor}</span>
+                    Portrayed by{" "}
+                    <span className="text-slate-200">{resolvedChar.actor}</span>
                   </p>
                 )}
               </section>
@@ -444,14 +522,26 @@ export default function CharacterProfile() {
           <div className="flex items-center gap-4 text-primary">
             <span className="material-symbols-outlined text-4xl">castle</span>
             <div>
-              <p className="font-display font-bold text-lg">Hogwarts Digital Archives</p>
-              <p className="text-xs text-slate-500 italic">"Draco Dormiens Nunquam Titillandus"</p>
+              <p className="font-display font-bold text-lg">
+                Hogwarts Digital Archives
+              </p>
+              <p className="text-xs text-slate-500 italic">
+                "Draco Dormiens Nunquam Titillandus"
+              </p>
             </div>
           </div>
           <div className="flex gap-8 text-slate-400 text-sm">
-            {["Library", "Great Hall", "Common Rooms", "Owl Post"].map((link) => (
-              <a key={link} href="#" className="hover:text-primary transition-colors">{link}</a>
-            ))}
+            {["Library", "Great Hall", "Common Rooms", "Owl Post"].map(
+              (link) => (
+                <a
+                  key={link}
+                  href="#"
+                  className="hover:text-primary transition-colors"
+                >
+                  {link}
+                </a>
+              )
+            )}
           </div>
         </div>
       </footer>

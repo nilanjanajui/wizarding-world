@@ -204,9 +204,7 @@ export default function SortingHat() {
                                 transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
                                 className="w-32 h-32 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center"
                             >
-                                <span className="material-symbols-outlined text-primary text-7xl">
-                                    wizard_hat
-                                </span>
+                                <span className="text-7xl">🧙</span>
                             </Motion.div>
 
                             <div>
@@ -311,8 +309,8 @@ export default function SortingHat() {
                                             transition={{ delay: i * 0.08 }}
                                             onClick={() => handleAnswer(option.house)}
                                             className={`w-full text-left px-6 py-4 rounded-xl border transition-all duration-200 flex items-center gap-4 ${isSelected
-                                                    ? `${houseData.border} bg-white/10 ${houseData.text} shadow-lg ${houseData.glow}`
-                                                    : "border-primary/10 bg-white/5 text-slate-300 hover:border-primary/30 hover:bg-white/10"
+                                                ? `${houseData.border} bg-white/10 ${houseData.text} shadow-lg ${houseData.glow}`
+                                                : "border-primary/10 bg-white/5 text-slate-300 hover:border-primary/30 hover:bg-white/10"
                                                 }`}
                                         >
                                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${isSelected ? `${houseData.border} bg-primary/20` : "border-slate-600"
@@ -349,8 +347,8 @@ export default function SortingHat() {
                                     onClick={handleNext}
                                     disabled={!selected}
                                     className={`flex items-center gap-2 px-8 py-3 rounded-full font-bold uppercase tracking-widest transition-all ${selected
-                                            ? "bg-primary text-background-dark hover:scale-105 shadow-lg shadow-primary/20"
-                                            : "bg-primary/20 text-primary/40 cursor-not-allowed"
+                                        ? "bg-primary text-background-dark hover:scale-105 shadow-lg shadow-primary/20"
+                                        : "bg-primary/20 text-primary/40 cursor-not-allowed"
                                         }`}
                                 >
                                     {currentQ === QUESTIONS.length - 1 ? "Reveal My House" : "Next"}
@@ -369,7 +367,7 @@ export default function SortingHat() {
                             exit={{ opacity: 0 }}
                             className="flex flex-col items-center justify-center gap-6 py-32 text-center"
                         >
-                            <motion.div
+                            <Motion.div
                                 animate={{ rotate: 360 }}
                                 transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
                                 className="w-20 h-20 rounded-full border-4 border-primary/20 border-t-primary"
