@@ -138,12 +138,10 @@ export default function CharacterProfile() {
 
   const biography =
     data.biography ||
-    `${resolvedChar.name} is a notable figure in the Wizarding World.${
-      resolvedChar.house ? ` A proud member of ${resolvedChar.house}.` : ""
-    }${
-      resolvedChar.actor && resolvedChar.actor !== "Unknown"
-        ? ` Portrayed by ${resolvedChar.actor}.`
-        : ""
+    `${resolvedChar.name} is a notable figure in the Wizarding World.${resolvedChar.house ? ` A proud member of ${resolvedChar.house}.` : ""
+    }${resolvedChar.actor && resolvedChar.actor !== "Unknown"
+      ? ` Portrayed by ${resolvedChar.actor}.`
+      : ""
     }`;
 
   const spells = data.spells || [];
@@ -184,11 +182,10 @@ export default function CharacterProfile() {
           </h2>
           <button
             onClick={() => toggleFavorite(resolvedChar)}
-            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all ${
-              fav
+            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all ${fav
                 ? "bg-primary text-background-dark border-primary"
                 : "bg-primary/10 border-primary/30 text-primary hover:bg-primary hover:text-background-dark"
-            }`}
+              }`}
           >
             <span
               className={`material-symbols-outlined ${fav ? "filled-icon" : ""}`}
@@ -224,22 +221,29 @@ export default function CharacterProfile() {
                   />
                 ) : null}
                 <div
-                  className={`w-full h-full items-center justify-center text-primary ${
-                    resolvedChar.image ? "hidden" : "flex"
-                  }`}
+                  className={`w-full h-full items-center justify-center text-primary ${resolvedChar.image ? "hidden" : "flex"
+                    }`}
                 >
                   <span className="material-symbols-outlined text-6xl opacity-30">
                     person
                   </span>
                 </div>
               </div>
-              {resolvedChar.house === "Gryffindor" && (
-                <div className="absolute -bottom-4 -right-4 bg-[#740001] text-[#e3a000] p-2 rounded-lg shadow-lg border border-[#e3a000]/30">
-                  <span className="material-symbols-outlined text-3xl">
-                    shield
-                  </span>
-                </div>
-              )}
+              {resolvedChar.house && (() => {
+                const HOUSE_STYLES = {
+                  Gryffindor: { bg: "bg-[#740001]", text: "text-[#e3a000]", border: "border-[#e3a000]/30" },
+                  Slytherin: { bg: "bg-[#1a472a]", text: "text-[#aaaaaa]", border: "border-[#aaaaaa]/30" },
+                  Hufflepuff: { bg: "bg-[#ecb939]", text: "text-[#1a1a1a]", border: "border-[#1a1a1a]/20" },
+                  Ravenclaw: { bg: "bg-[#0e1a40]", text: "text-[#946b2d]", border: "border-[#946b2d]/30" },
+                };
+                const style = HOUSE_STYLES[resolvedChar.house];
+                if (!style) return null;
+                return (
+                  <div className={`absolute -bottom-4 -right-4 ${style.bg} ${style.text} p-2 rounded-lg shadow-lg border ${style.border}`}>
+                    <span className="material-symbols-outlined text-3xl">shield</span>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Name & Quote */}
@@ -408,13 +412,12 @@ export default function CharacterProfile() {
                         {label}
                       </span>
                       <span
-                        className={`font-medium text-sm text-right ${
-                          gold
+                        className={`font-medium text-sm text-right ${gold
                             ? "text-[#e3a000] font-bold"
                             : italic
-                            ? "text-slate-100 italic"
-                            : "text-slate-100"
-                        }`}
+                              ? "text-slate-100 italic"
+                              : "text-slate-100"
+                          }`}
                       >
                         {value}
                       </span>
@@ -489,16 +492,14 @@ export default function CharacterProfile() {
                   Status
                 </h3>
                 <div
-                  className={`flex items-center gap-3 px-4 py-3 rounded-full ${
-                    resolvedChar.alive
+                  className={`flex items-center gap-3 px-4 py-3 rounded-full ${resolvedChar.alive
                       ? "bg-green-500/10 text-green-400 border border-green-500/20"
                       : "bg-slate-700/40 text-slate-400 border border-slate-600/20"
-                  }`}
+                    }`}
                 >
                   <span
-                    className={`w-3 h-3 rounded-full shrink-0 ${
-                      resolvedChar.alive ? "bg-green-400" : "bg-slate-400"
-                    }`}
+                    className={`w-3 h-3 rounded-full shrink-0 ${resolvedChar.alive ? "bg-green-400" : "bg-slate-400"
+                      }`}
                   />
                   <span className="font-bold">
                     {resolvedChar.alive ? "Alive" : "Deceased"}

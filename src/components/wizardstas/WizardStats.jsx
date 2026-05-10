@@ -1,7 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../Navbar";
-
 const ACTORS = [
   { last: "Radcliffe", char: "Harry" },
   { last: "Watson", char: "Hermione" },
@@ -13,9 +11,9 @@ const ACTORS = [
 
 const HOUSE_DEFS = [
   { name: "Gryffindor", key: "gryffindor", cls: "chart-gradient-gryffindor" },
-  { name: "Slytherin",  key: "slytherin",  cls: "chart-gradient-slytherin"  },
+  { name: "Slytherin", key: "slytherin", cls: "chart-gradient-slytherin" },
   { name: "Hufflepuff", key: "hufflepuff", cls: "chart-gradient-hufflepuff" },
-  { name: "Ravenclaw",  key: "ravenclaw",  cls: "chart-gradient-ravenclaw"  },
+  { name: "Ravenclaw", key: "ravenclaw", cls: "chart-gradient-ravenclaw" },
 ];
 
 export default function WizardStats() {
@@ -59,6 +57,18 @@ export default function WizardStats() {
     }));
   }, [characters]);
 
+  const actorChart = useMemo(() => {
+    const counts = ACTORS.map(({ last, char }) => ({
+      last,
+      char,
+      count: characters.filter((c) =>
+        c.actor?.toLowerCase().includes(last.toLowerCase())
+      ).length,
+    }));
+    const max = Math.max(...counts.map((a) => a.count), 1);
+    return counts.map((a) => ({ ...a, pct: Math.round((a.count / max) * 100) }));
+  }, [characters]);
+
   // SVG donut circumference: 2 × π × 80 ≈ 502
   const CIRCUMFERENCE = 502;
   const aliveArc = (stats.alivePercent / 100) * CIRCUMFERENCE;
@@ -66,7 +76,6 @@ export default function WizardStats() {
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
       <div className="layout-container flex h-full grow flex-col">
-        <Navbar />
 
         <main className="flex-1 flex flex-col p-6 lg:px-20 lg:py-10">
           {/* Page Header */}
@@ -297,13 +306,28 @@ export default function WizardStats() {
                   <circle cx="450" cy="60" r="4" fill="#d4af35" />
                   <circle cx="750" cy="40" r="4" fill="#d4af35" />
                 </svg>
-                <div className="flex justify-between px-2">
-                  {ACTORS.map(({ last, char }) => (
-                    <div key={last} className="text-center group cursor-default">
-                      <p className="text-slate-400 text-xs font-bold group-hover:text-primary transition-colors">
-                        {last}
-                      </p>
-                      <p className="text-[10px] text-slate-600">{char}</p>
+                <div className="flex flex-col gap-3">
+                  {actorChart.map(({ last, char, count, pct }) => (
+                    <div key={last} className="flex items-center gap-4">
+                      <div className="w-24 text-right shrink-0">
+                        <p className="text-slate-300 text-xs font-bold">{last}</p>
+                        <p className="text-slate-600 text-[10px]">{char}</p>
+                      </div>
+                      <div className="flex-1 h-7 bg-slate-800 rounded-lg overflow-hidden">
+                        <div
+                          className="h-full bg-primary rounded-lg transition-all duration-700 flex items-center justify-end pr-2"
+                          style={{ width: loading ? "0%" : `${pct}%` }}
+                        >
+                          {pct > 20 && (
+                            <span className="text-background-dark text-[10px] font-bold">
+                              {count}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      {pct <= 20 && (
+                        <span className="text-slate-400 text-[10px] font-bold w-6">{loading ? "" : count}</span>
+                      )}
                     </div>
                   ))}
                 </div>

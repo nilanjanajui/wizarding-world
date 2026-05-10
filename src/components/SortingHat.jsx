@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import Navbar from "./Navbar";
 
 const QUESTIONS = [
     {
@@ -183,7 +182,6 @@ export default function SortingHat() {
 
     return (
         <div className="min-h-screen bg-background-dark font-display text-slate-100">
-            <Navbar />
 
             <main className="max-w-3xl mx-auto px-6 py-12 lg:px-0">
 

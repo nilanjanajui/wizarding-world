@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
-import Navbar from "../Navbar";
 import { useFavorites } from "../../context/FavoritesContext";
 import characterImages from "../../data/characterImages";
 
@@ -78,7 +77,6 @@ export default function Characters() {
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
       <div className="flex flex-col h-full grow">
-        <Navbar />
 
         <main className="max-w-7xl mx-auto w-full px-6 py-12 lg:px-20">
 

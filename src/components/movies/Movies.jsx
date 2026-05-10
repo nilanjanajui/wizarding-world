@@ -43,7 +43,6 @@ export default function Movies() {
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
-      <Navbar />
 
       <main className="flex-1 flex flex-col px-6 md:px-20 py-10 max-w-360 mx-auto w-full">
         {/* Header */}

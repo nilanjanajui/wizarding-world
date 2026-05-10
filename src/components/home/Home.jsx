@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import Navbar from "../Navbar";
 import { HERO_BG } from "../../data/movieData";
 import characterImages from "../../data/characterImages";
 
@@ -69,7 +68,6 @@ export default function Home() {
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-dark font-display text-slate-100 antialiased">
-      <Navbar />
 
       <main className="flex-1">
         {/* Hero */}

@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../../Navbar";
 import { useFavorites } from "../../../context/FavoritesContext";
 
 const BLOOD_STATUS = {
@@ -29,7 +28,6 @@ export default function FavCharacters() {
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
       <div className="layout-container flex flex-col h-full grow">
-        <Navbar />
 
         <main className="flex-1 px-6 py-8 md:px-20 lg:px-40">
           <div className="flex flex-col md:flex-row gap-12">
