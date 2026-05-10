@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../Navbar";
 import MovieModal from "./MovieModal";
 
 const MOVIE_EXTRA = {
