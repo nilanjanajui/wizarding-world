@@ -11,9 +11,9 @@ const BLOOD_STATUS = {
 
 const NAV_ITEMS = [
   { icon: "explore", label: "Discover", to: "/characters" },
-  { icon: "library_books", label: "Library", to: "/" },
   { icon: "favorite", label: "Favorites", to: "/favorites", active: true },
-  { icon: "settings", label: "Settings", to: "/" },
+  { icon: "movie", label: "Movies", to: "/movies" },
+  { icon: "analytics", label: "Stats", to: "/stats" },
 ];
 
 export default function FavCharacters() {
@@ -35,25 +35,6 @@ export default function FavCharacters() {
           <div className="flex flex-col md:flex-row gap-12">
             {/* Sidebar */}
             <aside className="w-full md:w-64 flex flex-col gap-8">
-              {/* User Card */}
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-primary/5 border border-primary/10">
-                <div
-                  className="w-12 h-12 rounded-full overflow-hidden bg-cover bg-center border border-primary/20"
-                  style={{
-                    backgroundImage:
-                      "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBhMbXEzTT9zgtG_9rSNc2loaTYcBCtOi6PKs4N7HaiiCLDiF5KXnj0gUdlzRnQmCJIGvoxpGMK6wkXgtaVtvhV29zOZf0s0HhuTw9sQLxfX6ROb86jmgxLeURUZbJpzmEJLOc-lH1wfnJJAY3NYHbLv8sPC1UjGQnyoA9bBeoSGIXL2ACsC8DvmXHHbkW6u7TcKVUfcgH70fYYGdgZuyhDA30jZrlcV1KMTxKsUx8C2rjENHnPRmsbcPL43J8fMha1P1lq3WIXsZug')",
-                  }}
-                />
-                <div className="flex flex-col">
-                  <h1 className="text-slate-900 dark:text-slate-100 font-bold text-sm">
-                    Albus Dumbledore
-                  </h1>
-                  <p className="text-primary text-xs font-medium">
-                    Headmaster Level 42
-                  </p>
-                </div>
-              </div>
-
               {/* Sidebar Nav */}
               <nav className="flex flex-col gap-1">
                 {NAV_ITEMS.map(({ icon, label, to, active }) => (
@@ -92,10 +73,13 @@ export default function FavCharacters() {
               </div>
 
               {/* Favorites Grid */}
-              {favorites.length > 0 ? (
+              {favorites.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {favorites.map((char) => {
-                    const ancestry = BLOOD_STATUS[char.ancestry?.toLowerCase()] || char.ancestry || "";
+                    const ancestry =
+                      BLOOD_STATUS[char.ancestry?.toLowerCase()] ||
+                      char.ancestry ||
+                      "";
 
                     return (
                       <div
@@ -131,7 +115,9 @@ export default function FavCharacters() {
                               char.image ? "hidden" : "flex"
                             }`}
                           >
-                            <span className="material-symbols-outlined text-6xl">person</span>
+                            <span className="material-symbols-outlined text-6xl">
+                              person
+                            </span>
                           </div>
                         </div>
 
@@ -162,31 +148,31 @@ export default function FavCharacters() {
                     );
                   })}
                 </div>
-              ) : null}
+              )}
 
-              {/* Empty / Discover CTA */}
-              <div className="mt-20 flex flex-col items-center justify-center text-center py-12 px-6 rounded-3xl bg-primary/5 border-2 border-dashed border-primary/20">
-                <div className="w-24 h-24 mb-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <span className="material-symbols-outlined text-5xl">
-                    magic_button
-                  </span>
+              {/* Empty State CTA — only shown when no favorites */}
+              {favorites.length === 0 && (
+                <div className="mt-20 flex flex-col items-center justify-center text-center py-12 px-6 rounded-3xl bg-primary/5 border-2 border-dashed border-primary/20">
+                  <div className="w-24 h-24 mb-6 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <span className="material-symbols-outlined text-5xl">
+                      magic_button
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                    No favorites yet!
+                  </h3>
+                  <p className="text-slate-500 dark:text-slate-400 max-w-md mb-8">
+                    Tap the heart icon on any character's card to instantly add
+                    them to your magical collection.
+                  </p>
+                  <Link
+                    to="/characters"
+                    className="px-8 py-3 bg-primary text-background-dark rounded-xl font-bold text-sm tracking-widest uppercase hover:brightness-110 transition-all"
+                  >
+                    Explore Characters
+                  </Link>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                  {favorites.length === 0
-                    ? "No favorites yet!"
-                    : "Want to discover more?"}
-                </h3>
-                <p className="text-slate-500 dark:text-slate-400 max-w-md mb-8">
-                  Tap the heart icon on any character's card to instantly add
-                  them to your magical collection.
-                </p>
-                <Link
-                  to="/characters"
-                  className="px-8 py-3 bg-primary text-background-dark rounded-xl font-bold text-sm tracking-widest uppercase hover:brightness-110 transition-all"
-                >
-                  Explore Characters
-                </Link>
-              </div>
+              )}
             </div>
           </div>
         </main>
@@ -197,17 +183,26 @@ export default function FavCharacters() {
             <div className="flex items-center gap-2 text-primary/60">
               <span className="material-symbols-outlined">auto_stories</span>
               <span className="text-sm font-medium">
-                PotterExplorer Archive © 2024
+                PotterExplorer Archive © 2026
               </span>
             </div>
             <div className="flex gap-8">
-              <a href="#" className="text-xs text-slate-500 hover:text-primary uppercase tracking-widest font-bold">
+              <a
+                href="#"
+                className="text-xs text-slate-500 hover:text-primary uppercase tracking-widest font-bold"
+              >
                 The Daily Prophet
               </a>
-              <a href="#" className="text-xs text-slate-500 hover:text-primary uppercase tracking-widest font-bold">
+              <a
+                href="#"
+                className="text-xs text-slate-500 hover:text-primary uppercase tracking-widest font-bold"
+              >
                 Ministry News
               </a>
-              <a href="#" className="text-xs text-slate-500 hover:text-primary uppercase tracking-widest font-bold">
+              <a
+                href="#"
+                className="text-xs text-slate-500 hover:text-primary uppercase tracking-widest font-bold"
+              >
                 Privacy Spell
               </a>
             </div>

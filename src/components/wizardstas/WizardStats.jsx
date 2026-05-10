@@ -11,11 +11,11 @@ const ACTORS = [
   { last: "Gambon", char: "Dumbledore" },
 ];
 
-const HOUSE_CHART = [
-  { name: "Gryffindor", key: "gryffindor", cls: "chart-gradient-gryffindor", count: 192, pct: "85%" },
-  { name: "Slytherin", key: "slytherin", cls: "chart-gradient-slytherin", count: 178, pct: "78%" },
-  { name: "Hufflepuff", key: "hufflepuff", cls: "chart-gradient-hufflepuff", count: 142, pct: "62%" },
-  { name: "Ravenclaw", key: "ravenclaw", cls: "chart-gradient-ravenclaw", count: 156, pct: "68%" },
+const HOUSE_DEFS = [
+  { name: "Gryffindor", key: "gryffindor", cls: "chart-gradient-gryffindor" },
+  { name: "Slytherin",  key: "slytherin",  cls: "chart-gradient-slytherin"  },
+  { name: "Hufflepuff", key: "hufflepuff", cls: "chart-gradient-hufflepuff" },
+  { name: "Ravenclaw",  key: "ravenclaw",  cls: "chart-gradient-ravenclaw"  },
 ];
 
 export default function WizardStats() {
@@ -31,16 +31,37 @@ export default function WizardStats() {
   }, []);
 
   const stats = useMemo(() => {
-    if (!characters.length) return { total: 724, alive: 572, deceased: 152, alivePercent: 79 };
+    if (!characters.length) {
+      return { total: 0, alive: 0, deceased: 0, alivePercent: 0, withPatronus: 0 };
+    }
     const alive = characters.filter((c) => c.alive).length;
     const deceased = characters.length - alive;
+    const withPatronus = characters.filter((c) => c.patronus).length;
     return {
       total: characters.length,
       alive,
       deceased,
       alivePercent: Math.round((alive / characters.length) * 100),
+      withPatronus,
     };
   }, [characters]);
+
+  const houseChart = useMemo(() => {
+    const counts = HOUSE_DEFS.map(({ name, key, cls }) => ({
+      name,
+      cls,
+      count: characters.filter((c) => c.house?.toLowerCase() === key).length,
+    }));
+    const max = Math.max(...counts.map((h) => h.count), 1);
+    return counts.map((h) => ({
+      ...h,
+      pct: `${Math.round((h.count / max) * 100)}%`,
+    }));
+  }, [characters]);
+
+  // SVG donut circumference: 2 × π × 80 ≈ 502
+  const CIRCUMFERENCE = 502;
+  const aliveArc = (stats.alivePercent / 100) * CIRCUMFERENCE;
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
@@ -67,7 +88,10 @@ export default function WizardStats() {
               </p>
             </div>
             <div className="flex gap-4">
-              <button className="flex items-center gap-2 bg-primary text-background-dark px-6 py-2 rounded-lg font-bold hover:opacity-90 transition-opacity">
+              <button
+                onClick={() => window.print()}
+                className="flex items-center gap-2 bg-primary text-background-dark px-6 py-2 rounded-lg font-bold hover:opacity-90 transition-opacity"
+              >
                 <span className="material-symbols-outlined text-sm">download</span>
                 Export PDF
               </button>
@@ -81,22 +105,22 @@ export default function WizardStats() {
                 label: "Total Characters",
                 value: loading ? "..." : stats.total,
                 icon: "groups",
-                sub: "+12 this month",
+                sub: "From HP API records",
                 subColor: "text-emerald-500",
                 subIcon: "trending_up",
               },
               {
-                label: "Active Spells",
-                value: "182",
+                label: "Known Patronuses",
+                value: loading ? "..." : stats.withPatronus,
                 icon: "auto_fix_high",
-                sub: "Standard curriculum",
+                sub: "From Ministry records",
                 subColor: "text-slate-500",
                 subIcon: "remove",
               },
               {
                 label: "Recorded Deaths",
                 value: loading ? "..." : stats.deceased,
-                icon: "skull",
+                icon: "crisis_alert",
                 sub: "Post-War verification",
                 subColor: "text-rose-500",
                 subIcon: "warning",
@@ -125,7 +149,7 @@ export default function WizardStats() {
 
           {/* Charts Grid */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-            {/* Bar Chart - Characters per House */}
+            {/* Bar Chart — Characters per House */}
             <div className="flex flex-col gap-6 p-8 rounded-xl border border-primary/10 bg-slate-900/40">
               <div className="flex justify-between items-start">
                 <div>
@@ -140,17 +164,17 @@ export default function WizardStats() {
               </div>
               <div className="flex flex-col gap-6 min-h-75 justify-end pt-10">
                 <div className="grid grid-cols-4 gap-4 items-end h-60">
-                  {HOUSE_CHART.map(({ name, cls, count, pct }) => (
+                  {houseChart.map(({ name, cls, count, pct }) => (
                     <div
                       key={name}
                       className="group relative flex flex-col items-center gap-3 h-full justify-end"
                     >
                       <div className="absolute -top-6 text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        {count}
+                        {loading ? "..." : count}
                       </div>
                       <div
                         className={`${cls} w-full rounded-t-lg transition-all duration-500 hover:brightness-110`}
-                        style={{ height: pct }}
+                        style={{ height: loading ? "0%" : pct }}
                       />
                       <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">
                         {name}
@@ -161,7 +185,7 @@ export default function WizardStats() {
               </div>
             </div>
 
-            {/* Donut Chart - Vital Status */}
+            {/* Donut Chart — Vital Status */}
             <div className="flex flex-col gap-6 p-8 rounded-xl border border-primary/10 bg-slate-900/40">
               <div className="flex justify-between items-start">
                 <div>
@@ -175,15 +199,39 @@ export default function WizardStats() {
                 <span className="material-symbols-outlined text-primary/50">pie_chart</span>
               </div>
               <div className="flex flex-1 items-center justify-center relative min-h-75">
-                <div className="relative size-60 rounded-full border-16 border-slate-800 flex items-center justify-center">
-                  <div className="absolute -inset-4 rounded-full border-16 border-primary border-r-transparent border-b-transparent rotate-30" />
-                  <div className="text-center">
+                <div className="relative flex items-center justify-center">
+                  <svg width="200" height="200" viewBox="0 0 200 200">
+                    {/* Track */}
+                    <circle
+                      cx="100"
+                      cy="100"
+                      r="80"
+                      fill="none"
+                      stroke="#1e293b"
+                      strokeWidth="20"
+                    />
+                    {/* Alive arc */}
+                    <circle
+                      cx="100"
+                      cy="100"
+                      r="80"
+                      fill="none"
+                      stroke="#d4af35"
+                      strokeWidth="20"
+                      strokeLinecap="round"
+                      strokeDasharray={`${loading ? 0 : aliveArc} ${CIRCUMFERENCE}`}
+                      transform="rotate(-90 100 100)"
+                      style={{ transition: "stroke-dasharray 1s ease" }}
+                    />
+                  </svg>
+                  <div className="absolute text-center">
                     <p className="text-4xl font-bold text-slate-100">
                       {loading ? "..." : `${stats.alivePercent}%`}
                     </p>
                     <p className="text-xs font-bold uppercase text-primary">Alive</p>
                   </div>
                 </div>
+
                 <div className="absolute bottom-0 right-0 flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <div className="size-3 rounded-full bg-primary" />
@@ -192,7 +240,7 @@ export default function WizardStats() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="size-3 rounded-full bg-slate-800" />
+                    <div className="size-3 rounded-full bg-slate-700" />
                     <span className="text-sm text-slate-300">
                       Deceased ({loading ? "..." : stats.deceased})
                     </span>
@@ -201,7 +249,7 @@ export default function WizardStats() {
               </div>
             </div>
 
-            {/* Line Chart - Actor Screen Time */}
+            {/* Line Chart — Actor Representation */}
             <div className="xl:col-span-2 flex flex-col gap-6 p-8 rounded-xl border border-primary/10 bg-slate-900/40">
               <div className="flex justify-between items-start">
                 <div>
@@ -288,8 +336,7 @@ export default function WizardStats() {
         {/* Footer */}
         <footer className="border-t border-primary/10 py-10 lg:px-20 text-center">
           <p className="text-slate-500 text-sm">
-            © 1997-2024 PotterExplorer Project. Data sourced from the Ministry
-            of Magic archives.
+            © 2026 PotterExplorer Project. Data sourced from the Ministry of Magic archives.
           </p>
         </footer>
       </div>

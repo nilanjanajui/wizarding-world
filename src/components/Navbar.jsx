@@ -7,7 +7,7 @@ const navLinks = [
   { to: "/characters", label: "Characters", icon: "groups" },
   { to: "/favorites", label: "Favorites", icon: "favorite" },
   { to: "/stats", label: "Stats", icon: "analytics" },
-  { to: "/sorting-hat", label: "Sorting Hat", icon: "wizard_hat" },
+  { to: "/sorting-hat", label: "Sorting Hat", icon: "auto_fix_high" },
 ];
 
 const SPELLS = [
