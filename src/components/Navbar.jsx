@@ -23,6 +23,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [spellMsg, setSpellMsg] = useState("");
   const [scrolled, setScrolled] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const navigate = useNavigate();
   const spellTimer = useRef(null);
 
@@ -35,10 +36,17 @@ export default function Navbar() {
 
   // Close mobile menu on resize to desktop
   useEffect(() => {
-    const onResize = () => { if (window.innerWidth >= 1024) setMenuOpen(false); };
+    const onResize = () => {
+      if (window.innerWidth >= 1024) setMenuOpen(false);
+    };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  // Sync dark class on mount
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", darkMode);
+  }, [darkMode]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -54,6 +62,12 @@ export default function Navbar() {
     setSpellMsg(spell);
     clearTimeout(spellTimer.current);
     spellTimer.current = setTimeout(() => setSpellMsg(""), 2000);
+  };
+
+  const toggleDark = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    document.documentElement.classList.toggle("dark", next);
   };
 
   return (
@@ -115,6 +129,17 @@ export default function Navbar() {
               </div>
             </form>
 
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleDark}
+              title="Toggle dark mode"
+              className="flex items-center justify-center h-10 w-10 rounded-lg bg-secondary border border-primary/20 text-primary hover:bg-primary hover:text-background-dark transition-all"
+            >
+              <span className="material-symbols-outlined">
+                {darkMode ? "light_mode" : "dark_mode"}
+              </span>
+            </button>
+
             {/* Spell Button + Toast */}
             <div className="relative">
               <button
@@ -153,7 +178,10 @@ export default function Navbar() {
           <div className="flex flex-col gap-1 px-6 py-4 border-t border-primary/10 bg-background-dark">
 
             {/* Mobile Search */}
-            <form onSubmit={handleSearch} className="flex items-center h-11 rounded-lg overflow-hidden border border-primary/20 mb-3 focus-within:border-primary transition-colors">
+            <form
+              onSubmit={handleSearch}
+              className="flex items-center h-11 rounded-lg overflow-hidden border border-primary/20 mb-3 focus-within:border-primary transition-colors"
+            >
               <div className="flex items-center justify-center bg-primary/10 px-3 h-full text-primary/60">
                 <span className="material-symbols-outlined text-xl">search</span>
               </div>
