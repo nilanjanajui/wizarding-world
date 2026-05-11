@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
+
 const ACTORS = [
   { last: "Radcliffe", char: "Harry" },
   { last: "Watson", char: "Hermione" },
@@ -15,6 +16,47 @@ const HOUSE_DEFS = [
   { name: "Hufflepuff", key: "hufflepuff", cls: "chart-gradient-hufflepuff" },
   { name: "Ravenclaw", key: "ravenclaw", cls: "chart-gradient-ravenclaw" },
 ];
+
+function ActorLineChart({ actorChart }) {
+  const W = 800, H = 200, PAD = 20;
+  const points = actorChart.map((a, i) => ({
+    x: (i / (actorChart.length - 1)) * (W - PAD * 2) + PAD,
+    y: H - PAD - (a.pct / 100) * (H - PAD * 2),
+  }));
+  const pathD = points.reduce((d, p, i) => {
+    if (i === 0) return `M${p.x},${p.y}`;
+    const prev = points[i - 1];
+    const cpx = (prev.x + p.x) / 2;
+    return `${d} C${cpx},${prev.y} ${cpx},${p.y} ${p.x},${p.y}`;
+  }, "");
+  const areaD = `${pathD} L${points[points.length - 1].x},${H} L${points[0].x},${H} Z`;
+
+  return (
+    <svg
+      className="w-full h-full min-h-50"
+      viewBox={`0 0 ${W} ${H}`}
+      preserveAspectRatio="none"
+    >
+      <defs>
+        <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="5%" stopColor="#d4af35" stopOpacity="0.3" />
+          <stop offset="95%" stopColor="#d4af35" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={areaD} fill="url(#areaGradient)" />
+      <path
+        d={pathD}
+        fill="none"
+        stroke="#d4af35"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      {points.map((p, i) => (
+        <circle key={i} cx={p.x} cy={p.y} r="4" fill="#d4af35" />
+      ))}
+    </svg>
+  );
+}
 
 export default function WizardStats() {
   const [characters, setCharacters] = useState([]);
@@ -69,7 +111,6 @@ export default function WizardStats() {
     return counts.map((a) => ({ ...a, pct: Math.round((a.count / max) * 100) }));
   }, [characters]);
 
-  // SVG donut circumference: 2 × π × 80 ≈ 502
   const CIRCUMFERENCE = 502;
   const aliveArc = (stats.alivePercent / 100) * CIRCUMFERENCE;
 
@@ -210,7 +251,6 @@ export default function WizardStats() {
               <div className="flex flex-1 items-center justify-center relative min-h-75">
                 <div className="relative flex items-center justify-center">
                   <svg width="200" height="200" viewBox="0 0 200 200">
-                    {/* Track */}
                     <circle
                       cx="100"
                       cy="100"
@@ -219,7 +259,6 @@ export default function WizardStats() {
                       stroke="#1e293b"
                       strokeWidth="20"
                     />
-                    {/* Alive arc */}
                     <circle
                       cx="100"
                       cy="100"
@@ -240,7 +279,6 @@ export default function WizardStats() {
                     <p className="text-xs font-bold uppercase text-primary">Alive</p>
                   </div>
                 </div>
-
                 <div className="absolute bottom-0 right-0 flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <div className="size-3 rounded-full bg-primary" />
@@ -280,32 +318,7 @@ export default function WizardStats() {
                 </div>
               </div>
               <div className="flex flex-col gap-4 min-h-62.5 relative">
-                <svg
-                  className="w-full h-full min-h-50"
-                  viewBox="0 0 800 200"
-                  preserveAspectRatio="none"
-                >
-                  <defs>
-                    <linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="5%" stopColor="#d4af35" stopOpacity="0.3" />
-                      <stop offset="95%" stopColor="#d4af35" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d="M0,150 C50,140 100,20 150,50 C200,80 250,160 300,140 C350,120 400,40 450,60 C500,80 550,180 600,160 C650,140 700,20 750,40 L800,50 L800,200 L0,200 Z"
-                    fill="url(#areaGradient)"
-                  />
-                  <path
-                    d="M0,150 C50,140 100,20 150,50 C200,80 250,160 300,140 C350,120 400,40 450,60 C500,80 550,180 600,160 C650,140 700,20 750,40 L800,50"
-                    fill="none"
-                    stroke="#d4af35"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="150" cy="50" r="4" fill="#d4af35" />
-                  <circle cx="450" cy="60" r="4" fill="#d4af35" />
-                  <circle cx="750" cy="40" r="4" fill="#d4af35" />
-                </svg>
+                {!loading && <ActorLineChart actorChart={actorChart} />}
                 <div className="flex flex-col gap-3">
                   {actorChart.map(({ last, char, count, pct }) => (
                     <div key={last} className="flex items-center gap-4">
@@ -326,7 +339,9 @@ export default function WizardStats() {
                         </div>
                       </div>
                       {pct <= 20 && (
-                        <span className="text-slate-400 text-[10px] font-bold w-6">{loading ? "" : count}</span>
+                        <span className="text-slate-400 text-[10px] font-bold w-6">
+                          {loading ? "" : count}
+                        </span>
                       )}
                     </div>
                   ))}
