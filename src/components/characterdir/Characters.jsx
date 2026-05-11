@@ -27,6 +27,8 @@ export default function Characters() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(() => searchParams.get("search") || "");
   const [activeHouse, setActiveHouse] = useState("All");
+  const [activeStatus, setActiveStatus] = useState("all");
+  const [sortBy, setSortBy] = useState("name-asc");
   const [visibleCount, setVisibleCount] = useState(16);
 
   const { toggleFavorite, isFavorite } = useFavorites();
@@ -73,6 +75,20 @@ export default function Characters() {
     setActiveHouse(house);
     setVisibleCount(16);
   };
+
+  const handleStatusChange = (status) => {
+    setActiveStatus(status);
+    setVisibleCount(16);
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+  };
+
+  const SORT_OPTIONS = [
+    { label: "Name (A-Z)", value: "name-asc" },
+    { label: "Name (Z-A)", value: "name-desc" },
+  ];
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
@@ -125,26 +141,75 @@ export default function Characters() {
             </div>
 
             {/* House Filter Pills */}
+            {/* House Filter Pills */}
             <div className="flex flex-wrap gap-3">
               {HOUSES.map((house) => (
                 <button
                   key={house}
                   onClick={() => handleHouseChange(house)}
-                  className={`px-6 py-2 rounded-full font-bold text-sm border transition-all hover:scale-105 ${
-                    activeHouse === house
-                      ? "bg-primary text-background-dark border-primary shadow-lg shadow-primary/20"
-                      : "bg-slate-100 dark:bg-card-dark hover:bg-primary/10 text-slate-900 dark:text-slate-100 border-primary/10"
-                  }`}
+                  className={`px-6 py-2 rounded-full font-bold text-sm border transition-all hover:scale-105 ${activeHouse === house
+                    ? "bg-primary text-background-dark border-primary shadow-lg shadow-primary/20"
+                    : "bg-slate-100 dark:bg-card-dark hover:bg-primary/10 text-slate-900 dark:text-slate-100 border-primary/10"
+                    }`}
                 >
                   {house}
                 </button>
               ))}
+            </div>
 
-              {!loading && (
-                <span className="ml-auto self-center text-sm text-slate-400 font-medium">
-                  {filtered.length} wizard{filtered.length !== 1 ? "s" : ""} found
-                </span>
-              )}
+            {/* Status + Sort row */}
+            <div className="flex flex-wrap items-center justify-between gap-4">
+
+              {/* Status Pills */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-500 mr-1">Status</span>
+                {[
+                  { label: "All", value: "all" },
+                  { label: "● Alive", value: "alive" },
+                  { label: "● Deceased", value: "deceased" },
+                ].map(({ label, value }) => (
+                  <button
+                    key={value}
+                    onClick={() => handleStatusChange(value)}
+                    className={`px-4 py-1.5 rounded-full font-bold text-xs border transition-all hover:scale-105 ${activeStatus === value
+                      ? value === "alive"
+                        ? "bg-green-500/20 text-green-400 border-green-500/40"
+                        : value === "deceased"
+                          ? "bg-slate-500/20 text-slate-400 border-slate-500/40"
+                          : "bg-primary text-background-dark border-primary"
+                      : "bg-slate-100 dark:bg-card-dark text-slate-500 border-primary/10 hover:border-primary/30"
+                      }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Sort Dropdown + Count */}
+              <div className="flex items-center gap-4">
+                {!loading && (
+                  <span className="text-sm text-slate-400 font-medium">
+                    {filtered.length} wizard{filtered.length !== 1 ? "s" : ""} found
+                  </span>
+                )}
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 text-sm pointer-events-none">
+                    sort
+                  </span>
+                  <select
+                    value={sortBy}
+                    onChange={handleSortChange}
+                    className="appearance-none bg-slate-100 dark:bg-card-dark border border-primary/10 focus:border-primary text-slate-900 dark:text-slate-100 text-sm font-bold rounded-lg pl-9 pr-8 py-2 outline-none cursor-pointer transition-colors"
+                  >
+                    {SORT_OPTIONS.map(({ label, value }) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
+                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-primary/50 text-sm pointer-events-none">
+                    expand_more
+                  </span>
+                </div>
+              </div>
             </div>
           </Motion.div>
 
@@ -183,7 +248,7 @@ export default function Characters() {
                     <span className="text-primary font-bold">"{search}"</span>
                   </p>
                   <button
-                    onClick={() => { setSearch(""); setActiveHouse("All"); }}
+                    onClick={() => { setSearch(""); setActiveHouse("All"); setActiveStatus("all"); setSortBy("name-asc"); setVisibleCount(16); }}
                     className="mt-6 px-6 py-2 border border-primary/30 text-primary rounded-lg text-sm font-bold hover:bg-primary/10 transition-colors"
                   >
                     Clear Filters
@@ -222,9 +287,8 @@ export default function Characters() {
 
                           {/* Fallback */}
                           <div
-                            className={`w-full h-full bg-primary/10 items-center justify-center text-primary flex-col gap-2 ${
-                              imgSrc ? "hidden" : "flex"
-                            }`}
+                            className={`w-full h-full bg-primary/10 items-center justify-center text-primary flex-col gap-2 ${imgSrc ? "hidden" : "flex"
+                              }`}
                           >
                             <span className="material-symbols-outlined text-6xl">person</span>
                             <span className="text-xs text-primary/60 font-medium">No image</span>
@@ -237,16 +301,14 @@ export default function Characters() {
                           <div className="absolute top-3 right-3">
                             <button
                               onClick={() => toggleFavorite(char)}
-                              className={`p-2 rounded-full backdrop-blur-md transition-all ${
-                                fav
-                                  ? "bg-red-500/20 border border-red-500/40"
-                                  : "bg-black/40 hover:bg-red-500/20"
-                              }`}
+                              className={`p-2 rounded-full backdrop-blur-md transition-all ${fav
+                                ? "bg-red-500/20 border border-red-500/40"
+                                : "bg-black/40 hover:bg-red-500/20"
+                                }`}
                             >
                               <span
-                                className={`material-symbols-outlined text-xl transition-colors ${
-                                  fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
-                                }`}
+                                className={`material-symbols-outlined text-xl transition-colors ${fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
+                                  }`}
                               >
                                 favorite
                               </span>
@@ -286,11 +348,10 @@ export default function Characters() {
                             <div className="flex justify-between">
                               <span>Status</span>
                               <span
-                                className={`font-bold text-xs px-2 py-0.5 rounded-full ${
-                                  char.alive
-                                    ? "bg-green-500/10 text-green-500"
-                                    : "bg-slate-500/10 text-slate-400"
-                                }`}
+                                className={`font-bold text-xs px-2 py-0.5 rounded-full ${char.alive
+                                  ? "bg-green-500/10 text-green-500"
+                                  : "bg-slate-500/10 text-slate-400"
+                                  }`}
                               >
                                 {char.alive ? "● Alive" : "● Deceased"}
                               </span>
