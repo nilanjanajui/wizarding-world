@@ -42,6 +42,9 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  // Add after the existing two useEffects
+  useEffect(() => () => clearTimeout(spellTimer.current), []);
+
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -62,9 +65,8 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 w-full border-b border-primary/20 bg-background-dark/90 backdrop-blur-md transition-all duration-300 ${
-          scrolled ? "py-2 shadow-lg shadow-black/30" : "py-4"
-        }`}
+        className={`sticky top-0 z-50 w-full border-b border-primary/20 bg-background-dark/90 backdrop-blur-md transition-all duration-300 ${scrolled ? "py-2 shadow-lg shadow-black/30" : "py-4"
+          }`}
       >
         <div className="flex items-center justify-between px-6 md:px-20">
 
@@ -87,10 +89,9 @@ export default function Navbar() {
                 to={to}
                 end={end}
                 className={({ isActive }) =>
-                  `text-sm font-medium transition-colors pb-0.5 ${
-                    isActive
-                      ? "text-primary border-b-2 border-primary"
-                      : "text-slate-300 hover:text-primary"
+                  `text-sm font-medium transition-colors pb-0.5 ${isActive
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-slate-300 hover:text-primary"
                   }`
                 }
               >
@@ -150,9 +151,8 @@ export default function Navbar() {
 
         {/* Mobile Dropdown */}
         <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            menuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+            }`}
         >
           <div className="flex flex-col gap-1 px-6 py-4 border-t border-primary/10 bg-background-dark">
 
@@ -181,10 +181,9 @@ export default function Navbar() {
                 end={end}
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-primary text-background-dark"
-                      : "text-slate-300 hover:bg-primary/10 hover:text-primary"
+                  `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive
+                    ? "bg-primary text-background-dark"
+                    : "text-slate-300 hover:bg-primary/10 hover:text-primary"
                   }`
                 }
               >
