@@ -6,6 +6,14 @@ import characterImages from "../../data/characterImages";
 
 const HOUSES = ["All", "Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"];
 
+const SORT_OPTIONS = [
+  { label: "Name (A–Z)", value: "name-asc" },
+  { label: "Name (Z–A)", value: "name-desc" },
+  { label: "By House", value: "house" },
+  { label: "Alive First", value: "alive-first" },
+  { label: "Deceased First", value: "deceased-first" },
+];
+
 const HOUSE_BADGE = {
   Gryffindor: "bg-primary/90 text-background-dark",
   Slytherin: "bg-slate-700 text-white",
@@ -49,14 +57,29 @@ export default function Characters() {
   }, []);
 
   const filtered = useMemo(() => {
-    return characters.filter((c) => {
+    let result = characters.filter((c) => {
       const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
       const matchesHouse =
         activeHouse === "All" ||
         c.house?.toLowerCase() === activeHouse.toLowerCase();
-      return matchesSearch && matchesHouse;
+      const matchesStatus =
+        activeStatus === "all" ||
+        (activeStatus === "alive" && c.alive === true) ||
+        (activeStatus === "deceased" && c.alive === false);
+      return matchesSearch && matchesHouse && matchesStatus;
     });
-  }, [characters, search, activeHouse]);
+
+    result = [...result].sort((a, b) => {
+      if (sortBy === "name-asc") return a.name.localeCompare(b.name);
+      if (sortBy === "name-desc") return b.name.localeCompare(a.name);
+      if (sortBy === "house") return (a.house || "").localeCompare(b.house || "");
+      if (sortBy === "alive-first") return (b.alive ? 1 : 0) - (a.alive ? 1 : 0);
+      if (sortBy === "deceased-first") return (a.alive ? 1 : 0) - (b.alive ? 1 : 0);
+      return 0;
+    });
+
+    return result;
+  }, [characters, search, activeHouse, activeStatus, sortBy]);
 
   const visible = filtered.slice(0, visibleCount);
 
@@ -83,12 +106,16 @@ export default function Characters() {
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
+    setVisibleCount(16);
   };
 
-  const SORT_OPTIONS = [
-    { label: "Name (A-Z)", value: "name-asc" },
-    { label: "Name (Z-A)", value: "name-desc" },
-  ];
+  const clearAllFilters = () => {
+    setSearch("");
+    setActiveHouse("All");
+    setActiveStatus("all");
+    setSortBy("name-asc");
+    setVisibleCount(16);
+  };
 
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
@@ -141,16 +168,16 @@ export default function Characters() {
             </div>
 
             {/* House Filter Pills */}
-            {/* House Filter Pills */}
             <div className="flex flex-wrap gap-3">
               {HOUSES.map((house) => (
                 <button
                   key={house}
                   onClick={() => handleHouseChange(house)}
-                  className={`px-6 py-2 rounded-full font-bold text-sm border transition-all hover:scale-105 ${activeHouse === house
-                    ? "bg-primary text-background-dark border-primary shadow-lg shadow-primary/20"
-                    : "bg-slate-100 dark:bg-card-dark hover:bg-primary/10 text-slate-900 dark:text-slate-100 border-primary/10"
-                    }`}
+                  className={`px-6 py-2 rounded-full font-bold text-sm border transition-all hover:scale-105 ${
+                    activeHouse === house
+                      ? "bg-primary text-background-dark border-primary shadow-lg shadow-primary/20"
+                      : "bg-slate-100 dark:bg-card-dark hover:bg-primary/10 text-slate-900 dark:text-slate-100 border-primary/10"
+                  }`}
                 >
                   {house}
                 </button>
@@ -171,14 +198,15 @@ export default function Characters() {
                   <button
                     key={value}
                     onClick={() => handleStatusChange(value)}
-                    className={`px-4 py-1.5 rounded-full font-bold text-xs border transition-all hover:scale-105 ${activeStatus === value
-                      ? value === "alive"
-                        ? "bg-green-500/20 text-green-400 border-green-500/40"
-                        : value === "deceased"
+                    className={`px-4 py-1.5 rounded-full font-bold text-xs border transition-all hover:scale-105 ${
+                      activeStatus === value
+                        ? value === "alive"
+                          ? "bg-green-500/20 text-green-400 border-green-500/40"
+                          : value === "deceased"
                           ? "bg-slate-500/20 text-slate-400 border-slate-500/40"
                           : "bg-primary text-background-dark border-primary"
-                      : "bg-slate-100 dark:bg-card-dark text-slate-500 border-primary/10 hover:border-primary/30"
-                      }`}
+                        : "bg-slate-100 dark:bg-card-dark text-slate-500 border-primary/10 hover:border-primary/30"
+                    }`}
                   >
                     {label}
                   </button>
@@ -248,7 +276,7 @@ export default function Characters() {
                     <span className="text-primary font-bold">"{search}"</span>
                   </p>
                   <button
-                    onClick={() => { setSearch(""); setActiveHouse("All"); setActiveStatus("all"); setSortBy("name-asc"); setVisibleCount(16); }}
+                    onClick={clearAllFilters}
                     className="mt-6 px-6 py-2 border border-primary/30 text-primary rounded-lg text-sm font-bold hover:bg-primary/10 transition-colors"
                   >
                     Clear Filters
@@ -287,8 +315,9 @@ export default function Characters() {
 
                           {/* Fallback */}
                           <div
-                            className={`w-full h-full bg-primary/10 items-center justify-center text-primary flex-col gap-2 ${imgSrc ? "hidden" : "flex"
-                              }`}
+                            className={`w-full h-full bg-primary/10 items-center justify-center text-primary flex-col gap-2 ${
+                              imgSrc ? "hidden" : "flex"
+                            }`}
                           >
                             <span className="material-symbols-outlined text-6xl">person</span>
                             <span className="text-xs text-primary/60 font-medium">No image</span>
@@ -301,14 +330,16 @@ export default function Characters() {
                           <div className="absolute top-3 right-3">
                             <button
                               onClick={() => toggleFavorite(char)}
-                              className={`p-2 rounded-full backdrop-blur-md transition-all ${fav
-                                ? "bg-red-500/20 border border-red-500/40"
-                                : "bg-black/40 hover:bg-red-500/20"
-                                }`}
+                              className={`p-2 rounded-full backdrop-blur-md transition-all ${
+                                fav
+                                  ? "bg-red-500/20 border border-red-500/40"
+                                  : "bg-black/40 hover:bg-red-500/20"
+                              }`}
                             >
                               <span
-                                className={`material-symbols-outlined text-xl transition-colors ${fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
-                                  }`}
+                                className={`material-symbols-outlined text-xl transition-colors ${
+                                  fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
+                                }`}
                               >
                                 favorite
                               </span>
@@ -348,10 +379,11 @@ export default function Characters() {
                             <div className="flex justify-between">
                               <span>Status</span>
                               <span
-                                className={`font-bold text-xs px-2 py-0.5 rounded-full ${char.alive
-                                  ? "bg-green-500/10 text-green-500"
-                                  : "bg-slate-500/10 text-slate-400"
-                                  }`}
+                                className={`font-bold text-xs px-2 py-0.5 rounded-full ${
+                                  char.alive
+                                    ? "bg-green-500/10 text-green-500"
+                                    : "bg-slate-500/10 text-slate-400"
+                                }`}
                               >
                                 {char.alive ? "● Alive" : "● Deceased"}
                               </span>
