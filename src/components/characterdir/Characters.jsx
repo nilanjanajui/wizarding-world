@@ -7,8 +7,8 @@ import characterImages from "../../data/characterImages";
 const HOUSES = ["All", "Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"];
 
 const SORT_OPTIONS = [
-  { label: "Name (A–Z)", value: "name-asc" },
-  { label: "Name (Z–A)", value: "name-desc" },
+  { label: "Name (A-Z)", value: "name-asc" },
+  { label: "Name (Z-A)", value: "name-desc" },
   { label: "By House", value: "house" },
   { label: "Alive First", value: "alive-first" },
   { label: "Deceased First", value: "deceased-first" },
@@ -113,7 +113,7 @@ export default function Characters() {
     setSearch("");
     setActiveHouse("All");
     setActiveStatus("all");
-    setSortBy("name-asc");
+    setSortBy("alive-first");
     setVisibleCount(16);
   };
 
