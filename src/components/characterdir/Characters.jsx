@@ -36,7 +36,7 @@ export default function Characters() {
   const [search, setSearch] = useState(() => searchParams.get("search") || "");
   const [activeHouse, setActiveHouse] = useState("All");
   const [activeStatus, setActiveStatus] = useState("all");
-  const [sortBy, setSortBy] = useState("name-asc");
+  const [sortBy, setSortBy] = useState("alive-first");
   const [visibleCount, setVisibleCount] = useState(16);
 
   const { toggleFavorite, isFavorite } = useFavorites();
@@ -113,7 +113,7 @@ export default function Characters() {
     setSearch("");
     setActiveHouse("All");
     setActiveStatus("all");
-    setSortBy("alive-first");
+    setSortBy("name-asc");
     setVisibleCount(16);
   };
 
