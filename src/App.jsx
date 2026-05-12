@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, createElement } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import Layout from "./components/Layout";
@@ -22,24 +22,30 @@ function PageLoader() {
   );
 }
 
+function withSuspense(Component) {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      {createElement(Component)}
+    </Suspense>
+  );
+}
+
 export default function App() {
   return (
     <FavoritesProvider>
       <Router>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/movies" element={<Movies />} />
-              <Route path="/characters" element={<Characters />} />
-              <Route path="/favorites" element={<FavCharacters />} />
-              <Route path="/stats" element={<WizardStats />} />
-              <Route path="/sorting-hat" element={<SortingHat />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-            <Route path="/characters/:name" element={<CharacterProfile />} />
-          </Routes>
-        </Suspense>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={withSuspense(Home)} />
+            <Route path="/movies" element={withSuspense(Movies)} />
+            <Route path="/characters" element={withSuspense(Characters)} />
+            <Route path="/favorites" element={withSuspense(FavCharacters)} />
+            <Route path="/stats" element={withSuspense(WizardStats)} />
+            <Route path="/sorting-hat" element={withSuspense(SortingHat)} />
+            <Route path="*" element={withSuspense(NotFound)} />
+          </Route>
+          <Route path="/characters/:name" element={withSuspense(CharacterProfile)} />
+        </Routes>
       </Router>
     </FavoritesProvider>
   );
