@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { motion as Motion } from "framer-motion";
+import { motion as Motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { useFavorites } from "../../context/FavoritesContext";
 import characterImages from "../../data/characterImages";
 import useScrollFade from "../../hooks/useScrollFade";
@@ -29,12 +29,161 @@ const HOUSE_COLORS = {
   Hufflepuff: "border-yellow-600/40",
 };
 
+// ── 3D Tilt Card ────────────────────────────────────────────────────────────
+// Extracted as its own component so useMotionValue hooks aren't called
+// inside a .map() callback (that would break the rules of hooks).
+function TiltCard({ char, idx, houseCardBorder, badgeClass, house, imgSrc, fav, toggleFavorite, handleViewProfile }) {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Map normalised mouse offset (-0.5 → 0.5) to rotation degrees.
+  // useSpring gives a smooth elastic snap-back when the cursor leaves.
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), {
+    stiffness: 300,
+    damping: 28,
+  });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-8, 8]), {
+    stiffness: 300,
+    damping: 28,
+  });
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.left - rect.width  / 2) / rect.width);
+    mouseY.set((e.clientY - rect.top  - rect.height / 2) / rect.height);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  return (
+    // Perspective wrapper — must be a plain div so it doesn't
+    // interfere with the Motion.div's own transform stack.
+    <div style={{ perspective: "800px" }}>
+      <Motion.div
+        // Entry animation
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: idx * 0.04, duration: 0.35 }}
+        // Tilt
+        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        // Use transition-colors only — transition-all would fight
+        // Framer Motion's transform animations on the same element.
+        className={`group bg-slate-100 dark:bg-card-dark rounded-xl overflow-hidden border
+          hover:border-primary/50 transition-colors duration-300 flex flex-col
+          hover:shadow-2xl hover:shadow-primary/10 ${houseCardBorder}`}
+      >
+        {/* Image */}
+        <div className="relative aspect-3/4 overflow-hidden bg-primary/5">
+          {imgSrc ? (
+            <img
+              src={imgSrc}
+              alt={char.name}
+              loading="lazy"
+              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+              onError={(e) => {
+                e.target.style.display = "none";
+                e.target.nextSibling.style.display = "flex";
+              }}
+            />
+          ) : null}
+
+          {/* Fallback */}
+          <div
+            className={`w-full h-full bg-primary/10 items-center justify-center text-primary flex-col gap-2 ${
+              imgSrc ? "hidden" : "flex"
+            }`}
+          >
+            <span className="material-symbols-outlined text-6xl">person</span>
+            <span className="text-xs text-primary/60 font-medium">No image</span>
+          </div>
+
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-linear-to-t from-background-dark/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+          {/* Favorite button */}
+          <div className="absolute top-3 right-3">
+            <button
+              onClick={() => toggleFavorite(char)}
+              className={`p-2 rounded-full backdrop-blur-md transition-all ${
+                fav
+                  ? "bg-red-500/20 border border-red-500/40"
+                  : "bg-black/40 hover:bg-red-500/20"
+              }`}
+            >
+              <span
+                className={`material-symbols-outlined text-xl transition-colors ${
+                  fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
+                }`}
+              >
+                favorite
+              </span>
+            </button>
+          </div>
+
+          {/* House badge */}
+          {house !== "Unknown" && (
+            <div className="absolute bottom-3 left-3">
+              <span className={`${badgeClass} text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider`}>
+                {house}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Card Body */}
+        <div className="p-5 flex flex-col gap-2 flex-1">
+          <h3 className="text-xl font-bold dark:text-white group-hover:text-primary transition-colors">
+            {char.name}
+          </h3>
+          <div className="space-y-1 text-sm text-slate-500 dark:text-slate-400 flex-1">
+            <div className="flex justify-between">
+              <span>Actor</span>
+              <span className="text-slate-900 dark:text-slate-200 text-right max-w-[60%] truncate">
+                {char.actor || "Unknown"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span>Species</span>
+              <span className="text-slate-900 dark:text-slate-200 capitalize">
+                {char.species || "Human"}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span>Status</span>
+              <span
+                className={`font-bold text-xs px-2 py-0.5 rounded-full ${
+                  char.alive
+                    ? "bg-green-500/10 text-green-500"
+                    : "bg-slate-500/10 text-slate-400"
+                }`}
+              >
+                {char.alive ? "● Alive" : "● Deceased"}
+              </span>
+            </div>
+          </div>
+          <button
+            onClick={() => handleViewProfile(char)}
+            className="mt-4 w-full border border-primary text-primary hover:bg-primary hover:text-background-dark py-2.5 rounded-lg font-bold text-sm transition-all uppercase tracking-widest hover:shadow-lg hover:shadow-primary/20"
+          >
+            View Profile
+          </button>
+        </div>
+      </Motion.div>
+    </div>
+  );
+}
+
+// ── Main Component ───────────────────────────────────────────────────────────
 export default function Characters() {
   const pageRef = useRef(null);
   useScrollFade(pageRef);
 
   const [searchParams] = useSearchParams();
-
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(() => searchParams.get("search") || "");
@@ -93,38 +242,19 @@ export default function Characters() {
     });
   };
 
-  const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-    setVisibleCount(16);
-  };
-
-  const handleHouseChange = (house) => {
-    setActiveHouse(house);
-    setVisibleCount(16);
-  };
-
-  const handleStatusChange = (status) => {
-    setActiveStatus(status);
-    setVisibleCount(16);
-  };
-
-  const handleSortChange = (e) => {
-    setSortBy(e.target.value);
-    setVisibleCount(16);
-  };
+  const handleSearchChange = (e) => { setSearch(e.target.value); setVisibleCount(16); };
+  const handleHouseChange  = (house)  => { setActiveHouse(house);  setVisibleCount(16); };
+  const handleStatusChange = (status) => { setActiveStatus(status); setVisibleCount(16); };
+  const handleSortChange   = (e) => { setSortBy(e.target.value); setVisibleCount(16); };
 
   const clearAllFilters = () => {
-    setSearch("");
-    setActiveHouse("All");
-    setActiveStatus("all");
-    setSortBy("name-asc");
-    setVisibleCount(16);
+    setSearch(""); setActiveHouse("All"); setActiveStatus("all");
+    setSortBy("name-asc"); setVisibleCount(16);
   };
 
   return (
     <div ref={pageRef} className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
       <div className="flex flex-col h-full grow">
-
         <main className="max-w-7xl mx-auto w-full px-6 py-12 lg:px-20">
 
           {/* Header */}
@@ -190,14 +320,13 @@ export default function Characters() {
 
             {/* Status + Sort row */}
             <div className="flex flex-wrap items-center justify-between gap-4">
-
               {/* Status Pills */}
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold uppercase tracking-widest text-slate-500 mr-1">Status</span>
                 {[
-                  { label: "All", value: "all" },
-                  { label: "● Alive", value: "alive" },
-                  { label: "● Deceased", value: "deceased" },
+                  { label: "All",       value: "all"      },
+                  { label: "● Alive",   value: "alive"    },
+                  { label: "● Deceased",value: "deceased" },
                 ].map(({ label, value }) => (
                   <button
                     key={value}
@@ -249,10 +378,7 @@ export default function Characters() {
           {loading && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {[...Array(8)].map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl overflow-hidden border border-primary/10 flex flex-col animate-pulse"
-                >
+                <div key={i} className="rounded-xl overflow-hidden border border-primary/10 flex flex-col animate-pulse">
                   <div className="aspect-3/4 bg-primary/10" />
                   <div className="p-5 flex flex-col gap-3">
                     <div className="h-5 bg-primary/10 rounded w-3/4" />
@@ -289,119 +415,25 @@ export default function Characters() {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                   {visible.map((char, idx) => {
-                    const house = char.house || "Unknown";
-                    const badgeClass = HOUSE_BADGE[house] || "bg-slate-600 text-white";
+                    const house         = char.house || "Unknown";
+                    const badgeClass    = HOUSE_BADGE[house]  || "bg-slate-600 text-white";
                     const houseCardBorder = HOUSE_COLORS[house] || "border-primary/10";
-                    const fav = isFavorite(char.name);
-                    const imgSrc = char.image || characterImages[char.name];
+                    const fav           = isFavorite(char.name);
+                    const imgSrc        = char.image || characterImages[char.name];
 
                     return (
-                      <Motion.div
+                      <TiltCard
                         key={`${char.name}-${idx}`}
-                        initial={{ opacity: 0, y: 24 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.04, duration: 0.35 }}
-                        className={`group bg-slate-100 dark:bg-card-dark rounded-xl overflow-hidden border hover:border-primary/50 transition-all duration-300 flex flex-col hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 ${houseCardBorder}`}
-                      >
-                        {/* Image */}
-                        <div className="relative aspect-3/4 overflow-hidden bg-primary/5">
-                          {imgSrc ? (
-                            <img
-                              src={imgSrc}
-                              alt={char.name}
-                              loading="lazy"
-                              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
-                              onError={(e) => {
-                                e.target.style.display = "none";
-                                e.target.nextSibling.style.display = "flex";
-                              }}
-                            />
-                          ) : null}
-
-                          {/* Fallback */}
-                          <div
-                            className={`w-full h-full bg-primary/10 items-center justify-center text-primary flex-col gap-2 ${
-                              imgSrc ? "hidden" : "flex"
-                            }`}
-                          >
-                            <span className="material-symbols-outlined text-6xl">person</span>
-                            <span className="text-xs text-primary/60 font-medium">No image</span>
-                          </div>
-
-                          {/* Gradient overlay */}
-                          <div className="absolute inset-0 bg-linear-to-t from-background-dark/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                          {/* Favorite button */}
-                          <div className="absolute top-3 right-3">
-                            <button
-                              onClick={() => toggleFavorite(char)}
-                              className={`p-2 rounded-full backdrop-blur-md transition-all ${
-                                fav
-                                  ? "bg-red-500/20 border border-red-500/40"
-                                  : "bg-black/40 hover:bg-red-500/20"
-                              }`}
-                            >
-                              <span
-                                className={`material-symbols-outlined text-xl transition-colors ${
-                                  fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
-                                }`}
-                              >
-                                favorite
-                              </span>
-                            </button>
-                          </div>
-
-                          {/* House badge */}
-                          {house !== "Unknown" && (
-                            <div className="absolute bottom-3 left-3">
-                              <span
-                                className={`${badgeClass} text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider`}
-                              >
-                                {house}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Card Body */}
-                        <div className="p-5 flex flex-col gap-2 flex-1">
-                          <h3 className="text-xl font-bold dark:text-white group-hover:text-primary transition-colors">
-                            {char.name}
-                          </h3>
-                          <div className="space-y-1 text-sm text-slate-500 dark:text-slate-400 flex-1">
-                            <div className="flex justify-between">
-                              <span>Actor</span>
-                              <span className="text-slate-900 dark:text-slate-200 text-right max-w-[60%] truncate">
-                                {char.actor || "Unknown"}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>Species</span>
-                              <span className="text-slate-900 dark:text-slate-200 capitalize">
-                                {char.species || "Human"}
-                              </span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>Status</span>
-                              <span
-                                className={`font-bold text-xs px-2 py-0.5 rounded-full ${
-                                  char.alive
-                                    ? "bg-green-500/10 text-green-500"
-                                    : "bg-slate-500/10 text-slate-400"
-                                }`}
-                              >
-                                {char.alive ? "● Alive" : "● Deceased"}
-                              </span>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => handleViewProfile(char)}
-                            className="mt-4 w-full border border-primary text-primary hover:bg-primary hover:text-background-dark py-2.5 rounded-lg font-bold text-sm transition-all uppercase tracking-widest hover:shadow-lg hover:shadow-primary/20"
-                          >
-                            View Profile
-                          </button>
-                        </div>
-                      </Motion.div>
+                        char={char}
+                        idx={idx}
+                        house={house}
+                        badgeClass={badgeClass}
+                        houseCardBorder={houseCardBorder}
+                        fav={fav}
+                        imgSrc={imgSrc}
+                        toggleFavorite={toggleFavorite}
+                        handleViewProfile={handleViewProfile}
+                      />
                     );
                   })}
                 </div>

@@ -85,7 +85,7 @@ export default function Home() {
               }}
             >
               <div className="flex flex-col gap-4 max-w-3xl">
-                <h1 className="text-primary text-5xl md:text-7xl font-black leading-tight tracking-tight uppercase">
+                <h1 className="hero-shimmer text-5xl md:text-7xl font-black leading-tight tracking-tight uppercase">
                   Harry Potter Universe Explorer
                 </h1>
                 <h2 className="text-slate-300 text-lg md:text-2xl font-light italic">
@@ -156,33 +156,33 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {featuredMovies.length > 0
               ? featuredMovies.map(({ num, title, img }) => (
-                  <Link
-                    to="/movies"
-                    key={num}
-                    className="group relative overflow-hidden rounded-xl aspect-2/3 border border-primary/10"
-                  >
-                    {img ? (
-                      <img
-                        src={img}
-                        alt={title}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                    ) : null}
-                    <div className="absolute inset-0 bg-linear-to-t from-background-dark/90 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 p-4 w-full">
-                      <p className="text-primary text-xs font-bold uppercase tracking-widest mb-1">
-                        Movie {num}
-                      </p>
-                      <p className="text-white text-base font-bold leading-tight">{title}</p>
-                    </div>
-                  </Link>
-                ))
+                <Link
+                  to="/movies"
+                  key={num}
+                  className="group relative overflow-hidden rounded-xl aspect-2/3 border border-primary/10"
+                >
+                  {img ? (
+                    <img
+                      src={img}
+                      alt={title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  ) : null}
+                  <div className="absolute inset-0 bg-linear-to-t from-background-dark/90 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 p-4 w-full">
+                    <p className="text-primary text-xs font-bold uppercase tracking-widest mb-1">
+                      Movie {num}
+                    </p>
+                    <p className="text-white text-base font-bold leading-tight">{title}</p>
+                  </div>
+                </Link>
+              ))
               : [1, 2, 3, 4].map((n) => (
-                  <div
-                    key={n}
-                    className="rounded-xl aspect-2/3 border border-primary/10 bg-primary/5 animate-pulse"
-                  />
-                ))}
+                <div
+                  key={n}
+                  className="rounded-xl aspect-2/3 border border-primary/10 bg-primary/5 animate-pulse"
+                />
+              ))}
           </div>
         </section>
 
@@ -218,54 +218,53 @@ export default function Home() {
           >
             {featuredChars.length > 0
               ? featuredChars.map((char) => (
-                  <Link
-                    to={`/characters/${encodeURIComponent(char.name)}`}
-                    state={{ character: char }}
-                    key={char.name}
-                    className="flex flex-col items-center gap-4 group shrink-0"
-                    style={{ width: "160px" }}
-                  >
-                    <div className="relative w-full aspect-square rounded-full border-2 border-primary/20 p-2 group-hover:border-primary transition-all overflow-hidden bg-background-dark shadow-lg group-hover:shadow-primary/20">
-                      {char.image ? (
-                        <img
-                          src={char.image}
-                          alt={char.name}
-                          className="w-full h-full rounded-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "flex";
-                          }}
-                        />
-                      ) : null}
-                      <div
-                        className={`w-full h-full rounded-full bg-primary/10 items-center justify-center text-primary ${
-                          char.image ? "hidden" : "flex"
+                <Link
+                  to={`/characters/${encodeURIComponent(char.name)}`}
+                  state={{ character: char }}
+                  key={char.name}
+                  className="flex flex-col items-center gap-4 group shrink-0"
+                  style={{ width: "160px" }}
+                >
+                  <div className="relative w-full aspect-square rounded-full border-2 border-primary/20 p-2 group-hover:border-primary transition-all overflow-hidden bg-background-dark shadow-lg group-hover:shadow-primary/20">
+                    {char.image ? (
+                      <img
+                        src={char.image}
+                        alt={char.name}
+                        className="w-full h-full rounded-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          e.target.nextSibling.style.display = "flex";
+                        }}
+                      />
+                    ) : null}
+                    <div
+                      className={`w-full h-full rounded-full bg-primary/10 items-center justify-center text-primary ${char.image ? "hidden" : "flex"
                         }`}
-                      >
-                        <span className="material-symbols-outlined text-4xl">person</span>
-                      </div>
+                    >
+                      <span className="material-symbols-outlined text-4xl">person</span>
                     </div>
-                    <div className="text-center">
-                      <p className="text-slate-100 font-bold text-lg leading-tight group-hover:text-primary transition-colors">
-                        {char.name}
-                      </p>
-                      <p className="text-primary/70 text-sm mt-0.5">
-                        {char.house || "Hogwarts"}
-                      </p>
-                    </div>
-                  </Link>
-                ))
-              : [1, 2, 3, 4, 5].map((n) => (
-                  <div
-                    key={n}
-                    className="flex flex-col items-center gap-4 shrink-0"
-                    style={{ width: "160px" }}
-                  >
-                    <div className="w-full aspect-square rounded-full bg-primary/10 animate-pulse" />
-                    <div className="h-4 w-24 bg-primary/10 rounded animate-pulse" />
-                    <div className="h-3 w-16 bg-primary/5 rounded animate-pulse" />
                   </div>
-                ))}
+                  <div className="text-center">
+                    <p className="text-slate-100 font-bold text-lg leading-tight group-hover:text-primary transition-colors">
+                      {char.name}
+                    </p>
+                    <p className="text-primary/70 text-sm mt-0.5">
+                      {char.house || "Hogwarts"}
+                    </p>
+                  </div>
+                </Link>
+              ))
+              : [1, 2, 3, 4, 5].map((n) => (
+                <div
+                  key={n}
+                  className="flex flex-col items-center gap-4 shrink-0"
+                  style={{ width: "160px" }}
+                >
+                  <div className="w-full aspect-square rounded-full bg-primary/10 animate-pulse" />
+                  <div className="h-4 w-24 bg-primary/10 rounded animate-pulse" />
+                  <div className="h-3 w-16 bg-primary/5 rounded animate-pulse" />
+                </div>
+              ))}
           </div>
         </section>
       </main>

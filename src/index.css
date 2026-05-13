@@ -77,3 +77,27 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+
+/* Hero title gold shimmer sweep */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.hero-shimmer {
+  background: linear-gradient(
+    90deg,
+    #d4af35 0%,
+    #d4af35 35%,
+    #fff8dc 48%,
+    #ffe87c 52%,
+    #d4af35 65%,
+    #d4af35 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}
