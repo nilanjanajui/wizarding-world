@@ -2,6 +2,7 @@ import { lazy, Suspense, createElement } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import Layout from "./components/Layout";
+import SparkleTrail from "./components/SparkleTrail";
 
 const Home = lazy(() => import("./components/home/Home"));
 const Movies = lazy(() => import("./components/movies/Movies"));
@@ -33,6 +34,7 @@ function withSuspense(Component) {
 export default function App() {
   return (
     <FavoritesProvider>
+      <SparkleTrail spawnRate={3} />
       <Router>
         <Routes>
           <Route element={<Layout />}>
