@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { HERO_BG } from "../../data/movieData";
 import characterImages from "../../data/characterImages";
+import useScrollFade from "../../hooks/useScrollFade";
 
 const FEATURED_NAMES = [
   "Harry Potter",
@@ -20,6 +21,10 @@ export default function Home() {
   const [featuredChars, setFeaturedChars] = useState([]);
   const [featuredMovies, setFeaturedMovies] = useState([]);
   const scrollRef = useRef(null);
+  const pageRef = useRef(null);
+
+  // Wire scroll-fade animations to IntersectionObserver
+  useScrollFade(pageRef);
 
   const scrollLeft = () => {
     scrollRef.current?.scrollBy({ left: -320, behavior: "smooth" });
@@ -67,7 +72,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-dark font-display text-slate-100 antialiased">
+    <div ref={pageRef} className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-dark font-display text-slate-100 antialiased">
 
       <main className="flex-1">
         {/* Hero */}
@@ -106,7 +111,7 @@ export default function Home() {
         </section>
 
         {/* Stats */}
-        <section className="px-6 md:px-20 py-8">
+        <section className="px-6 md:px-20 py-8 scroll-fade">
           <div className="flex flex-wrap gap-6">
             {[
               { label: "Movies", value: "8", icon: "movie", width: "w-full" },
@@ -135,7 +140,7 @@ export default function Home() {
         </section>
 
         {/* Featured Movies */}
-        <section className="px-6 md:px-20 py-12">
+        <section className="px-6 md:px-20 py-12 scroll-fade scroll-fade--delay-1">
           <div className="flex items-center justify-between mb-8 border-l-4 border-secondary pl-4">
             <h2 className="text-slate-100 text-3xl font-bold tracking-tight">
               Featured Movies
@@ -182,7 +187,7 @@ export default function Home() {
         </section>
 
         {/* Famous Witches & Wizards */}
-        <section className="px-6 md:px-20 py-12 bg-background-dark/20">
+        <section className="px-6 md:px-20 py-12 bg-background-dark/20 scroll-fade scroll-fade--delay-2">
           <div className="flex items-center justify-between mb-8 border-l-4 border-primary pl-4">
             <div>
               <h2 className="text-slate-100 text-3xl font-bold tracking-tight">

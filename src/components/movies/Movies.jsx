@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import MovieModal from "./MovieModal";
+import useScrollFade from "../../hooks/useScrollFade";
 
 const MOVIE_EXTRA = {
   1: { director: "Chris Columbus", runtime: "2h 32m", rating: "PG", synopsis: "Harry Potter discovers he is a wizard and joins Hogwarts School of Witchcraft and Wizardry, where he uncovers the mystery of the Philosopher's Stone." },
@@ -14,6 +15,9 @@ const MOVIE_EXTRA = {
 };
 
 export default function Movies() {
+  const pageRef = useRef(null);
+  useScrollFade(pageRef);
+
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -41,11 +45,12 @@ export default function Movies() {
   }, []);
 
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+    <div ref={pageRef} className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
 
       <main className="flex-1 flex flex-col px-6 md:px-20 py-10 max-w-360 mx-auto w-full">
+
         {/* Header */}
-        <section className="mb-12">
+        <section className="mb-12 scroll-fade">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-primary/80 mb-2">
               <span className="material-symbols-outlined text-sm">auto_awesome</span>
@@ -72,7 +77,7 @@ export default function Movies() {
 
         {/* Grid */}
         {!loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 scroll-fade scroll-fade--delay-1">
             {movies.map((movie) => (
               <div
                 key={movie.id}
@@ -83,6 +88,7 @@ export default function Movies() {
                     <img
                       src={movie.image}
                       alt={movie.title}
+                      loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (
@@ -120,7 +126,7 @@ export default function Movies() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-primary/10 px-6 md:px-20 py-12 bg-background-light dark:bg-background-dark/80 mt-20">
+      <footer className="border-t border-primary/10 px-6 md:px-20 py-12 bg-background-light dark:bg-background-dark/80 mt-20 scroll-fade scroll-fade--delay-2">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-3 text-primary/60">
             <span className="material-symbols-outlined">bolt</span>

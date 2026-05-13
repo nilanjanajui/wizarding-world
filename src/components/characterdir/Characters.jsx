@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 import { useFavorites } from "../../context/FavoritesContext";
 import characterImages from "../../data/characterImages";
+import useScrollFade from "../../hooks/useScrollFade";
 
 const HOUSES = ["All", "Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"];
 
@@ -29,6 +30,9 @@ const HOUSE_COLORS = {
 };
 
 export default function Characters() {
+  const pageRef = useRef(null);
+  useScrollFade(pageRef);
+
   const [searchParams] = useSearchParams();
 
   const [characters, setCharacters] = useState([]);
@@ -118,7 +122,7 @@ export default function Characters() {
   };
 
   return (
-    <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
+    <div ref={pageRef} className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
       <div className="flex flex-col h-full grow">
 
         <main className="max-w-7xl mx-auto w-full px-6 py-12 lg:px-20">
@@ -305,6 +309,7 @@ export default function Characters() {
                             <img
                               src={imgSrc}
                               alt={char.name}
+                              loading="lazy"
                               className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
                               onError={(e) => {
                                 e.target.style.display = "none";
@@ -424,7 +429,7 @@ export default function Characters() {
         </main>
 
         {/* Footer */}
-        <footer className="mt-20 border-t border-primary/10 bg-slate-50 dark:bg-background-dark py-12 px-6 lg:px-20">
+        <footer className="mt-20 border-t border-primary/10 bg-slate-50 dark:bg-background-dark py-12 px-6 lg:px-20 scroll-fade">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-primary font-bold text-lg">

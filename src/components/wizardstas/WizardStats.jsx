@@ -1,21 +1,22 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
+import useScrollFade from "../../hooks/useScrollFade";
 
 const HOUSE_DEFS = [
   { name: "Gryffindor", key: "gryffindor", cls: "chart-gradient-gryffindor" },
-  { name: "Slytherin",  key: "slytherin",  cls: "chart-gradient-slytherin"  },
+  { name: "Slytherin", key: "slytherin", cls: "chart-gradient-slytherin" },
   { name: "Hufflepuff", key: "hufflepuff", cls: "chart-gradient-hufflepuff" },
-  { name: "Ravenclaw",  key: "ravenclaw",  cls: "chart-gradient-ravenclaw"  },
+  { name: "Ravenclaw", key: "ravenclaw", cls: "chart-gradient-ravenclaw" },
 ];
 
 const ANCESTRY_DEFS = {
-  "pure-blood":    { label: "Pure-Blood",  color: "#d4af35" },
-  "half-blood":    { label: "Half-Blood",  color: "#8b9e5a" },
-  "muggle-born":   { label: "Muggle-Born", color: "#5a8a9e" },
-  "muggle":        { label: "Muggle",      color: "#7a6a9a" },
-  "squib":         { label: "Squib",       color: "#9a6a4a" },
-  "half-giant":    { label: "Half-Giant",  color: "#6a8a7a" },
-  "quarter-veela": { label: "¼-Veela",     color: "#9a5a7a" },
+  "pure-blood": { label: "Pure-Blood", color: "#d4af35" },
+  "half-blood": { label: "Half-Blood", color: "#8b9e5a" },
+  "muggle-born": { label: "Muggle-Born", color: "#5a8a9e" },
+  "muggle": { label: "Muggle", color: "#7a6a9a" },
+  "squib": { label: "Squib", color: "#9a6a4a" },
+  "half-giant": { label: "Half-Giant", color: "#6a8a7a" },
+  "quarter-veela": { label: "¼-Veela", color: "#9a5a7a" },
 };
 
 function normalizeAncestry(raw) {
@@ -42,18 +43,18 @@ function AncestryBarChart({ data }) {
   const maxCount = Math.max(...data.map((d) => d.count), 1);
   const yMax = Math.ceil(maxCount / 5) * 5 || 10;
   const yTicks = 5;
-  const gap  = chartW / data.length;
+  const gap = chartW / data.length;
   const barW = Math.min(70, gap * 0.58);
 
   const bx = (i) => PAD.left + gap * i + gap / 2 - barW / 2;
-  const bh = (c)  => (c / yMax) * chartH;
+  const bh = (c) => (c / yMax) * chartH;
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ overflow: "visible" }}>
       <defs>
         {data.map(({ key, color }) => (
           <linearGradient key={key} id={`ag-${key}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stopColor={color} stopOpacity="0.9" />
+            <stop offset="0%" stopColor={color} stopOpacity="0.9" />
             <stop offset="100%" stopColor={color} stopOpacity="0.35" />
           </linearGradient>
         ))}
@@ -62,7 +63,7 @@ function AncestryBarChart({ data }) {
       {/* Y gridlines + labels */}
       {Array.from({ length: yTicks + 1 }, (_, i) => {
         const val = Math.round((yMax / yTicks) * i);
-        const y   = PAD.top + chartH - (val / yMax) * chartH;
+        const y = PAD.top + chartH - (val / yMax) * chartH;
         return (
           <g key={i}>
             <line
@@ -83,10 +84,10 @@ function AncestryBarChart({ data }) {
 
       {/* Bars */}
       {data.map(({ key, label, color, count }, i) => {
-        const x    = bx(i);
-        const h    = animated ? bh(count) : 0;
-        const y    = PAD.top + chartH - h;
-        const cx   = x + barW / 2;
+        const x = bx(i);
+        const h = animated ? bh(count) : 0;
+        const y = PAD.top + chartH - h;
+        const cx = x + barW / 2;
         const isHov = hovered === key;
 
         return (
@@ -177,6 +178,8 @@ function AncestryBarChart({ data }) {
 export default function WizardStats() {
   const [characters, setCharacters] = useState([]);
   const [loading, setLoading] = useState(true);
+  const pageRef = useRef(null);
+  useScrollFade(pageRef);
 
   useEffect(() => {
     fetch("https://hp-api.onrender.com/api/characters")
@@ -189,7 +192,7 @@ export default function WizardStats() {
   const stats = useMemo(() => {
     if (!characters.length)
       return { total: 0, alive: 0, deceased: 0, alivePercent: 0, withPatronus: 0 };
-    const alive    = characters.filter((c) => c.alive).length;
+    const alive = characters.filter((c) => c.alive).length;
     const deceased = characters.length - alive;
     return {
       total: characters.length,
@@ -224,7 +227,7 @@ export default function WizardStats() {
   const aliveArc = (stats.alivePercent / 100) * CIRCUMFERENCE;
 
   return (
-    <div className="bg-background-dark text-slate-100 min-h-screen font-display">
+    <div ref={pageRef} className="bg-background-dark text-slate-100 min-h-screen font-display">
       <div className="flex h-full grow flex-col">
         <main className="flex-1 flex flex-col p-6 lg:px-20 lg:py-10">
 
@@ -255,9 +258,9 @@ export default function WizardStats() {
           {/* Stat Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             {[
-              { label: "Total Characters", value: stats.total,        icon: "groups",       sub: "From HP API records",    subColor: "text-emerald-400", subIcon: "trending_up" },
-              { label: "Known Patronuses", value: stats.withPatronus, icon: "auto_fix_high", sub: "From Ministry records",  subColor: "text-slate-400",   subIcon: "remove"      },
-              { label: "Recorded Deaths",  value: stats.deceased,     icon: "crisis_alert", sub: "Post-War verification",  subColor: "text-rose-400",    subIcon: "warning"     },
+              { label: "Total Characters", value: stats.total, icon: "groups", sub: "From HP API records", subColor: "text-emerald-400", subIcon: "trending_up" },
+              { label: "Known Patronuses", value: stats.withPatronus, icon: "auto_fix_high", sub: "From Ministry records", subColor: "text-slate-400", subIcon: "remove" },
+              { label: "Recorded Deaths", value: stats.deceased, icon: "crisis_alert", sub: "Post-War verification", subColor: "text-rose-400", subIcon: "warning" },
             ].map(({ label, value, icon, sub, subColor, subIcon }) => (
               <div key={label} className="flex flex-col gap-2 rounded-xl p-6 border border-primary/20 bg-primary/5">
                 <div className="flex items-center justify-between">
