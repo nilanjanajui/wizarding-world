@@ -141,10 +141,7 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             className="absolute inset-0 flex flex-col items-center justify-center gap-2"
             style={{ background: cfg.fallbackBg }}
           >
-            <span
-              className="material-symbols-outlined text-6xl"
-              style={{ color: cfg.fallbackIcon }}
-            >
+            <span className="material-symbols-outlined text-6xl" style={{ color: cfg.fallbackIcon }}>
               person
             </span>
             <span className="text-xs font-medium" style={{ color: cfg.fallbackIcon, opacity: 0.7 }}>
@@ -164,10 +161,7 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
 
           <div
             className="absolute inset-0 transition-opacity duration-300"
-            style={{
-              background: cfg.gradient,
-              opacity: isHovered ? 1 : 0.45,
-            }}
+            style={{ background: cfg.gradient, opacity: isHovered ? 1 : 0.45 }}
           />
 
           <div className="absolute top-3 right-3 z-10">
@@ -204,13 +198,10 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
           <h3 className={`text-xl font-bold text-white transition-colors duration-200 ${cfg.nameClass}`}>
             {char.name}
           </h3>
-
           <div className="space-y-1 text-sm text-slate-400 flex-1">
             <div className="flex justify-between">
               <span>Actor</span>
-              <span className="text-slate-200 text-right max-w-[60%] truncate">
-                {char.actor || "Unknown"}
-              </span>
+              <span className="text-slate-200 text-right max-w-[60%] truncate">{char.actor || "Unknown"}</span>
             </div>
             <div className="flex justify-between">
               <span>Species</span>
@@ -219,15 +210,12 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             <div className="flex justify-between">
               <span>Status</span>
               <span className={`font-bold text-xs px-2 py-0.5 rounded-full ${
-                char.alive
-                  ? "bg-green-500/10 text-green-400"
-                  : "bg-slate-500/10 text-slate-400"
+                char.alive ? "bg-green-500/10 text-green-400" : "bg-slate-500/10 text-slate-400"
               }`}>
                 {char.alive ? "● Alive" : "● Deceased"}
               </span>
             </div>
           </div>
-
           <button
             onClick={() => handleViewProfile(char)}
             onMouseEnter={() => setBtnHovered(true)}
@@ -263,7 +251,7 @@ export default function Characters() {
   const [sortBy,       setSortBy]       = useState("alive-first");
   const [visibleCount, setVisibleCount] = useState(16);
 
-  const { characters, loading } = useCharacters();   // ← shared context
+  const { characters, loading, error, retry } = useCharacters();
   const { toggleFavorite, isFavorite } = useFavorites();
   const navigate = useNavigate();
 
@@ -277,7 +265,6 @@ export default function Characters() {
         (activeStatus === "deceased" && c.alive === false);
       return matchesSearch && matchesHouse && matchesStatus;
     });
-
     return [...result].sort((a, b) => {
       if (sortBy === "name-asc")       return a.name.localeCompare(b.name);
       if (sortBy === "name-desc")      return b.name.localeCompare(a.name);
@@ -324,7 +311,6 @@ export default function Characters() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            {/* Search */}
             <div className="relative w-full group">
               <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/60 group-focus-within:text-primary transition-colors">
                 search
@@ -346,7 +332,6 @@ export default function Characters() {
               )}
             </div>
 
-            {/* House Filter Pills */}
             <div className="flex flex-wrap gap-3">
               {HOUSES.map((house) => (
                 <button
@@ -363,7 +348,6 @@ export default function Characters() {
               ))}
             </div>
 
-            {/* Status + Sort */}
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold uppercase tracking-widest text-slate-500 mr-1">Status</span>
@@ -389,9 +373,8 @@ export default function Characters() {
                   </button>
                 ))}
               </div>
-
               <div className="flex items-center gap-4">
-                {!loading && (
+                {!loading && !error && (
                   <span className="text-sm text-slate-400 font-medium">
                     {filtered.length} wizard{filtered.length !== 1 ? "s" : ""} found
                   </span>
@@ -417,8 +400,39 @@ export default function Characters() {
             </div>
           </Motion.div>
 
-          {/* Loading Skeletons */}
-          {loading && (
+          {/* ── Error State ─────────────────────────────────────────────────── */}
+          {error && (
+            <Motion.div
+              className="flex flex-col items-center justify-center gap-6 py-24 text-center"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <span className="material-symbols-outlined text-7xl text-red-500/60">
+                wifi_off
+              </span>
+              <div className="flex flex-col gap-2">
+                <h2 className="text-xl font-bold text-slate-200">
+                  The Ministry owls couldn&apos;t deliver
+                </h2>
+                <p className="text-slate-500 text-sm max-w-sm">
+                  {error}
+                </p>
+              </div>
+              <button
+                onClick={retry}
+                className="group flex items-center gap-2 bg-primary/10 border border-primary text-primary px-8 py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-primary hover:text-background-dark transition-all hover:shadow-lg hover:shadow-primary/20"
+              >
+                <span className="material-symbols-outlined text-sm group-hover:rotate-180 transition-transform duration-500">
+                  refresh
+                </span>
+                Try Again
+              </button>
+            </Motion.div>
+          )}
+
+          {/* ── Loading Skeletons ────────────────────────────────────────────── */}
+          {loading && !error && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {[...Array(8)].map((_, i) => (
                 <div key={i} className="rounded-xl overflow-hidden border border-primary/10 flex flex-col animate-pulse">
@@ -434,8 +448,8 @@ export default function Characters() {
             </div>
           )}
 
-          {/* Grid */}
-          {!loading && (
+          {/* ── Grid ─────────────────────────────────────────────────────────── */}
+          {!loading && !error && (
             <>
               {visible.length === 0 ? (
                 <Motion.div
@@ -472,7 +486,6 @@ export default function Characters() {
                 </div>
               )}
 
-              {/* Load More */}
               {visibleCount < filtered.length && (
                 <div className="flex flex-col items-center gap-3 mt-20">
                   <p className="text-slate-500 text-sm">
@@ -493,7 +506,6 @@ export default function Characters() {
           )}
         </main>
 
-        {/* Footer */}
         <footer className="mt-20 border-t border-primary/10 bg-slate-50 dark:bg-background-dark py-12 px-6 lg:px-20 scroll-fade">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="flex flex-col gap-2">

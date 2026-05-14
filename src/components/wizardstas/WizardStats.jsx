@@ -1,22 +1,22 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import useScrollFade from "../../hooks/useScrollFade";
 
 const HOUSE_DEFS = [
   { name: "Gryffindor", key: "gryffindor", cls: "chart-gradient-gryffindor" },
-  { name: "Slytherin", key: "slytherin", cls: "chart-gradient-slytherin" },
+  { name: "Slytherin",  key: "slytherin",  cls: "chart-gradient-slytherin"  },
   { name: "Hufflepuff", key: "hufflepuff", cls: "chart-gradient-hufflepuff" },
-  { name: "Ravenclaw", key: "ravenclaw", cls: "chart-gradient-ravenclaw" },
+  { name: "Ravenclaw",  key: "ravenclaw",  cls: "chart-gradient-ravenclaw"  },
 ];
 
 const ANCESTRY_DEFS = {
-  "pure-blood": { label: "Pure-Blood", color: "#d4af35" },
-  "half-blood": { label: "Half-Blood", color: "#8b9e5a" },
-  "muggle-born": { label: "Muggle-Born", color: "#5a8a9e" },
-  "muggle": { label: "Muggle", color: "#7a6a9a" },
-  "squib": { label: "Squib", color: "#9a6a4a" },
-  "half-giant": { label: "Half-Giant", color: "#6a8a7a" },
-  "quarter-veela": { label: "¼-Veela", color: "#9a5a7a" },
+  "pure-blood":    { label: "Pure-Blood",  color: "#d4af35" },
+  "half-blood":    { label: "Half-Blood",  color: "#8b9e5a" },
+  "muggle-born":   { label: "Muggle-Born", color: "#5a8a9e" },
+  "muggle":        { label: "Muggle",      color: "#7a6a9a" },
+  "squib":         { label: "Squib",       color: "#9a6a4a" },
+  "half-giant":    { label: "Half-Giant",  color: "#6a8a7a" },
+  "quarter-veela": { label: "¼-Veela",     color: "#9a5a7a" },
 };
 
 function normalizeAncestry(raw) {
@@ -25,7 +25,7 @@ function normalizeAncestry(raw) {
   return ANCESTRY_DEFS[lower] ? lower : null;
 }
 
-// ── SVG Bar Chart ─────────────────────────────────────────────────────────
+// ── SVG Bar Chart ─────────────────────────────────────────────────────────────
 function AncestryBarChart({ data }) {
   const [hovered, setHovered] = useState(null);
   const [animated, setAnimated] = useState(false);
@@ -54,13 +54,12 @@ function AncestryBarChart({ data }) {
       <defs>
         {data.map(({ key, color }) => (
           <linearGradient key={key} id={`ag-${key}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity="0.9" />
+            <stop offset="0%"   stopColor={color} stopOpacity="0.9"  />
             <stop offset="100%" stopColor={color} stopOpacity="0.35" />
           </linearGradient>
         ))}
       </defs>
 
-      {/* Y gridlines + labels */}
       {Array.from({ length: yTicks + 1 }, (_, i) => {
         const val = Math.round((yMax / yTicks) * i);
         const y = PAD.top + chartH - (val / yMax) * chartH;
@@ -82,7 +81,6 @@ function AncestryBarChart({ data }) {
         );
       })}
 
-      {/* Bars */}
       {data.map(({ key, label, color, count }, i) => {
         const x = bx(i);
         const h = animated ? bh(count) : 0;
@@ -97,7 +95,6 @@ function AncestryBarChart({ data }) {
             onMouseLeave={() => setHovered(null)}
             style={{ cursor: "default" }}
           >
-            {/* Glow behind bar on hover */}
             {isHov && (
               <rect
                 x={x - 4} y={y - 4}
@@ -105,18 +102,12 @@ function AncestryBarChart({ data }) {
                 rx="6" fill={color} opacity="0.12"
               />
             )}
-
-            {/* Bar */}
             <rect
               x={x} y={y} width={barW} height={h} rx="4"
               fill={`url(#ag-${key})`}
               stroke={color} strokeWidth={isHov ? 1.5 : 0.5} strokeOpacity="0.6"
-              style={{
-                transition: "height 0.75s cubic-bezier(0.34,1.3,0.64,1), y 0.75s cubic-bezier(0.34,1.3,0.64,1)",
-              }}
+              style={{ transition: "height 0.75s cubic-bezier(0.34,1.3,0.64,1), y 0.75s cubic-bezier(0.34,1.3,0.64,1)" }}
             />
-
-            {/* Count label above bar */}
             {animated && (
               <text
                 x={cx} y={y - 7}
@@ -128,8 +119,6 @@ function AncestryBarChart({ data }) {
                 {count}
               </text>
             )}
-
-            {/* X-axis label */}
             <text
               x={cx} y={PAD.top + chartH + 18}
               textAnchor="middle"
@@ -139,8 +128,6 @@ function AncestryBarChart({ data }) {
             >
               {label}
             </text>
-
-            {/* Hover tooltip */}
             {isHov && (
               <g>
                 <rect
@@ -161,7 +148,6 @@ function AncestryBarChart({ data }) {
         );
       })}
 
-      {/* Y axis label */}
       <text
         x={14} y={PAD.top + chartH / 2}
         textAnchor="middle"
@@ -174,20 +160,32 @@ function AncestryBarChart({ data }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// ── Main Component ────────────────────────────────────────────────────────────
 export default function WizardStats() {
   const [characters, setCharacters] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading,    setLoading]    = useState(true);
+  const [error,      setError]      = useState(null);
+  const [retryKey,   setRetryKey]   = useState(0);
+
   const pageRef = useRef(null);
   useScrollFade(pageRef);
 
+  const retry = useCallback(() => {
+    setError(null);
+    setLoading(true);
+    setRetryKey((k) => k + 1);
+  }, []);
+
   useEffect(() => {
     fetch("https://hp-api.onrender.com/api/characters")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HP API error: ${r.status}`);
+        return r.json();
+      })
       .then(setCharacters)
-      .catch(console.error)
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [retryKey]);
 
   const stats = useMemo(() => {
     if (!characters.length)
@@ -255,149 +253,180 @@ export default function WizardStats() {
             </button>
           </div>
 
-          {/* Stat Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            {[
-              { label: "Total Characters", value: stats.total, icon: "groups", sub: "From HP API records", subColor: "text-emerald-400", subIcon: "trending_up" },
-              { label: "Known Patronuses", value: stats.withPatronus, icon: "auto_fix_high", sub: "From Ministry records", subColor: "text-slate-400", subIcon: "remove" },
-              { label: "Recorded Deaths", value: stats.deceased, icon: "crisis_alert", sub: "Post-War verification", subColor: "text-rose-400", subIcon: "warning" },
-            ].map(({ label, value, icon, sub, subColor, subIcon }) => (
-              <div key={label} className="flex flex-col gap-2 rounded-xl p-6 border border-primary/20 bg-primary/5">
-                <div className="flex items-center justify-between">
-                  <p className="text-slate-400 text-base font-medium">{label}</p>
-                  <span className="material-symbols-outlined text-primary">{icon}</span>
-                </div>
-                <p className="text-slate-100 text-4xl font-bold">{loading ? "..." : value}</p>
-                <div className={`flex items-center gap-1 ${subColor} text-xs font-bold`}>
-                  <span className="material-symbols-outlined text-xs">{subIcon}</span>
-                  <span>{sub}</span>
-                </div>
+          {/* ── Error State ─────────────────────────────────────────────────── */}
+          {error && (
+            <div className="flex flex-col items-center justify-center gap-6 py-28 text-center rounded-xl border border-red-500/20 bg-red-500/5">
+              <span className="material-symbols-outlined text-7xl text-red-500/50">
+                crisis_alert
+              </span>
+              <div className="flex flex-col gap-2">
+                <h2 className="text-xl font-bold text-slate-200">
+                  Ministry archives are unreachable
+                </h2>
+                <p className="text-slate-500 text-sm max-w-sm">
+                  {error}
+                </p>
               </div>
-            ))}
-          </div>
+              <button
+                onClick={retry}
+                className="group flex items-center gap-2 bg-primary/10 border border-primary text-primary px-8 py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-primary hover:text-background-dark transition-all hover:shadow-lg hover:shadow-primary/20"
+              >
+                <span className="material-symbols-outlined text-sm group-hover:rotate-180 transition-transform duration-500">
+                  refresh
+                </span>
+                Retry
+              </button>
+            </div>
+          )}
 
-          {/* Charts Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-
-            {/* House Bar Chart */}
-            <div className="flex flex-col gap-6 p-8 rounded-xl border border-primary/10 bg-slate-900/40">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-slate-100 text-xl font-bold">Characters Per House</h3>
-                  <p className="text-slate-400 text-sm">Hogwarts enrollment distribution</p>
-                </div>
-                <span className="material-symbols-outlined text-primary/50">bar_chart</span>
-              </div>
-              <div className="flex flex-col gap-6 min-h-75 justify-end pt-10">
-                <div className="grid grid-cols-4 gap-4 items-end h-60">
-                  {houseChart.map(({ name, cls, count, pct }) => (
-                    <div key={name} className="group relative flex flex-col items-center gap-3 h-full justify-end">
-                      <div className="absolute -top-6 text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        {loading ? "..." : count}
-                      </div>
-                      <div
-                        className={`${cls} w-full rounded-t-lg transition-all duration-500 hover:brightness-110`}
-                        style={{ height: loading ? "0%" : pct }}
-                      />
-                      <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">{name}</p>
+          {/* ── Content (hidden when error) ──────────────────────────────────── */}
+          {!error && (
+            <>
+              {/* Stat Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                {[
+                  { label: "Total Characters", value: stats.total,        icon: "groups",       sub: "From HP API records",    subColor: "text-emerald-400", subIcon: "trending_up" },
+                  { label: "Known Patronuses", value: stats.withPatronus, icon: "auto_fix_high", sub: "From Ministry records",  subColor: "text-slate-400",   subIcon: "remove"      },
+                  { label: "Recorded Deaths",  value: stats.deceased,     icon: "crisis_alert",  sub: "Post-War verification",  subColor: "text-rose-400",    subIcon: "warning"     },
+                ].map(({ label, value, icon, sub, subColor, subIcon }) => (
+                  <div key={label} className="flex flex-col gap-2 rounded-xl p-6 border border-primary/20 bg-primary/5">
+                    <div className="flex items-center justify-between">
+                      <p className="text-slate-400 text-base font-medium">{label}</p>
+                      <span className="material-symbols-outlined text-primary">{icon}</span>
                     </div>
-                  ))}
-                </div>
+                    <p className="text-slate-100 text-4xl font-bold">{loading ? "..." : value}</p>
+                    <div className={`flex items-center gap-1 ${subColor} text-xs font-bold`}>
+                      <span className="material-symbols-outlined text-xs">{subIcon}</span>
+                      <span>{sub}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
 
-            {/* Donut Chart */}
-            <div className="flex flex-col gap-6 p-8 rounded-xl border border-primary/10 bg-slate-900/40">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-slate-100 text-xl font-bold">Vital Status Ratio</h3>
-                  <p className="text-slate-400 text-sm">Alive vs Deceased population</p>
-                </div>
-                <span className="material-symbols-outlined text-primary/50">pie_chart</span>
-              </div>
-              <div className="flex flex-1 items-center justify-center relative min-h-75">
-                <div className="relative flex items-center justify-center">
-                  <svg width="200" height="200" viewBox="0 0 200 200">
-                    <circle cx="100" cy="100" r="80" fill="none" stroke="#1e293b" strokeWidth="20" />
-                    <circle
-                      cx="100" cy="100" r="80" fill="none"
-                      stroke="#d4af35" strokeWidth="20" strokeLinecap="round"
-                      strokeDasharray={`${loading ? 0 : aliveArc} ${CIRCUMFERENCE}`}
-                      transform="rotate(-90 100 100)"
-                      style={{ transition: "stroke-dasharray 1s ease" }}
-                    />
-                  </svg>
-                  <div className="absolute text-center">
-                    <p className="text-4xl font-bold text-slate-100">
-                      {loading ? "..." : `${stats.alivePercent}%`}
-                    </p>
-                    <p className="text-xs font-bold uppercase text-primary">Alive</p>
+              {/* Charts Grid */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+
+                {/* House Bar Chart */}
+                <div className="flex flex-col gap-6 p-8 rounded-xl border border-primary/10 bg-slate-900/40">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-slate-100 text-xl font-bold">Characters Per House</h3>
+                      <p className="text-slate-400 text-sm">Hogwarts enrollment distribution</p>
+                    </div>
+                    <span className="material-symbols-outlined text-primary/50">bar_chart</span>
+                  </div>
+                  <div className="flex flex-col gap-6 min-h-75 justify-end pt-10">
+                    <div className="grid grid-cols-4 gap-4 items-end h-60">
+                      {houseChart.map(({ name, cls, count, pct }) => (
+                        <div key={name} className="group relative flex flex-col items-center gap-3 h-full justify-end">
+                          <div className="absolute -top-6 text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                            {loading ? "..." : count}
+                          </div>
+                          <div
+                            className={`${cls} w-full rounded-t-lg transition-all duration-500 hover:brightness-110`}
+                            style={{ height: loading ? "0%" : pct }}
+                          />
+                          <p className="text-slate-400 text-[11px] font-bold uppercase tracking-wider">{name}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <div className="absolute bottom-0 right-0 flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <div className="size-3 rounded-full bg-primary" />
-                    <span className="text-sm text-slate-300">Alive ({loading ? "..." : stats.alive})</span>
+
+                {/* Donut Chart */}
+                <div className="flex flex-col gap-6 p-8 rounded-xl border border-primary/10 bg-slate-900/40">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-slate-100 text-xl font-bold">Vital Status Ratio</h3>
+                      <p className="text-slate-400 text-sm">Alive vs Deceased population</p>
+                    </div>
+                    <span className="material-symbols-outlined text-primary/50">pie_chart</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="size-3 rounded-full bg-slate-700" />
-                    <span className="text-sm text-slate-300">Deceased ({loading ? "..." : stats.deceased})</span>
+                  <div className="flex flex-1 items-center justify-center relative min-h-75">
+                    <div className="relative flex items-center justify-center">
+                      <svg width="200" height="200" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="#1e293b" strokeWidth="20" />
+                        <circle
+                          cx="100" cy="100" r="80" fill="none"
+                          stroke="#d4af35" strokeWidth="20" strokeLinecap="round"
+                          strokeDasharray={`${loading ? 0 : aliveArc} ${CIRCUMFERENCE}`}
+                          transform="rotate(-90 100 100)"
+                          style={{ transition: "stroke-dasharray 1s ease" }}
+                        />
+                      </svg>
+                      <div className="absolute text-center">
+                        <p className="text-4xl font-bold text-slate-100">
+                          {loading ? "..." : `${stats.alivePercent}%`}
+                        </p>
+                        <p className="text-xs font-bold uppercase text-primary">Alive</p>
+                      </div>
+                    </div>
+                    <div className="absolute bottom-0 right-0 flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <div className="size-3 rounded-full bg-primary" />
+                        <span className="text-sm text-slate-300">Alive ({loading ? "..." : stats.alive})</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="size-3 rounded-full bg-slate-700" />
+                        <span className="text-sm text-slate-300">Deceased ({loading ? "..." : stats.deceased})</span>
+                      </div>
+                    </div>
                   </div>
+                </div>
+
+                {/* Ancestry Bar Chart — full width */}
+                <div className="xl:col-span-2 flex flex-col gap-6 p-8 rounded-xl border border-primary/10 bg-slate-900/40">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-slate-100 text-xl font-bold">Ancestry Breakdown</h3>
+                      <p className="text-slate-400 text-sm">
+                        Bloodline distribution across the wizarding community
+                      </p>
+                    </div>
+                    <span className="material-symbols-outlined text-primary/50">account_tree</span>
+                  </div>
+
+                  {loading ? (
+                    <div className="flex items-end gap-4 h-60 pt-8">
+                      {[65, 90, 40, 30, 20, 15, 10].map((h, i) => (
+                        <div
+                          key={i}
+                          className="flex-1 rounded-t-lg bg-primary/10 animate-pulse"
+                          style={{ height: `${h}%` }}
+                        />
+                      ))}
+                    </div>
+                  ) : ancestryChart.length === 0 ? (
+                    <p className="text-slate-500 italic text-sm">No ancestry data available.</p>
+                  ) : (
+                    <>
+                      <AncestryBarChart data={ancestryChart} />
+                      <p className="text-slate-600 text-[11px] italic -mt-2">
+                        * Only characters with recorded ancestry are shown. Many have no ancestry data in the HP API.
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
-            </div>
 
-            {/* Ancestry Bar Chart — full width */}
-            <div className="xl:col-span-2 flex flex-col gap-6 p-8 rounded-xl border border-primary/10 bg-slate-900/40">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-slate-100 text-xl font-bold">Ancestry Breakdown</h3>
-                  <p className="text-slate-400 text-sm">
-                    Bloodline distribution across the wizarding community
-                  </p>
+              {/* CTA */}
+              <div className="mt-12 p-8 rounded-xl bg-primary text-background-dark flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+                <div className="relative z-10">
+                  <h2 className="text-3xl font-bold">Deep Dive into Magical History</h2>
+                  <p className="font-medium opacity-80">Access the Restricted Section for detailed character genealogies.</p>
                 </div>
-                <span className="material-symbols-outlined text-primary/50">account_tree</span>
+                <Link
+                  to="/characters"
+                  className="relative z-10 bg-background-dark text-primary px-8 py-3 rounded-lg font-bold hover:bg-slate-900 transition-colors"
+                >
+                  Unlock Archives
+                </Link>
+                <span className="material-symbols-outlined absolute -right-5 -bottom-5 text-[180px] opacity-10 rotate-12 pointer-events-none">
+                  local_library
+                </span>
               </div>
-
-              {loading ? (
-                <div className="flex items-end gap-4 h-60 pt-8">
-                  {[65, 90, 40, 30, 20, 15, 10].map((h, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 rounded-t-lg bg-primary/10 animate-pulse"
-                      style={{ height: `${h}%` }}
-                    />
-                  ))}
-                </div>
-              ) : ancestryChart.length === 0 ? (
-                <p className="text-slate-500 italic text-sm">No ancestry data available.</p>
-              ) : (
-                <>
-                  <AncestryBarChart data={ancestryChart} />
-                  <p className="text-slate-600 text-[11px] italic -mt-2">
-                    * Only characters with recorded ancestry are shown. Many have no ancestry data in the HP API.
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* CTA */}
-          <div className="mt-12 p-8 rounded-xl bg-primary text-background-dark flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
-            <div className="relative z-10">
-              <h2 className="text-3xl font-bold">Deep Dive into Magical History</h2>
-              <p className="font-medium opacity-80">Access the Restricted Section for detailed character genealogies.</p>
-            </div>
-            <Link
-              to="/characters"
-              className="relative z-10 bg-background-dark text-primary px-8 py-3 rounded-lg font-bold hover:bg-slate-900 transition-colors"
-            >
-              Unlock Archives
-            </Link>
-            <span className="material-symbols-outlined absolute -right-5 -bottom-5 text-[180px] opacity-10 rotate-12 pointer-events-none">
-              local_library
-            </span>
-          </div>
+            </>
+          )}
         </main>
 
         <footer className="border-t border-primary/10 py-10 lg:px-20 text-center">
