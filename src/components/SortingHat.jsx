@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion as Motion, AnimatePresence } from "framer-motion";
+import hatImg from "../assets/hat.png";
 
 const QUESTIONS = [
     {
@@ -200,9 +201,9 @@ export default function SortingHat() {
                             <Motion.div
                                 animate={{ rotate: [-5, 5, -5] }}
                                 transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                                className="w-32 h-32 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center"
+                                className="w-45 h-45 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center"
                             >
-                                <span className="text-7xl">🧙</span>
+                                <img src={hatImg} alt="Sorting Hat" className="w-35 h-35 object-contain" />
                             </Motion.div>
 
                             <div>
