@@ -165,6 +165,7 @@ export default function Home() {
                     <img
                       src={img}
                       alt={title}
+                      loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : null}
@@ -230,6 +231,7 @@ export default function Home() {
                       <img
                         src={char.image}
                         alt={char.name}
+                        loading="lazy"
                         className="w-full h-full rounded-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
                         onError={(e) => {
                           e.target.style.display = "none";
