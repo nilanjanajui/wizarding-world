@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import Layout from "./components/Layout";
 import SparkleTrail from "./components/SparkleTrail";
+import { CharactersProvider } from "./context/CharactersContext";
 
 const Home = lazy(() => import("./components/home/Home"));
 const Movies = lazy(() => import("./components/movies/Movies"));
@@ -34,6 +35,7 @@ function withSuspense(Component) {
 export default function App() {
   return (
     <FavoritesProvider>
+      <CharactersProvider>
       <SparkleTrail spawnRate={3} />
       <Router>
         <Routes>
@@ -49,6 +51,7 @@ export default function App() {
           <Route path="/characters/:name" element={withSuspense(CharacterProfile)} />
         </Routes>
       </Router>
+      </CharactersProvider>
     </FavoritesProvider>
   );
 }

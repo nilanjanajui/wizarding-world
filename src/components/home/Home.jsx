@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { HERO_BG } from "../../data/movieData";
-import characterImages from "../../data/characterImages";
+import { useCharacters } from "../../context/CharactersContext";
 import useScrollFade from "../../hooks/useScrollFade";
 
 const FEATURED_NAMES = [
@@ -18,24 +18,26 @@ const FEATURED_NAMES = [
 ];
 
 export default function Home() {
-  const [featuredChars, setFeaturedChars] = useState([]);
   const [featuredMovies, setFeaturedMovies] = useState([]);
   const scrollRef = useRef(null);
   const pageRef = useRef(null);
 
-  // Wire scroll-fade animations to IntersectionObserver
   useScrollFade(pageRef);
 
-  const scrollLeft = () => {
-    scrollRef.current?.scrollBy({ left: -320, behavior: "smooth" });
-  };
+  const { characters } = useCharacters();   // ← shared context, no local fetch
 
-  const scrollRight = () => {
-    scrollRef.current?.scrollBy({ left: 320, behavior: "smooth" });
-  };
+  const featuredChars = useMemo(() => {
+    if (!characters.length) return [];
+    return FEATURED_NAMES.map((name) => {
+      const found = characters.find((c) => c.name === name);
+      return found ? { ...found, house: found.house || "" } : null;
+    }).filter(Boolean);
+  }, [characters]);
+
+  const scrollLeft  = () => scrollRef.current?.scrollBy({ left: -320, behavior: "smooth" });
+  const scrollRight = () => scrollRef.current?.scrollBy({ left:  320, behavior: "smooth" });
 
   useEffect(() => {
-    // Fetch movies from PotterDB
     fetch("https://api.potterdb.com/v1/movies")
       .then((r) => r.json())
       .then((data) => {
@@ -50,23 +52,6 @@ export default function Home() {
             img: m.attributes.poster,
           }));
         setFeaturedMovies(sorted);
-      })
-      .catch(console.error);
-
-    // Fetch characters from HP API
-    fetch("https://hp-api.onrender.com/api/characters")
-      .then((r) => r.json())
-      .then((data) => {
-        const picked = FEATURED_NAMES.map((name) => {
-          const found = data.find((c) => c.name === name);
-          return {
-            ...found,
-            name,
-            image: characterImages[name] || found?.image || null,
-            house: found?.house || "",
-          };
-        }).filter(Boolean);
-        setFeaturedChars(picked);
       })
       .catch(console.error);
   }, []);
@@ -114,9 +99,9 @@ export default function Home() {
         <section className="px-6 md:px-20 py-8 scroll-fade">
           <div className="flex flex-wrap gap-6">
             {[
-              { label: "Movies", value: "8", icon: "movie", width: "w-full" },
+              { label: "Movies",     value: "8",   icon: "movie",  width: "w-full" },
               { label: "Characters", value: "70+", icon: "groups", width: "w-[85%]" },
-              { label: "Houses", value: "4", icon: "fort", width: "w-full" },
+              { label: "Houses",     value: "4",   icon: "fort",   width: "w-full" },
             ].map(({ label, value, icon, width }) => (
               <div
                 key={label}
@@ -240,8 +225,9 @@ export default function Home() {
                       />
                     ) : null}
                     <div
-                      className={`w-full h-full rounded-full bg-primary/10 items-center justify-center text-primary ${char.image ? "hidden" : "flex"
-                        }`}
+                      className={`w-full h-full rounded-full bg-primary/10 items-center justify-center text-primary ${
+                        char.image ? "hidden" : "flex"
+                      }`}
                     >
                       <span className="material-symbols-outlined text-4xl">person</span>
                     </div>

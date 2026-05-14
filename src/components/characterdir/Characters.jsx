@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion as Motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { useFavorites } from "../../context/FavoritesContext";
+import { useCharacters } from "../../context/CharactersContext";
 import characterImages from "../../data/characterImages";
 import useScrollFade from "../../hooks/useScrollFade";
 
@@ -15,32 +16,21 @@ const SORT_OPTIONS = [
   { label: "Deceased First",  value: "deceased-first"},
 ];
 
-// ── Single source of truth for all house styling ─────────────────────────────
-// Using inline styles (not dynamic Tailwind classes) for anything that could
-// be tree-shaken, so every colour is guaranteed to reach the browser.
 const HOUSE_CONFIG = {
   Gryffindor: {
-    // Card border
     borderClass:    "border-red-700/40",
-    // Hover glow — rgba so opacity is controllable
     glowIdle:       "0 0 0 1px rgba(185,28,28,0.40)",
     glowHover:      "0 0 28px 6px rgba(185,28,28,0.38), 0 8px 32px rgba(0,0,0,0.50)",
-    // Image overlay gradient
     gradient:       "linear-gradient(to top, rgba(120,10,10,0.80) 0%, transparent 65%)",
-    // Subtle card bg tint (inline style — avoids purge)
     cardBg:         "rgba(120,10,10,0.07)",
-    // Badge pill
     badgeClass:     "bg-red-800 text-yellow-300",
     badgeShadow:    "0 0 8px rgba(185,28,28,0.60)",
-    // Card name hover colour
     nameClass:      "group-hover:text-red-400",
-    // "View Profile" button when card is hovered
-    btnBg:          "#7f1d1d",   // red-900
-    btnBorder:      "#b91c1c",   // red-700
-    btnText:        "#fde68a",   // yellow-200
-    // Fallback (no image) icon area
+    btnBg:          "#7f1d1d",
+    btnBorder:      "#b91c1c",
+    btnText:        "#fde68a",
     fallbackBg:     "rgba(120,10,10,0.20)",
-    fallbackIcon:   "#f87171",   // red-400
+    fallbackIcon:   "#f87171",
   },
   Slytherin: {
     borderClass:    "border-green-800/40",
@@ -51,11 +41,11 @@ const HOUSE_CONFIG = {
     badgeClass:     "bg-green-900 text-green-200",
     badgeShadow:    "0 0 8px rgba(22,101,52,0.60)",
     nameClass:      "group-hover:text-green-400",
-    btnBg:          "#14532d",   // green-900
-    btnBorder:      "#15803d",   // green-700
-    btnText:        "#bbf7d0",   // green-200
+    btnBg:          "#14532d",
+    btnBorder:      "#15803d",
+    btnText:        "#bbf7d0",
     fallbackBg:     "rgba(5,46,22,0.25)",
-    fallbackIcon:   "#4ade80",   // green-400
+    fallbackIcon:   "#4ade80",
   },
   Ravenclaw: {
     borderClass:    "border-blue-800/40",
@@ -66,11 +56,11 @@ const HOUSE_CONFIG = {
     badgeClass:     "bg-blue-900 text-blue-200",
     badgeShadow:    "0 0 8px rgba(30,64,175,0.60)",
     nameClass:      "group-hover:text-blue-400",
-    btnBg:          "#1e3a8a",   // blue-900
-    btnBorder:      "#1d4ed8",   // blue-700
-    btnText:        "#bfdbfe",   // blue-200
+    btnBg:          "#1e3a8a",
+    btnBorder:      "#1d4ed8",
+    btnText:        "#bfdbfe",
     fallbackBg:     "rgba(23,37,84,0.25)",
-    fallbackIcon:   "#60a5fa",   // blue-400
+    fallbackIcon:   "#60a5fa",
   },
   Hufflepuff: {
     borderClass:    "border-yellow-600/40",
@@ -81,11 +71,11 @@ const HOUSE_CONFIG = {
     badgeClass:     "bg-yellow-700 text-yellow-100",
     badgeShadow:    "0 0 8px rgba(161,98,7,0.60)",
     nameClass:      "group-hover:text-yellow-400",
-    btnBg:          "#713f12",   // yellow-900
-    btnBorder:      "#a16207",   // yellow-700
-    btnText:        "#fef9c3",   // yellow-100
+    btnBg:          "#713f12",
+    btnBorder:      "#a16207",
+    btnText:        "#fef9c3",
     fallbackBg:     "rgba(78,52,0,0.25)",
-    fallbackIcon:   "#facc15",   // yellow-400
+    fallbackIcon:   "#facc15",
   },
   Unknown: {
     borderClass:    "border-primary/10",
@@ -104,14 +94,12 @@ const HOUSE_CONFIG = {
   },
 };
 
-// ── 3D Tilt Card with house glow ─────────────────────────────────────────────
 function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleViewProfile }) {
   const cfg = HOUSE_CONFIG[houseKey] ?? HOUSE_CONFIG.Unknown;
 
   const [isHovered, setIsHovered] = useState(false);
   const [btnHovered, setBtnHovered] = useState(false);
 
-  // Tilt via Framer Motion motion values
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [8, -8]), { stiffness: 300, damping: 28 });
@@ -138,21 +126,17 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
           rotateX,
           rotateY,
           transformStyle: "preserve-3d",
-          // House glow via box-shadow — transitions smoothly with CSS
           boxShadow: isHovered ? cfg.glowHover : cfg.glowIdle,
-          // Subtle house-tinted card background
           background: `linear-gradient(to bottom, ${cfg.cardBg}, transparent 60%)`,
           transition: "box-shadow 0.35s ease",
         }}
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}
-        // transition-colors only — let Framer Motion own transform
         className={`group bg-card-dark rounded-xl overflow-hidden border transition-colors duration-300 flex flex-col ${cfg.borderClass}`}
       >
-        {/* ── Image area ── */}
+        {/* Image area */}
         <div className="relative aspect-3/4 overflow-hidden">
-          {/* Fallback background (always rendered, hidden behind image) */}
           <div
             className="absolute inset-0 flex flex-col items-center justify-center gap-2"
             style={{ background: cfg.fallbackBg }}
@@ -178,7 +162,6 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             />
           )}
 
-          {/* House gradient overlay — always visible at low opacity, full on hover */}
           <div
             className="absolute inset-0 transition-opacity duration-300"
             style={{
@@ -187,7 +170,6 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             }}
           />
 
-          {/* Favorite button */}
           <div className="absolute top-3 right-3 z-10">
             <button
               onClick={() => toggleFavorite(char)}
@@ -205,7 +187,6 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             </button>
           </div>
 
-          {/* House badge — glows in its house colour on hover */}
           {houseKey !== "Unknown" && (
             <div className="absolute bottom-3 left-3 z-10">
               <span
@@ -218,7 +199,7 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
           )}
         </div>
 
-        {/* ── Card body ── */}
+        {/* Card body */}
         <div className="p-5 flex flex-col gap-2 flex-1">
           <h3 className={`text-xl font-bold text-white transition-colors duration-200 ${cfg.nameClass}`}>
             {char.name}
@@ -247,7 +228,6 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             </div>
           </div>
 
-          {/* View Profile — switches to house colours when card is hovered */}
           <button
             onClick={() => handleViewProfile(char)}
             onMouseEnter={() => setBtnHovered(true)}
@@ -272,35 +252,20 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
   );
 }
 
-// ── Main Component ────────────────────────────────────────────────────────────
 export default function Characters() {
   const pageRef = useRef(null);
   useScrollFade(pageRef);
 
   const [searchParams] = useSearchParams();
-  const [characters,  setCharacters]  = useState([]);
-  const [loading,     setLoading]     = useState(true);
-  const [search,      setSearch]      = useState(() => searchParams.get("search") || "");
-  const [activeHouse, setActiveHouse] = useState("All");
-  const [activeStatus,setActiveStatus]= useState("all");
-  const [sortBy,      setSortBy]      = useState("alive-first");
-  const [visibleCount,setVisibleCount]= useState(16);
+  const [search,       setSearch]       = useState(() => searchParams.get("search") || "");
+  const [activeHouse,  setActiveHouse]  = useState("All");
+  const [activeStatus, setActiveStatus] = useState("all");
+  const [sortBy,       setSortBy]       = useState("alive-first");
+  const [visibleCount, setVisibleCount] = useState(16);
 
+  const { characters, loading } = useCharacters();   // ← shared context
   const { toggleFavorite, isFavorite } = useFavorites();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch("https://hp-api.onrender.com/api/characters")
-      .then((r) => r.json())
-      .then((data) => {
-        setCharacters(data.map((c) => ({
-          ...c,
-          image: characterImages[c.name] || c.image || null,
-        })));
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
 
   const filtered = useMemo(() => {
     let result = characters.filter((c) => {
@@ -314,11 +279,11 @@ export default function Characters() {
     });
 
     return [...result].sort((a, b) => {
-      if (sortBy === "name-asc")      return a.name.localeCompare(b.name);
-      if (sortBy === "name-desc")     return b.name.localeCompare(a.name);
-      if (sortBy === "house")         return (a.house || "").localeCompare(b.house || "");
-      if (sortBy === "alive-first")   return (b.alive ? 1 : 0) - (a.alive ? 1 : 0);
-      if (sortBy === "deceased-first")return (a.alive ? 1 : 0) - (b.alive ? 1 : 0);
+      if (sortBy === "name-asc")       return a.name.localeCompare(b.name);
+      if (sortBy === "name-desc")      return b.name.localeCompare(a.name);
+      if (sortBy === "house")          return (a.house || "").localeCompare(b.house || "");
+      if (sortBy === "alive-first")    return (b.alive ? 1 : 0) - (a.alive ? 1 : 0);
+      if (sortBy === "deceased-first") return (a.alive ? 1 : 0) - (b.alive ? 1 : 0);
       return 0;
     });
   }, [characters, search, activeHouse, activeStatus, sortBy]);
@@ -327,9 +292,9 @@ export default function Characters() {
 
   const handleViewProfile  = (char)  => navigate(`/characters/${encodeURIComponent(char.name)}`, { state: { character: char } });
   const handleSearchChange = (e)     => { setSearch(e.target.value);  setVisibleCount(16); };
-  const handleHouseChange  = (house) => { setActiveHouse(house);       setVisibleCount(16); };
-  const handleStatusChange = (s)     => { setActiveStatus(s);          setVisibleCount(16); };
-  const handleSortChange   = (e)     => { setSortBy(e.target.value);   setVisibleCount(16); };
+  const handleHouseChange  = (house) => { setActiveHouse(house);      setVisibleCount(16); };
+  const handleStatusChange = (s)     => { setActiveStatus(s);         setVisibleCount(16); };
+  const handleSortChange   = (e)     => { setSortBy(e.target.value);  setVisibleCount(16); };
   const clearAllFilters    = ()      => { setSearch(""); setActiveHouse("All"); setActiveStatus("all"); setSortBy("name-asc"); setVisibleCount(16); };
 
   return (
