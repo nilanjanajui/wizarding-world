@@ -10,7 +10,7 @@ const Movies = lazy(() => import("./components/movies/Movies"));
 const Characters = lazy(() => import("./components/characterdir/Characters"));
 const FavCharacters = lazy(() => import("./components/characterdir/favcharacters/FavCharacters"));
 const CharacterProfile = lazy(() => import("./components/characterdir/characterprofile/CharacterProfile"));
-const WizardStats = lazy(() => import("./components/wizardstas/WizardStats"));
+const WizardStats = lazy(() => import("./components/wizardstats/WizardStats"));
 const NotFound = lazy(() => import("./components/NotFound"));
 const SortingHat = lazy(() => import("./components/SortingHat"));
 
@@ -43,12 +43,12 @@ export default function App() {
             <Route path="/" element={withSuspense(Home)} />
             <Route path="/movies" element={withSuspense(Movies)} />
             <Route path="/characters" element={withSuspense(Characters)} />
+            <Route path="/characters/:name" element={withSuspense(CharacterProfile)} />
             <Route path="/favorites" element={withSuspense(FavCharacters)} />
             <Route path="/stats" element={withSuspense(WizardStats)} />
             <Route path="/sorting-hat" element={withSuspense(SortingHat)} />
             <Route path="*" element={withSuspense(NotFound)} />
           </Route>
-          <Route path="/characters/:name" element={withSuspense(CharacterProfile)} />
         </Routes>
       </Router>
       </CharactersProvider>

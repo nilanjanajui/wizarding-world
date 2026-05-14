@@ -138,10 +138,12 @@ export default function CharacterProfile() {
 
   const biography =
     data.biography ||
-    `${resolvedChar.name} is a notable figure in the Wizarding World.${resolvedChar.house ? ` A proud member of ${resolvedChar.house}.` : ""
-    }${resolvedChar.actor && resolvedChar.actor !== "Unknown"
-      ? ` Portrayed by ${resolvedChar.actor}.`
-      : ""
+    `${resolvedChar.name} is a notable figure in the Wizarding World.${
+      resolvedChar.house ? ` A proud member of ${resolvedChar.house}.` : ""
+    }${
+      resolvedChar.actor && resolvedChar.actor !== "Unknown"
+        ? ` Portrayed by ${resolvedChar.actor}.`
+        : ""
     }`;
 
   const spells = data.spells || [];
@@ -165,38 +167,19 @@ export default function CharacterProfile() {
 
   return (
     <div className="bg-background-dark text-slate-100 min-h-screen font-display">
-      {/* Header */}
-      <header className="flex items-center justify-between border-b border-primary/20 px-6 py-4 md:px-20 lg:px-40 bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+      <main className="px-4 md:px-20 lg:px-40 py-8 max-w-7xl mx-auto w-full">
+
+        {/* Back nav — inline page element, not a sticky header */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+          className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-8"
         >
           <span className="material-symbols-outlined">arrow_back</span>
           <span className="text-sm font-bold tracking-widest uppercase">
             Back to Directory
           </span>
         </button>
-        <div className="flex items-center gap-6">
-          <h2 className="hidden md:block text-primary text-lg font-display italic">
-            Wizarding World Explorer
-          </h2>
-          <button
-            onClick={() => toggleFavorite(resolvedChar)}
-            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-all ${fav
-                ? "bg-primary text-background-dark border-primary"
-                : "bg-primary/10 border-primary/30 text-primary hover:bg-primary hover:text-background-dark"
-              }`}
-          >
-            <span
-              className={`material-symbols-outlined ${fav ? "filled-icon" : ""}`}
-            >
-              favorite
-            </span>
-          </button>
-        </div>
-      </header>
 
-      <main className="flex-1 px-4 md:px-20 lg:px-40 py-8 max-w-7xl mx-auto w-full">
         {/* Hero Banner */}
         <div className="relative w-full rounded-xl overflow-hidden mb-12 group">
           <div
@@ -221,29 +204,33 @@ export default function CharacterProfile() {
                   />
                 ) : null}
                 <div
-                  className={`w-full h-full items-center justify-center text-primary ${resolvedChar.image ? "hidden" : "flex"
-                    }`}
+                  className={`w-full h-full items-center justify-center text-primary ${
+                    resolvedChar.image ? "hidden" : "flex"
+                  }`}
                 >
                   <span className="material-symbols-outlined text-6xl opacity-30">
                     person
                   </span>
                 </div>
               </div>
-              {resolvedChar.house && (() => {
-                const HOUSE_STYLES = {
-                  Gryffindor: { bg: "bg-[#740001]", text: "text-[#e3a000]", border: "border-[#e3a000]/30" },
-                  Slytherin: { bg: "bg-[#1a472a]", text: "text-[#aaaaaa]", border: "border-[#aaaaaa]/30" },
-                  Hufflepuff: { bg: "bg-[#ecb939]", text: "text-[#1a1a1a]", border: "border-[#1a1a1a]/20" },
-                  Ravenclaw: { bg: "bg-[#0e1a40]", text: "text-[#946b2d]", border: "border-[#946b2d]/30" },
-                };
-                const style = HOUSE_STYLES[resolvedChar.house];
-                if (!style) return null;
-                return (
-                  <div className={`absolute -bottom-4 -right-4 ${style.bg} ${style.text} p-2 rounded-lg shadow-lg border ${style.border}`}>
-                    <span className="material-symbols-outlined text-3xl">shield</span>
-                  </div>
-                );
-              })()}
+              {resolvedChar.house &&
+                (() => {
+                  const HOUSE_STYLES = {
+                    Gryffindor: { bg: "bg-[#740001]", text: "text-[#e3a000]", border: "border-[#e3a000]/30" },
+                    Slytherin:  { bg: "bg-[#1a472a]", text: "text-[#aaaaaa]", border: "border-[#aaaaaa]/30" },
+                    Hufflepuff: { bg: "bg-[#ecb939]", text: "text-[#1a1a1a]", border: "border-[#1a1a1a]/20" },
+                    Ravenclaw:  { bg: "bg-[#0e1a40]", text: "text-[#946b2d]", border: "border-[#946b2d]/30" },
+                  };
+                  const style = HOUSE_STYLES[resolvedChar.house];
+                  if (!style) return null;
+                  return (
+                    <div
+                      className={`absolute -bottom-4 -right-4 ${style.bg} ${style.text} p-2 rounded-lg shadow-lg border ${style.border}`}
+                    >
+                      <span className="material-symbols-outlined text-3xl">shield</span>
+                    </div>
+                  );
+                })()}
             </div>
 
             {/* Name & Quote */}
@@ -353,26 +340,10 @@ export default function CharacterProfile() {
             {spells.length === 0 && timeline.length === 0 && (
               <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  {
-                    icon: "home",
-                    label: "House",
-                    value: safeStr(resolvedChar.house) || "Unknown",
-                  },
-                  {
-                    icon: "person",
-                    label: "Species",
-                    value: safeStr(resolvedChar.species) || "Human",
-                  },
-                  {
-                    icon: "pets",
-                    label: "Patronus",
-                    value: safeStr(resolvedChar.patronus) || "Unknown",
-                  },
-                  {
-                    icon: "family_restroom",
-                    label: "Ancestry",
-                    value: safeStr(resolvedChar.ancestry) || "Unknown",
-                  },
+                  { icon: "home",            label: "House",    value: safeStr(resolvedChar.house)    || "Unknown" },
+                  { icon: "person",          label: "Species",  value: safeStr(resolvedChar.species)  || "Human"   },
+                  { icon: "pets",            label: "Patronus", value: safeStr(resolvedChar.patronus) || "Unknown" },
+                  { icon: "family_restroom", label: "Ancestry", value: safeStr(resolvedChar.ancestry) || "Unknown" },
                 ].map(({ icon, label, value }) => (
                   <div
                     key={label}
@@ -412,12 +383,13 @@ export default function CharacterProfile() {
                         {label}
                       </span>
                       <span
-                        className={`font-medium text-sm text-right ${gold
+                        className={`font-medium text-sm text-right ${
+                          gold
                             ? "text-[#e3a000] font-bold"
                             : italic
-                              ? "text-slate-100 italic"
-                              : "text-slate-100"
-                          }`}
+                            ? "text-slate-100 italic"
+                            : "text-slate-100"
+                        }`}
                       >
                         {value}
                       </span>
@@ -492,14 +464,16 @@ export default function CharacterProfile() {
                   Status
                 </h3>
                 <div
-                  className={`flex items-center gap-3 px-4 py-3 rounded-full ${resolvedChar.alive
+                  className={`flex items-center gap-3 px-4 py-3 rounded-full ${
+                    resolvedChar.alive
                       ? "bg-green-500/10 text-green-400 border border-green-500/20"
                       : "bg-slate-700/40 text-slate-400 border border-slate-600/20"
-                    }`}
+                  }`}
                 >
                   <span
-                    className={`w-3 h-3 rounded-full shrink-0 ${resolvedChar.alive ? "bg-green-400" : "bg-slate-400"
-                      }`}
+                    className={`w-3 h-3 rounded-full shrink-0 ${
+                      resolvedChar.alive ? "bg-green-400" : "bg-slate-400"
+                    }`}
                   />
                   <span className="font-bold">
                     {resolvedChar.alive ? "Alive" : "Deceased"}
