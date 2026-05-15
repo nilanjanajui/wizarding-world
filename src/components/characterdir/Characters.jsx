@@ -96,7 +96,6 @@ const HOUSE_CONFIG = {
 
 function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleViewProfile }) {
   const cfg = HOUSE_CONFIG[houseKey] ?? HOUSE_CONFIG.Unknown;
-
   const [isHovered, setIsHovered] = useState(false);
   const [btnHovered, setBtnHovered] = useState(false);
 
@@ -141,7 +140,7 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             className="absolute inset-0 flex flex-col items-center justify-center gap-2"
             style={{ background: cfg.fallbackBg }}
           >
-            <span className="material-symbols-outlined text-6xl" style={{ color: cfg.fallbackIcon }}>
+            <span className="material-symbols-outlined text-5xl sm:text-6xl" style={{ color: cfg.fallbackIcon }}>
               person
             </span>
             <span className="text-xs font-medium" style={{ color: cfg.fallbackIcon, opacity: 0.7 }}>
@@ -164,25 +163,26 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             style={{ background: cfg.gradient, opacity: isHovered ? 1 : 0.45 }}
           />
 
-          <div className="absolute top-3 right-3 z-10">
+          {/* Favourite button */}
+          <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10">
             <button
               onClick={() => toggleFavorite(char)}
-              className={`p-2 rounded-full backdrop-blur-md transition-all ${fav
-                  ? "bg-red-500/20 border border-red-500/40"
-                  : "bg-black/40 hover:bg-red-500/20"
-                }`}
+              className={`p-1.5 sm:p-2 rounded-full backdrop-blur-md transition-all ${
+                fav ? "bg-red-500/20 border border-red-500/40" : "bg-black/40 hover:bg-red-500/20"
+              }`}
             >
-              <span className={`material-symbols-outlined text-xl transition-colors ${fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
-                }`}>
+              <span className={`material-symbols-outlined text-lg sm:text-xl transition-colors ${
+                fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
+              }`}>
                 favorite
               </span>
             </button>
           </div>
 
           {houseKey !== "Unknown" && (
-            <div className="absolute bottom-3 left-3 z-10">
+            <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-10">
               <span
-                className={`${cfg.badgeClass} text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider transition-shadow duration-300`}
+                className={`${cfg.badgeClass} text-xs font-bold px-2 py-0.5 sm:px-3 sm:py-1 rounded-full uppercase tracking-wider transition-shadow duration-300`}
                 style={{ boxShadow: isHovered ? cfg.badgeShadow : "none" }}
               >
                 {houseKey}
@@ -192,23 +192,24 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
         </div>
 
         {/* Card body */}
-        <div className="p-5 flex flex-col gap-2 flex-1">
-          <h3 className={`text-xl font-bold text-white transition-colors duration-200 ${cfg.nameClass}`}>
+        <div className="p-3 sm:p-4 md:p-5 flex flex-col gap-2 flex-1">
+          <h3 className={`text-base sm:text-lg md:text-xl font-bold text-white transition-colors duration-200 leading-tight ${cfg.nameClass}`}>
             {char.name}
           </h3>
-          <div className="space-y-1 text-sm text-slate-400 flex-1">
-            <div className="flex justify-between">
-              <span>Actor</span>
-              <span className="text-slate-200 text-right max-w-[60%] truncate">{char.actor || "Unknown"}</span>
+          <div className="space-y-1 text-xs sm:text-sm text-slate-400 flex-1">
+            <div className="flex justify-between gap-2">
+              <span className="shrink-0">Actor</span>
+              <span className="text-slate-200 text-right truncate max-w-[60%]">{char.actor || "Unknown"}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Species</span>
+            <div className="flex justify-between gap-2">
+              <span className="shrink-0">Species</span>
               <span className="text-slate-200 capitalize">{char.species || "Human"}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Status</span>
-              <span className={`font-bold text-xs px-2 py-0.5 rounded-full ${char.alive ? "bg-green-500/10 text-green-400" : "bg-slate-500/10 text-slate-400"
-                }`}>
+            <div className="flex justify-between gap-2 items-center">
+              <span className="shrink-0">Status</span>
+              <span className={`font-bold text-xs px-2 py-0.5 rounded-full ${
+                char.alive ? "bg-green-500/10 text-green-400" : "bg-slate-500/10 text-slate-400"
+              }`}>
                 {char.alive ? "● Alive" : "● Deceased"}
               </span>
             </div>
@@ -220,14 +221,14 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             style={
               isHovered || btnHovered
                 ? {
-                  backgroundColor: cfg.btnBg,
-                  borderColor: cfg.btnBorder,
-                  color: cfg.btnText,
-                  boxShadow: `0 4px 16px ${cfg.btnBorder}55`,
-                }
+                    backgroundColor: cfg.btnBg,
+                    borderColor: cfg.btnBorder,
+                    color: cfg.btnText,
+                    boxShadow: `0 4px 16px ${cfg.btnBorder}55`,
+                  }
                 : {}
             }
-            className="mt-4 w-full border border-primary text-primary py-2.5 rounded-lg font-bold text-sm transition-all duration-300 uppercase tracking-widest"
+            className="mt-3 w-full border border-primary text-primary py-2 sm:py-2.5 rounded-lg font-bold text-xs sm:text-sm transition-all duration-300 uppercase tracking-widest"
           >
             View Profile
           </button>
@@ -274,21 +275,25 @@ export default function Characters() {
 
   const visible = filtered.slice(0, visibleCount);
 
-  const handleViewProfile = (char) => navigate(`/characters/${encodeURIComponent(char.name)}`, { state: { character: char } });
+  const handleViewProfile = (char) =>
+    navigate(`/characters/${encodeURIComponent(char.name)}`, { state: { character: char } });
   const handleSearchChange = (e) => { setSearch(e.target.value); setVisibleCount(16); };
   const handleHouseChange = (house) => { setActiveHouse(house); setVisibleCount(16); };
   const handleStatusChange = (s) => { setActiveStatus(s); setVisibleCount(16); };
   const handleSortChange = (e) => { setSortBy(e.target.value); setVisibleCount(16); };
-  const clearAllFilters = () => { setSearch(""); setActiveHouse("All"); setActiveStatus("all"); setSortBy("name-asc"); setVisibleCount(16); };
+  const clearAllFilters = () => {
+    setSearch(""); setActiveHouse("All"); setActiveStatus("all");
+    setSortBy("name-asc"); setVisibleCount(16);
+  };
 
   return (
     <div ref={pageRef} className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
       <div className="flex flex-col h-full grow">
-        <main className="max-w-7xl mx-auto w-full px-6 py-12 lg:px-20">
+        <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-20 py-8 sm:py-10 lg:py-12">
 
-          {/* Header */}
+          {/* ── Header ───────────────────────────────────────────────────────── */}
           <Motion.div
-            className="flex flex-col gap-4 mb-10"
+            className="flex flex-col gap-2 sm:gap-4 mb-8 sm:mb-10"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -296,24 +301,25 @@ export default function Characters() {
             <h1 className="text-slate-900 dark:text-slate-100 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight uppercase italic">
               Characters
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-xl font-normal max-w-2xl">
+            <p className="text-slate-600 dark:text-slate-400 text-base sm:text-lg md:text-xl font-normal max-w-2xl">
               Discover the legends, the heroes, and the villains of the Wizarding World.
             </p>
           </Motion.div>
 
-          {/* Search + Filters */}
+          {/* ── Search + Filters ─────────────────────────────────────────────── */}
           <Motion.div
-            className="flex flex-col gap-6 mb-12"
+            className="flex flex-col gap-4 sm:gap-6 mb-8 sm:mb-12"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
+            {/* Search bar */}
             <div className="relative w-full group">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/60 group-focus-within:text-primary transition-colors">
+              <span className="material-symbols-outlined absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-primary/60 group-focus-within:text-primary transition-colors text-lg sm:text-xl">
                 search
               </span>
               <input
-                className="w-full bg-slate-100 dark:bg-card-dark border border-primary/10 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl py-5 pl-14 pr-6 text-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 shadow-lg transition-all outline-none"
+                className="w-full bg-slate-100 dark:bg-card-dark border border-primary/10 focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl py-3.5 sm:py-5 pl-10 sm:pl-14 pr-10 sm:pr-6 text-base sm:text-lg text-slate-900 dark:text-slate-100 placeholder:text-slate-400 shadow-lg transition-all outline-none"
                 placeholder="Search for a wizard or witch..."
                 type="text"
                 value={search}
@@ -322,31 +328,35 @@ export default function Characters() {
               {search && (
                 <button
                   onClick={() => { setSearch(""); setVisibleCount(16); }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors"
+                  className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors"
                 >
-                  <span className="material-symbols-outlined">close</span>
+                  <span className="material-symbols-outlined text-lg">close</span>
                 </button>
               )}
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            {/* House filter — horizontally scrollable on mobile */}
+            <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible scrollbar-none">
               {HOUSES.map((house) => (
                 <button
                   key={house}
                   onClick={() => handleHouseChange(house)}
-                  className={`px-6 py-2 rounded-full font-bold text-sm border transition-all hover:scale-105 ${activeHouse === house
+                  className={`shrink-0 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full font-bold text-xs sm:text-sm border transition-all hover:scale-105 ${
+                    activeHouse === house
                       ? "bg-primary text-background-dark border-primary shadow-lg shadow-primary/20"
                       : "bg-slate-100 dark:bg-card-dark hover:bg-primary/10 text-slate-900 dark:text-slate-100 border-primary/10"
-                    }`}
+                  }`}
                 >
                   {house}
                 </button>
               ))}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-slate-500 mr-1">Status</span>
+            {/* Status + Sort row — stacks on mobile */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+              {/* Status pills */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Status</span>
                 {[
                   { label: "All", value: "all" },
                   { label: "● Alive", value: "alive" },
@@ -355,39 +365,42 @@ export default function Characters() {
                   <button
                     key={value}
                     onClick={() => handleStatusChange(value)}
-                    className={`px-4 py-1.5 rounded-full font-bold text-xs border transition-all hover:scale-105 ${activeStatus === value
+                    className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full font-bold text-xs border transition-all hover:scale-105 ${
+                      activeStatus === value
                         ? value === "alive"
                           ? "bg-green-500/20 text-green-400 border-green-500/40"
                           : value === "deceased"
                             ? "bg-slate-500/20 text-slate-400 border-slate-500/40"
                             : "bg-primary text-background-dark border-primary"
                         : "bg-slate-100 dark:bg-card-dark text-slate-500 border-primary/10 hover:border-primary/30"
-                      }`}
+                    }`}
                   >
                     {label}
                   </button>
                 ))}
               </div>
-              <div className="flex items-center gap-4">
+
+              {/* Count + Sort */}
+              <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
                 {!loading && !error && (
-                  <span className="text-sm text-slate-400 font-medium">
+                  <span className="text-xs sm:text-sm text-slate-400 font-medium whitespace-nowrap">
                     {filtered.length} wizard{filtered.length !== 1 ? "s" : ""} found
                   </span>
                 )}
                 <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary/50 text-sm pointer-events-none">
+                  <span className="material-symbols-outlined absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 text-primary/50 text-sm pointer-events-none">
                     sort
                   </span>
                   <select
                     value={sortBy}
                     onChange={handleSortChange}
-                    className="appearance-none bg-slate-100 dark:bg-card-dark border border-primary/10 focus:border-primary text-slate-900 dark:text-slate-100 text-sm font-bold rounded-lg pl-9 pr-8 py-2 outline-none cursor-pointer transition-colors"
+                    className="appearance-none bg-slate-100 dark:bg-card-dark border border-primary/10 focus:border-primary text-slate-900 dark:text-slate-100 text-xs sm:text-sm font-bold rounded-lg pl-8 sm:pl-9 pr-7 sm:pr-8 py-1.5 sm:py-2 outline-none cursor-pointer transition-colors"
                   >
                     {SORT_OPTIONS.map(({ label, value }) => (
                       <option key={value} value={value}>{label}</option>
                     ))}
                   </select>
-                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-primary/50 text-sm pointer-events-none">
+                  <span className="material-symbols-outlined absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 text-primary/50 text-sm pointer-events-none">
                     expand_more
                   </span>
                 </div>
@@ -395,28 +408,28 @@ export default function Characters() {
             </div>
           </Motion.div>
 
-          {/* ── Error State ─────────────────────────────────────────────────── */}
+          {/* ── Error State ──────────────────────────────────────────────────── */}
           {error && (
             <Motion.div
-              className="flex flex-col items-center justify-center gap-6 py-24 text-center"
+              className="flex flex-col items-center justify-center gap-5 sm:gap-6 py-16 sm:py-24 text-center"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <span className="material-symbols-outlined text-7xl text-red-500/60">
+              <span className="material-symbols-outlined text-6xl sm:text-7xl text-red-500/60">
                 wifi_off
               </span>
               <div className="flex flex-col gap-2">
-                <h2 className="text-xl font-bold text-slate-200">
+                <h2 className="text-lg sm:text-xl font-bold text-slate-200">
                   The Ministry owls couldn&apos;t deliver
                 </h2>
-                <p className="text-slate-500 text-sm max-w-sm">
+                <p className="text-slate-500 text-xs sm:text-sm max-w-xs sm:max-w-sm px-4 sm:px-0">
                   {error}
                 </p>
               </div>
               <button
                 onClick={retry}
-                className="group flex items-center gap-2 bg-primary/10 border border-primary text-primary px-8 py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-primary hover:text-background-dark transition-all hover:shadow-lg hover:shadow-primary/20"
+                className="group flex items-center gap-2 bg-primary/10 border border-primary text-primary px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-bold uppercase tracking-widest hover:bg-primary hover:text-background-dark transition-all hover:shadow-lg hover:shadow-primary/20 text-sm"
               >
                 <span className="material-symbols-outlined text-sm group-hover:rotate-180 transition-transform duration-500">
                   refresh
@@ -426,17 +439,17 @@ export default function Characters() {
             </Motion.div>
           )}
 
-          {/* ── Loading Skeletons ────────────────────────────────────────────── */}
+          {/* ── Loading Skeletons ─────────────────────────────────────────────── */}
           {loading && !error && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
               {[...Array(8)].map((_, i) => (
                 <div key={i} className="rounded-xl overflow-hidden border border-primary/10 flex flex-col animate-pulse">
                   <div className="aspect-3/4 bg-primary/10" />
-                  <div className="p-5 flex flex-col gap-3">
-                    <div className="h-5 bg-primary/10 rounded w-3/4" />
-                    <div className="h-3 bg-primary/5  rounded w-1/2" />
-                    <div className="h-3 bg-primary/5  rounded w-1/3" />
-                    <div className="h-9 bg-primary/10 rounded-lg mt-2" />
+                  <div className="p-3 sm:p-4 md:p-5 flex flex-col gap-3">
+                    <div className="h-4 sm:h-5 bg-primary/10 rounded w-3/4" />
+                    <div className="h-3 bg-primary/5 rounded w-1/2" />
+                    <div className="h-3 bg-primary/5 rounded w-1/3" />
+                    <div className="h-8 sm:h-9 bg-primary/10 rounded-lg mt-2" />
                   </div>
                 </div>
               ))}
@@ -448,24 +461,24 @@ export default function Characters() {
             <>
               {visible.length === 0 ? (
                 <Motion.div
-                  className="text-center py-20 text-slate-400"
+                  className="text-center py-16 sm:py-20 text-slate-400"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
-                  <span className="material-symbols-outlined text-6xl text-primary/20">search_off</span>
-                  <p className="mt-4 text-lg">
+                  <span className="material-symbols-outlined text-5xl sm:text-6xl text-primary/20">search_off</span>
+                  <p className="mt-4 text-base sm:text-lg px-4">
                     No characters found for{" "}
                     <span className="text-primary font-bold">"{search}"</span>
                   </p>
                   <button
                     onClick={clearAllFilters}
-                    className="mt-6 px-6 py-2 border border-primary/30 text-primary rounded-lg text-sm font-bold hover:bg-primary/10 transition-colors"
+                    className="mt-6 px-5 sm:px-6 py-2 border border-primary/30 text-primary rounded-lg text-sm font-bold hover:bg-primary/10 transition-colors"
                   >
                     Clear Filters
                   </button>
                 </Motion.div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                   {visible.map((char, idx) => (
                     <TiltCard
                       key={`${char.name}-${idx}`}
@@ -482,13 +495,13 @@ export default function Characters() {
               )}
 
               {visibleCount < filtered.length && (
-                <div className="flex flex-col items-center gap-3 mt-20">
-                  <p className="text-slate-500 text-sm">
+                <div className="flex flex-col items-center gap-3 mt-12 sm:mt-16 lg:mt-20">
+                  <p className="text-slate-500 text-xs sm:text-sm">
                     Showing {visibleCount} of {filtered.length} characters
                   </p>
                   <button
                     onClick={() => setVisibleCount((v) => v + 16)}
-                    className="group flex items-center gap-3 bg-primary/10 border border-primary text-primary px-10 py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-primary hover:text-background-dark transition-all hover:shadow-lg hover:shadow-primary/20"
+                    className="group flex items-center gap-2 sm:gap-3 bg-primary/10 border border-primary text-primary px-7 sm:px-10 py-3 sm:py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-primary hover:text-background-dark transition-all hover:shadow-lg hover:shadow-primary/20 text-sm"
                   >
                     Load More Wizards
                     <span className="material-symbols-outlined group-hover:translate-y-1 transition-transform">
@@ -501,14 +514,15 @@ export default function Characters() {
           )}
         </main>
 
-        <footer className="mt-20 border-t border-primary/10 bg-slate-50 dark:bg-background-dark py-12 px-6 lg:px-20 scroll-fade">
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-primary font-bold text-lg">
+        {/* ── Footer ───────────────────────────────────────────────────────── */}
+        <footer className="mt-16 sm:mt-20 border-t border-primary/10 bg-slate-50 dark:bg-background-dark py-8 sm:py-12 px-4 sm:px-6 lg:px-20 scroll-fade">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-8 text-center md:text-left">
+            <div className="flex flex-col gap-1 sm:gap-2">
+              <div className="flex items-center justify-center md:justify-start gap-2 text-primary font-bold text-base sm:text-lg">
                 <span className="material-symbols-outlined">auto_fix_high</span>
                 Potter Explorer
               </div>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">
+              <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">
                 Magic is only a click away. Mischief Managed.
               </p>
             </div>
