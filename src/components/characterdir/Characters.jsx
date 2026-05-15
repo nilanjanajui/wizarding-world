@@ -9,88 +9,88 @@ import useScrollFade from "../../hooks/useScrollFade";
 const HOUSES = ["All", "Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"];
 
 const SORT_OPTIONS = [
-  { label: "Name (A-Z)",      value: "name-asc"      },
-  { label: "Name (Z-A)",      value: "name-desc"     },
-  { label: "By House",        value: "house"         },
-  { label: "Alive First",     value: "alive-first"   },
-  { label: "Deceased First",  value: "deceased-first"},
+  { label: "Name (A-Z)", value: "name-asc" },
+  { label: "Name (Z-A)", value: "name-desc" },
+  { label: "By House", value: "house" },
+  { label: "Alive First", value: "alive-first" },
+  { label: "Deceased First", value: "deceased-first" },
 ];
 
 const HOUSE_CONFIG = {
   Gryffindor: {
-    borderClass:    "border-red-700/40",
-    glowIdle:       "0 0 0 1px rgba(185,28,28,0.40)",
-    glowHover:      "0 0 28px 6px rgba(185,28,28,0.38), 0 8px 32px rgba(0,0,0,0.50)",
-    gradient:       "linear-gradient(to top, rgba(120,10,10,0.80) 0%, transparent 65%)",
-    cardBg:         "rgba(120,10,10,0.07)",
-    badgeClass:     "bg-red-800 text-yellow-300",
-    badgeShadow:    "0 0 8px rgba(185,28,28,0.60)",
-    nameClass:      "group-hover:text-red-400",
-    btnBg:          "#7f1d1d",
-    btnBorder:      "#b91c1c",
-    btnText:        "#fde68a",
-    fallbackBg:     "rgba(120,10,10,0.20)",
-    fallbackIcon:   "#f87171",
+    borderClass: "border-red-700/40",
+    glowIdle: "0 0 0 1px rgba(185,28,28,0.40)",
+    glowHover: "0 0 28px 6px rgba(185,28,28,0.38), 0 8px 32px rgba(0,0,0,0.50)",
+    gradient: "linear-gradient(to top, rgba(120,10,10,0.80) 0%, transparent 65%)",
+    cardBg: "rgba(120,10,10,0.07)",
+    badgeClass: "bg-red-800 text-yellow-300",
+    badgeShadow: "0 0 8px rgba(185,28,28,0.60)",
+    nameClass: "group-hover:text-red-400",
+    btnBg: "#7f1d1d",
+    btnBorder: "#b91c1c",
+    btnText: "#fde68a",
+    fallbackBg: "rgba(120,10,10,0.20)",
+    fallbackIcon: "#f87171",
   },
   Slytherin: {
-    borderClass:    "border-green-800/40",
-    glowIdle:       "0 0 0 1px rgba(22,101,52,0.40)",
-    glowHover:      "0 0 28px 6px rgba(22,101,52,0.38), 0 8px 32px rgba(0,0,0,0.50)",
-    gradient:       "linear-gradient(to top, rgba(5,46,22,0.85) 0%, transparent 65%)",
-    cardBg:         "rgba(5,46,22,0.08)",
-    badgeClass:     "bg-green-900 text-green-200",
-    badgeShadow:    "0 0 8px rgba(22,101,52,0.60)",
-    nameClass:      "group-hover:text-green-400",
-    btnBg:          "#14532d",
-    btnBorder:      "#15803d",
-    btnText:        "#bbf7d0",
-    fallbackBg:     "rgba(5,46,22,0.25)",
-    fallbackIcon:   "#4ade80",
+    borderClass: "border-green-800/40",
+    glowIdle: "0 0 0 1px rgba(22,101,52,0.40)",
+    glowHover: "0 0 28px 6px rgba(22,101,52,0.38), 0 8px 32px rgba(0,0,0,0.50)",
+    gradient: "linear-gradient(to top, rgba(5,46,22,0.85) 0%, transparent 65%)",
+    cardBg: "rgba(5,46,22,0.08)",
+    badgeClass: "bg-green-900 text-green-200",
+    badgeShadow: "0 0 8px rgba(22,101,52,0.60)",
+    nameClass: "group-hover:text-green-400",
+    btnBg: "#14532d",
+    btnBorder: "#15803d",
+    btnText: "#bbf7d0",
+    fallbackBg: "rgba(5,46,22,0.25)",
+    fallbackIcon: "#4ade80",
   },
   Ravenclaw: {
-    borderClass:    "border-blue-800/40",
-    glowIdle:       "0 0 0 1px rgba(30,64,175,0.40)",
-    glowHover:      "0 0 28px 6px rgba(30,64,175,0.38), 0 8px 32px rgba(0,0,0,0.50)",
-    gradient:       "linear-gradient(to top, rgba(23,37,84,0.85) 0%, transparent 65%)",
-    cardBg:         "rgba(23,37,84,0.08)",
-    badgeClass:     "bg-blue-900 text-blue-200",
-    badgeShadow:    "0 0 8px rgba(30,64,175,0.60)",
-    nameClass:      "group-hover:text-blue-400",
-    btnBg:          "#1e3a8a",
-    btnBorder:      "#1d4ed8",
-    btnText:        "#bfdbfe",
-    fallbackBg:     "rgba(23,37,84,0.25)",
-    fallbackIcon:   "#60a5fa",
+    borderClass: "border-blue-800/40",
+    glowIdle: "0 0 0 1px rgba(30,64,175,0.40)",
+    glowHover: "0 0 28px 6px rgba(30,64,175,0.38), 0 8px 32px rgba(0,0,0,0.50)",
+    gradient: "linear-gradient(to top, rgba(23,37,84,0.85) 0%, transparent 65%)",
+    cardBg: "rgba(23,37,84,0.08)",
+    badgeClass: "bg-blue-900 text-blue-200",
+    badgeShadow: "0 0 8px rgba(30,64,175,0.60)",
+    nameClass: "group-hover:text-blue-400",
+    btnBg: "#1e3a8a",
+    btnBorder: "#1d4ed8",
+    btnText: "#bfdbfe",
+    fallbackBg: "rgba(23,37,84,0.25)",
+    fallbackIcon: "#60a5fa",
   },
   Hufflepuff: {
-    borderClass:    "border-yellow-600/40",
-    glowIdle:       "0 0 0 1px rgba(161,98,7,0.40)",
-    glowHover:      "0 0 28px 6px rgba(161,98,7,0.38), 0 8px 32px rgba(0,0,0,0.50)",
-    gradient:       "linear-gradient(to top, rgba(78,52,0,0.85) 0%, transparent 65%)",
-    cardBg:         "rgba(78,52,0,0.08)",
-    badgeClass:     "bg-yellow-700 text-yellow-100",
-    badgeShadow:    "0 0 8px rgba(161,98,7,0.60)",
-    nameClass:      "group-hover:text-yellow-400",
-    btnBg:          "#713f12",
-    btnBorder:      "#a16207",
-    btnText:        "#fef9c3",
-    fallbackBg:     "rgba(78,52,0,0.25)",
-    fallbackIcon:   "#facc15",
+    borderClass: "border-yellow-600/40",
+    glowIdle: "0 0 0 1px rgba(161,98,7,0.40)",
+    glowHover: "0 0 28px 6px rgba(161,98,7,0.38), 0 8px 32px rgba(0,0,0,0.50)",
+    gradient: "linear-gradient(to top, rgba(78,52,0,0.85) 0%, transparent 65%)",
+    cardBg: "rgba(78,52,0,0.08)",
+    badgeClass: "bg-yellow-700 text-yellow-100",
+    badgeShadow: "0 0 8px rgba(161,98,7,0.60)",
+    nameClass: "group-hover:text-yellow-400",
+    btnBg: "#713f12",
+    btnBorder: "#a16207",
+    btnText: "#fef9c3",
+    fallbackBg: "rgba(78,52,0,0.25)",
+    fallbackIcon: "#facc15",
   },
   Unknown: {
-    borderClass:    "border-primary/10",
-    glowIdle:       "0 0 0 1px rgba(212,175,53,0.15)",
-    glowHover:      "0 0 20px 4px rgba(212,175,53,0.20), 0 8px 32px rgba(0,0,0,0.50)",
-    gradient:       "linear-gradient(to top, rgba(15,23,42,0.80) 0%, transparent 65%)",
-    cardBg:         "rgba(212,175,53,0.03)",
-    badgeClass:     "bg-slate-700 text-slate-200",
-    badgeShadow:    "none",
-    nameClass:      "group-hover:text-primary",
-    btnBg:          "#d4af35",
-    btnBorder:      "#d4af35",
-    btnText:        "#0f172a",
-    fallbackBg:     "rgba(212,175,53,0.10)",
-    fallbackIcon:   "#d4af35",
+    borderClass: "border-primary/10",
+    glowIdle: "0 0 0 1px rgba(212,175,53,0.15)",
+    glowHover: "0 0 20px 4px rgba(212,175,53,0.20), 0 8px 32px rgba(0,0,0,0.50)",
+    gradient: "linear-gradient(to top, rgba(15,23,42,0.80) 0%, transparent 65%)",
+    cardBg: "rgba(212,175,53,0.03)",
+    badgeClass: "bg-slate-700 text-slate-200",
+    badgeShadow: "none",
+    nameClass: "group-hover:text-primary",
+    btnBg: "#d4af35",
+    btnBorder: "#d4af35",
+    btnText: "#0f172a",
+    fallbackBg: "rgba(212,175,53,0.10)",
+    fallbackIcon: "#d4af35",
   },
 };
 
@@ -107,8 +107,8 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
 
   const handleMouseMove = (e) => {
     const r = e.currentTarget.getBoundingClientRect();
-    mouseX.set((e.clientX - r.left - r.width  / 2) / r.width);
-    mouseY.set((e.clientY - r.top  - r.height / 2) / r.height);
+    mouseX.set((e.clientX - r.left - r.width / 2) / r.width);
+    mouseY.set((e.clientY - r.top - r.height / 2) / r.height);
   };
   const handleMouseLeave = () => {
     mouseX.set(0);
@@ -167,15 +167,13 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
           <div className="absolute top-3 right-3 z-10">
             <button
               onClick={() => toggleFavorite(char)}
-              className={`p-2 rounded-full backdrop-blur-md transition-all ${
-                fav
+              className={`p-2 rounded-full backdrop-blur-md transition-all ${fav
                   ? "bg-red-500/20 border border-red-500/40"
                   : "bg-black/40 hover:bg-red-500/20"
-              }`}
+                }`}
             >
-              <span className={`material-symbols-outlined text-xl transition-colors ${
-                fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
-              }`}>
+              <span className={`material-symbols-outlined text-xl transition-colors ${fav ? "filled-icon text-red-500" : "text-white hover:text-red-400"
+                }`}>
                 favorite
               </span>
             </button>
@@ -209,9 +207,8 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             </div>
             <div className="flex justify-between">
               <span>Status</span>
-              <span className={`font-bold text-xs px-2 py-0.5 rounded-full ${
-                char.alive ? "bg-green-500/10 text-green-400" : "bg-slate-500/10 text-slate-400"
-              }`}>
+              <span className={`font-bold text-xs px-2 py-0.5 rounded-full ${char.alive ? "bg-green-500/10 text-green-400" : "bg-slate-500/10 text-slate-400"
+                }`}>
                 {char.alive ? "● Alive" : "● Deceased"}
               </span>
             </div>
@@ -223,11 +220,11 @@ function TiltCard({ char, idx, houseKey, imgSrc, fav, toggleFavorite, handleView
             style={
               isHovered || btnHovered
                 ? {
-                    backgroundColor: cfg.btnBg,
-                    borderColor:     cfg.btnBorder,
-                    color:           cfg.btnText,
-                    boxShadow:       `0 4px 16px ${cfg.btnBorder}55`,
-                  }
+                  backgroundColor: cfg.btnBg,
+                  borderColor: cfg.btnBorder,
+                  color: cfg.btnText,
+                  boxShadow: `0 4px 16px ${cfg.btnBorder}55`,
+                }
                 : {}
             }
             className="mt-4 w-full border border-primary text-primary py-2.5 rounded-lg font-bold text-sm transition-all duration-300 uppercase tracking-widest"
@@ -245,10 +242,10 @@ export default function Characters() {
   useScrollFade(pageRef);
 
   const [searchParams] = useSearchParams();
-  const [search,       setSearch]       = useState(() => searchParams.get("search") || "");
-  const [activeHouse,  setActiveHouse]  = useState("All");
+  const [search, setSearch] = useState(() => searchParams.get("search") || "");
+  const [activeHouse, setActiveHouse] = useState("All");
   const [activeStatus, setActiveStatus] = useState("all");
-  const [sortBy,       setSortBy]       = useState("alive-first");
+  const [sortBy, setSortBy] = useState("alive-first");
   const [visibleCount, setVisibleCount] = useState(16);
 
   const { characters, loading, error, retry } = useCharacters();
@@ -257,19 +254,19 @@ export default function Characters() {
 
   const filtered = useMemo(() => {
     let result = characters.filter((c) => {
-      const matchesSearch  = c.name.toLowerCase().includes(search.toLowerCase());
-      const matchesHouse   = activeHouse === "All" || c.house?.toLowerCase() === activeHouse.toLowerCase();
-      const matchesStatus  =
+      const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
+      const matchesHouse = activeHouse === "All" || c.house?.toLowerCase() === activeHouse.toLowerCase();
+      const matchesStatus =
         activeStatus === "all" ||
-        (activeStatus === "alive"    && c.alive === true)  ||
+        (activeStatus === "alive" && c.alive === true) ||
         (activeStatus === "deceased" && c.alive === false);
       return matchesSearch && matchesHouse && matchesStatus;
     });
     return [...result].sort((a, b) => {
-      if (sortBy === "name-asc")       return a.name.localeCompare(b.name);
-      if (sortBy === "name-desc")      return b.name.localeCompare(a.name);
-      if (sortBy === "house")          return (a.house || "").localeCompare(b.house || "");
-      if (sortBy === "alive-first")    return (b.alive ? 1 : 0) - (a.alive ? 1 : 0);
+      if (sortBy === "name-asc") return a.name.localeCompare(b.name);
+      if (sortBy === "name-desc") return b.name.localeCompare(a.name);
+      if (sortBy === "house") return (a.house || "").localeCompare(b.house || "");
+      if (sortBy === "alive-first") return (b.alive ? 1 : 0) - (a.alive ? 1 : 0);
       if (sortBy === "deceased-first") return (a.alive ? 1 : 0) - (b.alive ? 1 : 0);
       return 0;
     });
@@ -277,12 +274,12 @@ export default function Characters() {
 
   const visible = filtered.slice(0, visibleCount);
 
-  const handleViewProfile  = (char)  => navigate(`/characters/${encodeURIComponent(char.name)}`, { state: { character: char } });
-  const handleSearchChange = (e)     => { setSearch(e.target.value);  setVisibleCount(16); };
-  const handleHouseChange  = (house) => { setActiveHouse(house);      setVisibleCount(16); };
-  const handleStatusChange = (s)     => { setActiveStatus(s);         setVisibleCount(16); };
-  const handleSortChange   = (e)     => { setSortBy(e.target.value);  setVisibleCount(16); };
-  const clearAllFilters    = ()      => { setSearch(""); setActiveHouse("All"); setActiveStatus("all"); setSortBy("name-asc"); setVisibleCount(16); };
+  const handleViewProfile = (char) => navigate(`/characters/${encodeURIComponent(char.name)}`, { state: { character: char } });
+  const handleSearchChange = (e) => { setSearch(e.target.value); setVisibleCount(16); };
+  const handleHouseChange = (house) => { setActiveHouse(house); setVisibleCount(16); };
+  const handleStatusChange = (s) => { setActiveStatus(s); setVisibleCount(16); };
+  const handleSortChange = (e) => { setSortBy(e.target.value); setVisibleCount(16); };
+  const clearAllFilters = () => { setSearch(""); setActiveHouse("All"); setActiveStatus("all"); setSortBy("name-asc"); setVisibleCount(16); };
 
   return (
     <div ref={pageRef} className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
@@ -296,7 +293,7 @@ export default function Characters() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <h1 className="text-slate-900 dark:text-slate-100 text-6xl font-black leading-tight tracking-tight uppercase italic">
+            <h1 className="text-slate-900 dark:text-slate-100 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight uppercase italic">
               Characters
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-xl font-normal max-w-2xl">
@@ -337,11 +334,10 @@ export default function Characters() {
                 <button
                   key={house}
                   onClick={() => handleHouseChange(house)}
-                  className={`px-6 py-2 rounded-full font-bold text-sm border transition-all hover:scale-105 ${
-                    activeHouse === house
+                  className={`px-6 py-2 rounded-full font-bold text-sm border transition-all hover:scale-105 ${activeHouse === house
                       ? "bg-primary text-background-dark border-primary shadow-lg shadow-primary/20"
                       : "bg-slate-100 dark:bg-card-dark hover:bg-primary/10 text-slate-900 dark:text-slate-100 border-primary/10"
-                  }`}
+                    }`}
                 >
                   {house}
                 </button>
@@ -352,22 +348,21 @@ export default function Characters() {
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold uppercase tracking-widest text-slate-500 mr-1">Status</span>
                 {[
-                  { label: "All",        value: "all"      },
-                  { label: "● Alive",    value: "alive"    },
+                  { label: "All", value: "all" },
+                  { label: "● Alive", value: "alive" },
                   { label: "● Deceased", value: "deceased" },
                 ].map(({ label, value }) => (
                   <button
                     key={value}
                     onClick={() => handleStatusChange(value)}
-                    className={`px-4 py-1.5 rounded-full font-bold text-xs border transition-all hover:scale-105 ${
-                      activeStatus === value
+                    className={`px-4 py-1.5 rounded-full font-bold text-xs border transition-all hover:scale-105 ${activeStatus === value
                         ? value === "alive"
                           ? "bg-green-500/20 text-green-400 border-green-500/40"
                           : value === "deceased"
-                          ? "bg-slate-500/20 text-slate-400 border-slate-500/40"
-                          : "bg-primary text-background-dark border-primary"
+                            ? "bg-slate-500/20 text-slate-400 border-slate-500/40"
+                            : "bg-primary text-background-dark border-primary"
                         : "bg-slate-100 dark:bg-card-dark text-slate-500 border-primary/10 hover:border-primary/30"
-                    }`}
+                      }`}
                   >
                     {label}
                   </button>
