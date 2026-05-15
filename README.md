@@ -31,7 +31,7 @@ Explore characters, relive the films, discover your Hogwarts house, and dive dee
 
 <br/>
 
-[✦ Live Demo](#) &nbsp;·&nbsp; [✦ Report Bug](https://github.com/nilanjanajui/wizarding-world/issues) &nbsp;·&nbsp; [✦ Request Feature](https://github.com/nilanjanajui/wizarding-world/issues)
+[✦ Live Demo](https://wizarding-world-sooty.vercel.app/) &nbsp;·&nbsp; [✦ Report Bug](https://github.com/nilanjanajui/wizarding-world/issues) &nbsp;·&nbsp; [✦ Request Feature](https://github.com/nilanjanajui/wizarding-world/issues)
 
 </div>
 
